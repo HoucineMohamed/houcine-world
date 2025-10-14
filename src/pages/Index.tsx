@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,14 +8,20 @@ import { Moon, Sun, Github, Linkedin, Instagram, Mail, Code2, Palette, BookOpen,
 const Index = () => {
   const [isDark, setIsDark] = useState(true);
 
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDark]);
+
   const toggleTheme = () => {
     setIsDark(!isDark);
-    document.documentElement.classList.toggle("dark");
   };
 
   return (
-    <div className={isDark ? "dark" : ""}>
-      <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
         {/* Navigation */}
         <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur-lg bg-background/80">
           <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -263,7 +269,6 @@ const Index = () => {
           </div>
         </footer>
       </div>
-    </div>
   );
 };
 
