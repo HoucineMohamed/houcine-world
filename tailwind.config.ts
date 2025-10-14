@@ -43,6 +43,10 @@ export default {
           DEFAULT: "hsl(var(--tech-blue))",
           foreground: "hsl(var(--tech-blue-foreground))",
         },
+        metallic: {
+          DEFAULT: "hsl(var(--metallic))",
+          foreground: "hsl(var(--metallic-foreground))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
