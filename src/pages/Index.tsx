@@ -1,20 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Code2, Palette, BookOpen, Briefcase, Sparkles, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 import logoH from "@/assets/logo-h.png";
 import profile from "@/assets/profile.png";
-import bannerReads from "@/assets/banner-reads.png";
-import bannerDesigns from "@/assets/banner-designs.png";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <a href="#home" className="flex items-center gap-3">
-            <img src={logoH} alt="Houcine Logo" className="h-10 w-auto" />
-            <span className="text-xl font-bold text-foreground">Houcine.world</span>
-          </a>
+          <Link to="/about" className="flex items-center gap-3 group">
+            <img 
+              src={logoH} 
+              alt="Houcine Logo" 
+              className="h-10 w-auto transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 drop-shadow-lg" 
+            />
+            <span className="text-xl font-bold text-foreground group-hover:text-accent transition-colors">
+              Houcine.world
+            </span>
+          </Link>
           <nav className="flex items-center gap-6">
             <a href="#dev" className="hover:text-accent transition-colors">Dev</a>
             <a href="#designs" className="hover:text-accent transition-colors">Designs</a>
@@ -31,15 +36,9 @@ const Index = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="text-left space-y-6">
-                <div className="flex items-center gap-4">
-                  <img src={logoH} alt="Houcine Logo" className="h-24 w-auto drop-shadow-2xl" />
-                  <div>
-                    <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-metallic via-accent to-foreground bg-clip-text text-transparent">
-                      Houcine.world
-                    </h1>
-                    <p className="text-metallic text-lg mt-2" dir="rtl">احمحسين</p>
-                  </div>
-                </div>
+                <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-metallic via-accent to-foreground bg-clip-text text-transparent">
+                  Houcine.world
+                </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
                   The creative ecosystem of Houcine Mohamed — exploring technology, design, management, and innovation.
                 </p>
@@ -98,9 +97,9 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="mb-4 rounded-lg overflow-hidden">
-                  <img src={bannerDesigns} alt="Multidisciplinary Design" className="w-full h-32 object-cover" />
-                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Logos, posters, and brand systems that tell stories.
+                </p>
                 <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">Open gallery</Button>
               </CardContent>
             </Card>
@@ -116,9 +115,9 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="mb-4 rounded-lg overflow-hidden">
-                  <img src={bannerReads} alt="Houcine Reads" className="w-full h-32 object-cover" />
-                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Digital books and learning resources for curious minds.
+                </p>
                 <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">Browse titles</Button>
               </CardContent>
             </Card>
