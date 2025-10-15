@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Code2, Palette, BookOpen, Briefcase, Sparkles, ExternalLink } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Code2, Palette, BookOpen, Briefcase, Sparkles, ExternalLink, Menu, Phone, Mail, Linkedin, Github } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoH from "@/assets/logo-h.png";
 import profile from "@/assets/profile.png";
@@ -20,13 +22,33 @@ const Index = () => {
               Houcine.world
             </span>
           </Link>
-          <nav className="flex items-center gap-6">
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-6">
             <a href="#dev" className="hover:text-accent transition-colors">Dev</a>
             <a href="#designs" className="hover:text-accent transition-colors">Designs</a>
             <a href="#reads" className="hover:text-accent transition-colors">Reads</a>
             <a href="#manages" className="hover:text-accent transition-colors">Manages</a>
             <a href="#creates" className="hover:text-accent transition-colors">Creates</a>
           </nav>
+
+          {/* Mobile Navigation */}
+          <Sheet>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <nav className="flex flex-col gap-4 mt-8">
+                <a href="#dev" className="text-lg hover:text-accent transition-colors">Dev</a>
+                <a href="#designs" className="text-lg hover:text-accent transition-colors">Designs</a>
+                <a href="#reads" className="text-lg hover:text-accent transition-colors">Reads</a>
+                <a href="#manages" className="text-lg hover:text-accent transition-colors">Manages</a>
+                <a href="#creates" className="text-lg hover:text-accent transition-colors">Creates</a>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </header>
 
@@ -47,7 +69,43 @@ const Index = () => {
                     <ExternalLink className="mr-2 w-5 h-5" />
                     Explore My Work
                   </a>
-                  <Button variant="outline" className="border-metallic/30 text-foreground hover:bg-metallic/10">View CV</Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="border-metallic/30 text-foreground hover:bg-metallic/10">
+                        Contact
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Contact Information</DialogTitle>
+                        <DialogDescription>
+                          Feel free to reach out through any of these channels
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <a href="tel:+21629541180" className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/10 transition-colors group">
+                          <Phone className="h-5 w-5 text-accent group-hover:scale-110 transition-transform" />
+                          <span>+216 29 541 180</span>
+                        </a>
+                        <a href="mailto:mohamedhoucine2024@gmail.com" className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/10 transition-colors group">
+                          <Mail className="h-5 w-5 text-accent group-hover:scale-110 transition-transform" />
+                          <span>mohamedhoucine2024@gmail.com</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/mohamed-houcine-4142b12b4/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/10 transition-colors group">
+                          <Linkedin className="h-5 w-5 text-accent group-hover:scale-110 transition-transform" />
+                          <span>LinkedIn Profile</span>
+                        </a>
+                        <a href="https://github.com/HoucineMohamed" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/10 transition-colors group">
+                          <Github className="h-5 w-5 text-accent group-hover:scale-110 transition-transform" />
+                          <span>GitHub Profile</span>
+                        </a>
+                        <a href="https://www.behance.net/HoucineDesigns" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/10 transition-colors group">
+                          <Palette className="h-5 w-5 text-accent group-hover:scale-110 transition-transform" />
+                          <span>Behance Portfolio</span>
+                        </a>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </div>
               
@@ -158,8 +216,36 @@ const Index = () => {
       </main>
 
       <footer className="py-8 px-6 border-t border-border/40">
-        <div className="container mx-auto text-center text-muted-foreground">
-          <p>© 2025 Houcine.world — All Rights Reserved</p>
+        <div className="container mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-4 text-muted-foreground">
+            <p>© 2025 Houcine.world — All Rights Reserved</p>
+            <div className="flex items-center gap-4">
+              <a 
+                href="https://www.linkedin.com/in/mohamed-houcine-4142b12b4/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-accent transition-all hover:scale-110 duration-200"
+              >
+                <Linkedin className="h-6 w-6" />
+              </a>
+              <a 
+                href="https://www.behance.net/HoucineDesigns" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-accent transition-all hover:scale-110 duration-200"
+              >
+                <Palette className="h-6 w-6" />
+              </a>
+              <a 
+                href="https://github.com/HoucineMohamed" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-accent transition-all hover:scale-110 duration-200"
+              >
+                <Github className="h-6 w-6" />
+              </a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
