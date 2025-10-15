@@ -58,7 +58,7 @@ const Index = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="text-left space-y-6">
-                <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-metallic via-accent to-foreground bg-clip-text text-transparent">
+                <h1 className="text-5xl md:text-6xl font-bold text-foreground">
                   Houcine.world
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
@@ -125,7 +125,7 @@ const Index = () => {
 
         {/* Trailer grid (teasers) */}
         <section id="trailer" className="py-10 px-6 bg-secondary/30">
-          <div className="container mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl">
+          <div className="container mx-auto grid md:grid-cols-2 gap-6 max-w-6xl">
             <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all group">
               <CardHeader>
                 <div className="flex items-center gap-3">
@@ -193,22 +193,6 @@ const Index = () => {
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">DJ La Rosa View • The Shape Shifters</p>
                 <Button variant="outline" size="sm" className="border-tech-blue/30 hover:bg-tech-blue/10">View case studies</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all group">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <Sparkles className="w-8 h-8 text-accent group-hover:scale-110 transition-transform" />
-                  <CardTitle>Houcine.creates</CardTitle>
-                </div>
-                <CardDescription>
-                  Music, visuals, and storytelling.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-28 rounded-lg bg-gradient-to-br from-accent/20 to-tech-blue/20 mb-4 backdrop-blur" />
-                <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">Explore creativity</Button>
               </CardContent>
             </Card>
           </div>
