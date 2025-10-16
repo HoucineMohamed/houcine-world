@@ -25,11 +25,10 @@ const Index = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#dev" className="hover:text-accent transition-colors">Dev</a>
-            <a href="#designs" className="hover:text-accent transition-colors">Designs</a>
-            <a href="#reads" className="hover:text-accent transition-colors">Reads</a>
-            <a href="#manages" className="hover:text-accent transition-colors">Manages</a>
-            <a href="#creates" className="hover:text-accent transition-colors">Creates</a>
+            <Link to="/dev" className="hover:text-accent transition-all hover:scale-105 duration-200">Dev</Link>
+            <Link to="/designs" className="hover:text-accent transition-all hover:scale-105 duration-200">Designs</Link>
+            <Link to="/reads" className="hover:text-accent transition-all hover:scale-105 duration-200">Reads</Link>
+            <Link to="/manages" className="hover:text-accent transition-all hover:scale-105 duration-200">Manages</Link>
           </nav>
 
           {/* Mobile Navigation */}
@@ -41,11 +40,10 @@ const Index = () => {
             </SheetTrigger>
             <SheetContent>
               <nav className="flex flex-col gap-4 mt-8">
-                <a href="#dev" className="text-lg hover:text-accent transition-colors">Dev</a>
-                <a href="#designs" className="text-lg hover:text-accent transition-colors">Designs</a>
-                <a href="#reads" className="text-lg hover:text-accent transition-colors">Reads</a>
-                <a href="#manages" className="text-lg hover:text-accent transition-colors">Manages</a>
-                <a href="#creates" className="text-lg hover:text-accent transition-colors">Creates</a>
+                <Link to="/dev" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Dev</Link>
+                <Link to="/designs" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Designs</Link>
+                <Link to="/reads" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Reads</Link>
+                <Link to="/manages" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Manages</Link>
               </nav>
             </SheetContent>
           </Sheet>
@@ -126,8 +124,8 @@ const Index = () => {
         {/* Trailer grid (teasers) */}
         <section id="trailer" className="py-10 px-6 bg-secondary/30">
           <div className="container mx-auto grid md:grid-cols-2 gap-6 max-w-6xl">
-            <Link to="/dev" className="block">
-              <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-tech-blue/50 transition-all group cursor-pointer">
+            <Link to="/dev" className="block h-full">
+              <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-tech-blue/50 transition-all group cursor-pointer">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <Terminal className="w-8 h-8 text-tech-blue group-hover:scale-110 transition-transform" />
@@ -144,8 +142,8 @@ const Index = () => {
               </Card>
             </Link>
 
-            <Link to="/designs" className="block">
-              <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all group cursor-pointer">
+            <Link to="/designs" className="block h-full">
+              <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all group cursor-pointer">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <Palette className="w-8 h-8 text-accent group-hover:scale-110 transition-transform" />
@@ -169,39 +167,43 @@ const Index = () => {
               </Card>
             </Link>
 
-            <Card className="border-border/50 bg-card/50 backdrop-blur overflow-hidden hover:border-accent/50 transition-all group">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <BookOpen className="w-8 h-8 text-accent group-hover:scale-110 transition-transform" />
-                  <CardTitle>Houcine.reads</CardTitle>
-                </div>
-                <CardDescription>
-                  A curated digital bookstore for learners.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Digital books and learning resources for curious minds.
-                </p>
-                <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">Browse titles</Button>
-              </CardContent>
-            </Card>
+            <Link to="/reads" className="block h-full">
+              <Card className="h-full border-border/50 bg-card/50 backdrop-blur overflow-hidden hover:border-accent/50 transition-all group cursor-pointer">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <BookOpen className="w-8 h-8 text-accent group-hover:scale-110 transition-transform" />
+                    <CardTitle>Houcine.reads</CardTitle>
+                  </div>
+                  <CardDescription>
+                    A curated digital bookstore for learners.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Digital books and learning resources for curious minds.
+                  </p>
+                  <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">Browse titles</Button>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all group">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <Briefcase className="w-8 h-8 text-tech-blue group-hover:scale-110 transition-transform" />
-                  <CardTitle>Houcine.manages</CardTitle>
-                </div>
-                <CardDescription>
-                  Building creative brands and projects.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">DJ La Rosa View • The Shape Shifters</p>
-                <Button variant="outline" size="sm" className="border-tech-blue/30 hover:bg-tech-blue/10">View case studies</Button>
-              </CardContent>
-            </Card>
+            <Link to="/manages" className="block h-full">
+              <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all group cursor-pointer">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <Briefcase className="w-8 h-8 text-tech-blue group-hover:scale-110 transition-transform" />
+                    <CardTitle>Houcine.manages</CardTitle>
+                  </div>
+                  <CardDescription>
+                    Building creative brands and projects.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">DJ La Rosa View • The Shape Shifters</p>
+                  <Button variant="outline" size="sm" className="border-tech-blue/30 hover:bg-tech-blue/10">View case studies</Button>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </section>
       </main>
