@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Code2, Palette, BookOpen, Briefcase, Sparkles, ExternalLink, Menu, Phone, Mail, Linkedin, Github } from "lucide-react";
+import { Code2, Palette, BookOpen, Briefcase, Sparkles, ExternalLink, Menu, Phone, Mail, Linkedin, Github, Terminal } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoH from "@/assets/logo-h.png";
 import profile from "@/assets/profile.png";
@@ -126,41 +126,48 @@ const Index = () => {
         {/* Trailer grid (teasers) */}
         <section id="trailer" className="py-10 px-6 bg-secondary/30">
           <div className="container mx-auto grid md:grid-cols-2 gap-6 max-w-6xl">
-            <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all group">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <Code2 className="w-8 h-8 text-tech-blue group-hover:scale-110 transition-transform" />
-                  <CardTitle>Houcine.dev</CardTitle>
-                </div>
-                <CardDescription>
-                  Innovative projects in finance, data, and AI.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Showcasing dashboards, bots, and automation.
-                </p>
-                <Button variant="outline" size="sm" className="border-tech-blue/30 hover:bg-tech-blue/10">See projects</Button>
-              </CardContent>
-            </Card>
+            <Link to="/dev" className="block">
+              <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-tech-blue/50 transition-all group cursor-pointer">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <Terminal className="w-8 h-8 text-tech-blue group-hover:scale-110 transition-transform" />
+                    <CardTitle>Houcine.dev</CardTitle>
+                  </div>
+                  <CardDescription>
+                    Building scalable, modern applications with React, TypeScript, and modern web APIs.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">Recent work • Web Apps • API Design</p>
+                  <Button variant="outline" size="sm" className="border-tech-blue/30 hover:bg-tech-blue/10">View projects</Button>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card className="border-border/50 bg-card/50 backdrop-blur overflow-hidden hover:border-accent/50 transition-all group">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <Palette className="w-8 h-8 text-accent group-hover:scale-110 transition-transform" />
-                  <CardTitle>Houcine.designs</CardTitle>
-                </div>
-                <CardDescription>
-                  Visual identity, branding, and creative direction.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Logos, posters, and brand systems that tell stories.
-                </p>
-                <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">Open gallery</Button>
-              </CardContent>
-            </Card>
+            <Link to="/designs" className="block">
+              <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all group cursor-pointer">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <Palette className="w-8 h-8 text-accent group-hover:scale-110 transition-transform" />
+                    <CardTitle>Houcine.designs</CardTitle>
+                  </div>
+                  <CardDescription>
+                    Crafting user experiences with bold visuals, typography, and interaction design.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-28 mb-4 overflow-hidden rounded-lg">
+                    <img 
+                      src="/src/assets/banner-designs.png" 
+                      alt="Design showcase" 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">DJ La Rosa View • The Shape Shifters</p>
+                  <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">View portfolio</Button>
+                </CardContent>
+              </Card>
+            </Link>
 
             <Card className="border-border/50 bg-card/50 backdrop-blur overflow-hidden hover:border-accent/50 transition-all group">
               <CardHeader>
