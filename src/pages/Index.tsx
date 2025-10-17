@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -6,8 +7,26 @@ import { Code2, Palette, BookOpen, Briefcase, Sparkles, ExternalLink, Menu, Phon
 import { Link } from "react-router-dom";
 import logoH from "@/assets/logo-h.png";
 import profile from "@/assets/profile.png";
+import Footer from "@/components/Footer";
 
 const Index = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  const calculateTilt = () => {
+    const xTilt = (mousePosition.x - window.innerWidth / 2) / 50;
+    const yTilt = (mousePosition.y - window.innerHeight / 2) / 50;
+    return `rotateX(${-yTilt}deg) rotateY(${xTilt}deg)`;
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
@@ -108,12 +127,18 @@ const Index = () => {
               </div>
               
               <div className="flex justify-center">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-accent/30 to-tech-blue/30 rounded-full blur-3xl"></div>
+                <div 
+                  className="relative transition-transform duration-200 ease-out"
+                  style={{ 
+                    transform: calculateTilt(),
+                    transformStyle: "preserve-3d"
+                  }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/30 to-tech-blue/30 rounded-full blur-3xl animate-pulse"></div>
                   <img 
                     src={profile} 
                     alt="Houcine Mohamed" 
-                    className="relative rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-metallic/20 shadow-2xl"
+                    className="relative rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-metallic/20 shadow-2xl hover:shadow-accent/50 transition-shadow duration-300"
                   />
                 </div>
               </div>
@@ -154,14 +179,7 @@ const Index = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-28 mb-4 overflow-hidden rounded-lg">
-                    <img 
-                      src="/src/assets/banner-designs.png" 
-                      alt="Design showcase" 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-4">DJ La Rosa View • The Shape Shifters</p>
+                  <p className="text-sm text-muted-foreground mb-4">Visual design projects and creative works from Behance</p>
                   <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">View portfolio</Button>
                 </CardContent>
               </Card>
@@ -208,39 +226,7 @@ const Index = () => {
         </section>
       </main>
 
-      <footer className="py-8 px-6 border-t border-border/40">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-4 text-muted-foreground">
-            <p>© 2025 Houcine.world — All Rights Reserved</p>
-            <div className="flex items-center gap-4">
-              <a 
-                href="https://www.linkedin.com/in/mohamed-houcine-4142b12b4/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-all hover:scale-110 duration-200"
-              >
-                <Linkedin className="h-6 w-6" />
-              </a>
-              <a 
-                href="https://www.behance.net/HoucineDesigns" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-all hover:scale-110 duration-200"
-              >
-                <Palette className="h-6 w-6" />
-              </a>
-              <a 
-                href="https://github.com/HoucineMohamed" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-all hover:scale-110 duration-200"
-              >
-                <Github className="h-6 w-6" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import Footer from "@/components/Footer";
 
 const Manages = () => {
   return (
@@ -53,6 +53,8 @@ const Manages = () => {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 };

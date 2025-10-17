@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Eye, ThumbsUp, ExternalLink, Loader2 } from "lucide-react";
+import Footer from "@/components/Footer";
 
 interface BehanceProject {
   id: number;
@@ -206,12 +207,7 @@ const Designs = () => {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/40 py-6 mt-20">
-        <div className="container mx-auto px-6 text-center text-sm text-muted-foreground">
-          <p>© 2025 Houcine.world — All Rights Reserved</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
