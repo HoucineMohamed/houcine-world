@@ -27,22 +27,27 @@ const Manages = () => {
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="border-border/50 bg-card/50 backdrop-blur">
-              <CardHeader>
-                <CardTitle>DJ La Rosa View</CardTitle>
-                <CardDescription>Music brand management</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Creative direction and brand development for DJ La Rosa View.
-                </p>
-              </CardContent>
-            </Card>
+            <Link 
+              to="/larosaview"
+              className="group block transition-all duration-300 hover:scale-105"
+            >
+              <Card className="border-border/50 bg-card/50 backdrop-blur h-full group-hover:border-tech-blue/50 group-hover:shadow-xl group-hover:shadow-tech-blue/20 transition-all duration-300">
+                <CardHeader>
+                  <CardTitle className="group-hover:text-tech-blue transition-colors">DJ La Rosa View</CardTitle>
+                  <CardDescription>Music brand management</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Creative direction and brand development for DJ La Rosa View.
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card className="border-border/50 bg-card/50 backdrop-blur">
+            <Card className="border-border/50 bg-card/50 backdrop-blur h-full opacity-60 cursor-not-allowed">
               <CardHeader>
                 <CardTitle>The Shape Shifters</CardTitle>
-                <CardDescription>Creative collective</CardDescription>
+                <CardDescription>Creative collective — Coming Soon</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">

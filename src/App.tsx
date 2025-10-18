@@ -6,6 +6,7 @@ import Dev from "./pages/Dev";
 import Designs from "./pages/Designs";
 import Reads from "./pages/Reads";
 import Manages from "./pages/Manages";
+import LaRosaView from "./pages/LaRosaView";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -17,6 +18,7 @@ const App = () => (
       <Route path="/designs" element={<Designs />} />
       <Route path="/reads" element={<Reads />} />
       <Route path="/manages" element={<Manages />} />
+      <Route path="/larosaview" element={<LaRosaView />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </Router>
