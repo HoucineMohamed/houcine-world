@@ -29,19 +29,27 @@ const LaRosaView = () => {
   ];
 
   const services = [
-    { title: "Event Booking", desc: "Private events, festivals, collaborations." },
-    { title: "Audio & Visual Production", desc: "Sound design, video editing." },
-    { title: "Brand & Content Strategy", desc: "Helping artists and brands grow online." },
+    { title: "Event Booking", desc: "Private events, festivals, and special occasions." },
+    { title: "Private Parties", desc: "Exclusive DJ sets for your intimate gatherings." },
+    { title: "Music Production", desc: "Professional audio production and mixing." },
+    { title: "Live Performances", desc: "High-energy DJ sets that captivate audiences." },
+    { title: "DJ Sets", desc: "Custom curated music experiences for every vibe." },
   ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <Link to="/manages" className="inline-flex items-center gap-2 text-foreground hover:text-accent transition-colors">
             <ArrowLeft className="w-5 h-5" />
             <span className="font-semibold">Back to Manages</span>
+          </Link>
+          <Link 
+            to="/about-dj" 
+            className="inline-flex items-center gap-2 text-foreground hover:text-rose-400 transition-all hover:scale-105 font-semibold px-4 py-2 rounded-lg hover:bg-rose-500/10"
+          >
+            About the DJ
           </Link>
         </div>
       </header>
@@ -80,13 +88,17 @@ const LaRosaView = () => {
             Crafting immersive musical and visual experiences
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
-            <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105">
-              Book Now
-            </Button>
-            <Button size="lg" variant="outline" className="border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-105">
-              <Play className="w-4 h-4 mr-2" />
-              Watch Showreel
-            </Button>
+            <Link to="/booking">
+              <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105">
+                Book Now
+              </Button>
+            </Link>
+            <a href="https://www.youtube.com/live/art7YToqAKM" target="_blank" rel="noopener noreferrer">
+              <Button size="lg" variant="outline" className="border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-105">
+                <Play className="w-4 h-4 mr-2" />
+                Watch Showreel
+              </Button>
+            </a>
           </div>
         </div>
       </section>
@@ -160,34 +172,87 @@ const LaRosaView = () => {
               Our Services
             </span>
           </h2>
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {services.map((service, index) => (
               <Card
                 key={index}
                 className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-rose-600/20"
               >
                 <CardContent className="p-8">
-                  <h3 className="text-2xl font-semibold mb-4 group-hover:text-rose-400 transition-colors">{service.title}</h3>
-                  <p className="text-muted-foreground">{service.desc}</p>
+                  <h3 className="text-xl font-semibold mb-3 group-hover:text-rose-400 transition-colors">{service.title}</h3>
+                  <p className="text-muted-foreground text-sm">{service.desc}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
           <div className="text-center">
-            <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105">
-              Request a Quote
-            </Button>
+            <Link to="/booking">
+              <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105">
+                Request a Quote
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* About Us */}
+      {/* Al Hayet FM Interview */}
       <section className="py-24 px-6 bg-gradient-to-b from-background via-rose-950/10 to-background">
         <div className="container mx-auto max-w-6xl">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
+            <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
+              Featured on Al Hayet FM
+            </span>
+          </h2>
+          <p className="text-center text-muted-foreground mb-12">Watch our exclusive interview</p>
+          
+          <a 
+            href="https://www.youtube.com/live/art7YToqAKM" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block max-w-4xl mx-auto group"
+          >
+            <div className="relative rounded-2xl overflow-hidden border-2 border-rose-500/30 hover:border-rose-500 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-rose-600/40">
+              <div className="aspect-video bg-gradient-to-br from-rose-900/40 to-background relative">
+                <img 
+                  src="https://i.ytimg.com/vi/art7YToqAKM/maxresdefault.jpg" 
+                  alt="La Rosa View X Al Hayet FM" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60">
+                  <Play className="w-24 h-24 text-rose-500 animate-pulse" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                  <h3 className="text-2xl font-bold text-white mb-2">La Rosa View X Al Hayet FM</h3>
+                  <p className="text-rose-300">Exclusive behind-the-scenes interview</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      {/* About Us */}
+      <section className="py-24 px-6">
+        <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border border-rose-500/20 shadow-2xl shadow-rose-600/20">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <img src={laRosaLogo} alt="La Rosa View" className="w-3/4 h-3/4 object-contain opacity-30" />
+            <div className="grid grid-cols-2 gap-6">
+              <div className="group relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border border-rose-500/20 shadow-2xl shadow-rose-600/20 hover:scale-105 transition-transform duration-500">
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                  <div className="w-32 h-32 rounded-full bg-rose-500/20 mb-4 flex items-center justify-center group-hover:bg-rose-500/30 transition-colors">
+                    <Users className="w-16 h-16 text-rose-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">Hajri Mohamed</h3>
+                  <p className="text-rose-300 text-sm">DJ & Producer</p>
+                </div>
+              </div>
+              <div className="group relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border border-rose-500/20 shadow-2xl shadow-rose-600/20 hover:scale-105 transition-transform duration-500">
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                  <div className="w-32 h-32 rounded-full bg-rose-500/20 mb-4 flex items-center justify-center group-hover:bg-rose-500/30 transition-colors">
+                    <Users className="w-16 h-16 text-rose-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">Houcine Mohamed</h3>
+                  <p className="text-rose-300 text-sm">Director</p>
+                </div>
               </div>
             </div>
             <div>
@@ -197,10 +262,10 @@ const LaRosaView = () => {
                 </span>
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                Founded by a DJ and a creative director, La Rosa View bridges sound and storytelling. 
+                Where rhythm meets artistry, La Rosa View transforms sonic landscapes into unforgettable journeys. Born from the fusion of cutting-edge production and authentic performance, we craft experiences that transcend the ordinary.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Every project we craft aims to turn energy into emotion — and moments into memories.
+                Every beat tells a story, every performance ignites passion, and every collaboration shapes the future of sound. We don't just create music — we architect emotions that resonate long after the final note fades.
               </p>
             </div>
           </div>
@@ -257,21 +322,23 @@ const LaRosaView = () => {
 
             {/* Contact Info */}
             <div className="space-y-8">
-              <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center">
-                      <Mail className="w-6 h-6 text-rose-500" />
+              <a href="mailto:contactlarosaview@gmail.com" className="block">
+                <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:scale-105 cursor-pointer hover:shadow-xl hover:shadow-rose-600/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center group-hover:bg-rose-500/20 transition-colors">
+                        <Mail className="w-6 h-6 text-rose-500" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-1">Email Us</h3>
+                        <p className="text-rose-400 hover:text-rose-300 transition-colors">
+                          contactlarosaview@gmail.com
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Email</h3>
-                      <a href="mailto:contactlarosaview@gmail.com" className="text-rose-400 hover:text-rose-300 transition-colors">
-                        contactlarosaview@gmail.com
-                      </a>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </a>
 
               <div>
                 <h3 className="text-xl font-semibold mb-4">Follow Our Journey</h3>
@@ -280,41 +347,102 @@ const LaRosaView = () => {
                     href="https://instagram.com/la.rosaview"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/5 transition-all group"
+                    className="flex items-center justify-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
-                    <span className="text-sm font-medium">Instagram</span>
-                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    <span className="text-sm font-medium relative z-10">Instagram</span>
+                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
                   </a>
                   <a
                     href="https://www.tiktok.com/@larosaview"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/5 transition-all group"
+                    className="flex items-center justify-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
-                    <span className="text-sm font-medium">TikTok</span>
-                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    <span className="text-sm font-medium relative z-10">TikTok</span>
+                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
                   </a>
                   <a
-                    href="https://www.youtube.com/@LaRosaView"
+                    href="https://www.youtube.com/@LaRosa-View"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/5 transition-all group"
+                    className="flex items-center justify-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
-                    <span className="text-sm font-medium">YouTube</span>
-                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    <span className="text-sm font-medium relative z-10">YouTube</span>
+                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
                   </a>
                   <a
-                    href="https://soundcloud.com/larosaview"
+                    href="https://soundcloud.com/la-rosa-view"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/5 transition-all group"
+                    className="flex items-center justify-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
-                    <span className="text-sm font-medium">SoundCloud</span>
-                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    <span className="text-sm font-medium relative z-10">SoundCloud</span>
+                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
                   </a>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-24 px-6">
+        <div className="container mx-auto max-w-6xl">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
+            <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
+              What People Say
+            </span>
+          </h2>
+          <p className="text-center text-muted-foreground mb-12">Hear from those who've experienced La Rosa View</p>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:scale-105">
+              <CardContent className="p-6">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-rose-500 text-xl">★</span>
+                  ))}
+                </div>
+                <p className="text-muted-foreground mb-4 italic">"An unforgettable experience. The energy was electric from start to finish!"</p>
+                <p className="text-sm font-semibold">— Sarah K.</p>
+              </CardContent>
+            </Card>
+            <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:scale-105">
+              <CardContent className="p-6">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-rose-500 text-xl">★</span>
+                  ))}
+                </div>
+                <p className="text-muted-foreground mb-4 italic">"Professional, talented, and truly passionate about their craft. Highly recommend!"</p>
+                <p className="text-sm font-semibold">— Marc T.</p>
+              </CardContent>
+            </Card>
+            <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:scale-105">
+              <CardContent className="p-6">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-rose-500 text-xl">★</span>
+                  ))}
+                </div>
+                <p className="text-muted-foreground mb-4 italic">"They turned our event into a night we'll never forget. Absolutely phenomenal!"</p>
+                <p className="text-sm font-semibold">— Yasmine B.</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <p className="text-muted-foreground mb-6">Share your experience with us</p>
+            <Link to="/booking">
+              <Button variant="outline" className="border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-105">
+                Leave a Review
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
