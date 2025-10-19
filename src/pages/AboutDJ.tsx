@@ -4,7 +4,7 @@ import { ArrowLeft, Music, Award, Calendar, MapPin, ExternalLink } from "lucide-
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import laRosaLogo from "@/assets/larosa-logo.png";
-import profilePhoto from "@/assets/profile.png";
+import profilePhoto from "@/assets/hajri-photo.jpeg";
 
 const AboutDJ = () => {
   const highlights = [

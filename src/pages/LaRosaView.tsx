@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Music, Theater, Video, Users, Mail, ExternalLink, Play, Instagram, Youtube } from "lucide-react";
-import profilePhoto from "@/assets/profile.png";
+import hajriPhoto from "@/assets/hajri-photo.jpeg";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import laRosaLogo from "@/assets/larosa-logo.png";
@@ -260,7 +260,7 @@ const LaRosaView = () => {
             <div className="grid grid-cols-2 gap-6">
               <div className="group relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border-2 border-rose-500/30 shadow-2xl shadow-rose-600/30 hover:scale-105 hover:shadow-rose-600/50 transition-all duration-500">
                 <img 
-                  src={profilePhoto} 
+                  src={hajriPhoto} 
                   alt="Hajri Mohamed" 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
