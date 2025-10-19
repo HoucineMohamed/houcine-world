@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Music, Theater, Video, Users, Mail, ExternalLink, Play, Instagram, Youtube } from "lucide-react";
 import hajriPhoto from "@/assets/hajri-photo.jpeg";
+import houcinePhoto from "@/assets/houcine-photo.jpg";
+import timbreCover from "@/assets/timbre-cover.jpg";
+import theViewCover from "@/assets/the-view-cover.png";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import laRosaLogo from "@/assets/larosa-logo.png";
@@ -40,14 +43,14 @@ const LaRosaView = () => {
 
   const soundcloudTracks = [
     {
-      title: "La Rosa 18 April Mix",
-      trackId: "1810862289",
-      coverUrl: "https://i1.sndcdn.com/artworks-4xVA2aLrVLvtBE6v-wlRwdg-t500x500.jpg"
+      title: "TIMBRE",
+      url: "https://soundcloud.com/la-rosa-view/7c0cdbfc-1ddd-458d-8452-09c5c13360ab",
+      coverUrl: timbreCover
     },
     {
-      title: "La Rosa 24 March Mix",
-      trackId: "1782488051",
-      coverUrl: "https://i1.sndcdn.com/artworks-G1i47cCgJOqfHLxB-v1nSug-t500x500.jpg"
+      title: "The View 0.1",
+      url: "https://soundcloud.com/la-rosa-view/the-view-0-1",
+      coverUrl: theViewCover
     },
   ];
 
@@ -103,13 +106,13 @@ const LaRosaView = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-rose-500/20 via-transparent to-rose-500/20 blur-3xl animate-pulse group-hover:scale-150 transition-all duration-700" />
             </div>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in bg-gradient-to-r from-rose-400 via-rose-300 to-rose-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 animate-fade-in bg-gradient-to-r from-rose-400 via-rose-300 to-rose-500 bg-clip-text text-transparent px-4">
             Where Sound Meets Vision
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 animate-fade-in">
+          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-12 animate-fade-in px-4">
             Crafting immersive musical and visual experiences
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in px-4">
             <Link to="/booking">
               <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105">
                 Book Now
@@ -128,12 +131,12 @@ const LaRosaView = () => {
       {/* What We Do */}
       <section className="py-24 px-6 relative">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-12 sm:mb-16 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
               What We Do
             </span>
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {highlights.map((item, index) => (
               <Card
                 key={index}
@@ -156,14 +159,14 @@ const LaRosaView = () => {
       {/* Featured Works */}
       <section className="py-24 px-6 bg-gradient-to-b from-background via-rose-950/10 to-background">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
               Our Work in Motion
             </span>
           </h2>
-          <p className="text-center text-muted-foreground mb-12">Experience our latest projects and performances</p>
+          <p className="text-center text-muted-foreground mb-8 sm:mb-12 px-4">Experience our latest projects and performances</p>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {[1, 2, 3].map((item) => (
               <Card
                 key={item}
@@ -171,7 +174,7 @@ const LaRosaView = () => {
               >
                 <div className="aspect-video bg-gradient-to-br from-rose-900/20 to-background relative">
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60">
-                    <Play className="w-16 h-16 text-rose-500" />
+                    <Play className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500" />
                   </div>
                 </div>
               </Card>
@@ -189,12 +192,12 @@ const LaRosaView = () => {
       {/* Services */}
       <section className="py-24 px-6">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-12 sm:mb-16 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
               Our Services
             </span>
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
             {services.map((service, index) => (
               <Card
                 key={index}
@@ -220,12 +223,12 @@ const LaRosaView = () => {
       {/* Al Hayet FM Interview */}
       <section className="py-24 px-6 bg-gradient-to-b from-background via-rose-950/10 to-background">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
               Featured on Al Hayet FM
             </span>
           </h2>
-          <p className="text-center text-muted-foreground mb-12">Watch our exclusive interview</p>
+          <p className="text-center text-muted-foreground mb-8 sm:mb-12 px-4">Watch our exclusive interview</p>
           
           <a 
             href="https://www.youtube.com/live/art7YToqAKM" 
@@ -257,42 +260,44 @@ const LaRosaView = () => {
       <section className="py-24 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="group relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border-2 border-rose-500/30 shadow-2xl shadow-rose-600/30 hover:scale-105 hover:shadow-rose-600/50 transition-all duration-500">
                 <img 
                   src={hajriPhoto} 
                   alt="Hajri Mohamed" 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col items-center justify-end p-6 text-center">
-                  <h3 className="text-xl font-bold text-white mb-1 drop-shadow-lg">Hajri Mohamed</h3>
-                  <p className="text-rose-300 text-sm drop-shadow-lg">DJ & Producer</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col items-center justify-end p-4 sm:p-6 text-center">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1 drop-shadow-lg">Hajri Mohamed</h3>
+                  <p className="text-rose-300 text-xs sm:text-sm drop-shadow-lg">DJ & Producer</p>
                 </div>
                 <div className="absolute inset-0 bg-rose-500/0 group-hover:bg-rose-500/10 transition-colors duration-500" />
               </div>
               <div className="group relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border-2 border-rose-500/30 shadow-2xl shadow-rose-600/30 hover:scale-105 hover:shadow-rose-600/50 transition-all duration-500">
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-rose-900/60 to-background">
-                  <div className="w-32 h-32 rounded-full bg-rose-500/20 mb-4 flex items-center justify-center group-hover:bg-rose-500/30 transition-colors border-2 border-rose-500/40">
-                    <Users className="w-16 h-16 text-rose-400" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-1">Houcine Mohamed</h3>
-                  <p className="text-rose-300 text-sm">Director</p>
+                <img 
+                  src={houcinePhoto} 
+                  alt="Houcine Mohamed" 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col items-center justify-end p-4 sm:p-6 text-center">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1 drop-shadow-lg">Houcine Mohamed</h3>
+                  <p className="text-rose-300 text-xs sm:text-sm drop-shadow-lg">Director</p>
                 </div>
                 <div className="absolute inset-0 bg-rose-500/0 group-hover:bg-rose-500/10 transition-colors duration-500" />
               </div>
             </div>
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
-                  The Vision Behind La Rosa View
-                </span>
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                Where sound meets vision, creativity meets passion. La Rosa View is more than a name — it's a perspective on music, life, and art. Born from the belief that music spreads love and inspiration just like a rose spreads its fragrance.
-              </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                From mixing at 15 to creating unforgettable experiences, we transform moments into memories. Every beat, every performance, every collaboration is a step in a revolution of sound and soul. This isn't just DJing — this is art through audio.
-              </p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 px-4">
+            <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
+              The Vision Behind La Rosa View
+            </span>
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6 px-4">
+            Where sound meets vision, creativity meets passion. La Rosa View is more than a name — it's a perspective on music, life, and art. Born from the belief that music spreads love and inspiration just like a rose spreads its fragrance.
+          </p>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed px-4">
+            From mixing at 15 to creating unforgettable experiences, we transform moments into memories. Every beat, every performance, every collaboration is a step in a revolution of sound and soul. This isn't just DJing — this is art through audio.
+          </p>
             </div>
           </div>
         </div>
@@ -301,14 +306,14 @@ const LaRosaView = () => {
       {/* Contact Section */}
       <section className="py-24 px-6">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
               Let's Create Together
             </span>
           </h2>
-          <p className="text-center text-muted-foreground mb-12">Get in touch to bring your vision to life</p>
+          <p className="text-center text-muted-foreground mb-8 sm:mb-12 px-4">Get in touch to bring your vision to life</p>
           
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
             {/* Contact Form */}
             <Card className="border-border/50 bg-card/50 backdrop-blur">
               <CardContent className="p-8">
@@ -367,51 +372,51 @@ const LaRosaView = () => {
               </a>
 
               <div>
-                <h3 className="text-xl font-semibold mb-4">Follow Our Journey</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <h3 className="text-lg sm:text-xl font-semibold mb-4">Follow Our Journey</h3>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <a
                     href="https://www.instagram.com/la.rosaview/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
+                    className="flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                    <Instagram className="w-5 h-5 text-rose-500 relative z-10" />
-                    <span className="text-sm font-medium relative z-10">Instagram</span>
-                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
+                    <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 relative z-10" />
+                    <span className="text-xs sm:text-sm font-medium relative z-10">Instagram</span>
+                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
                   </a>
                   <a
                     href="https://www.tiktok.com/@larosaview"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
+                    className="flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                    <Video className="w-5 h-5 text-rose-500 relative z-10" />
-                    <span className="text-sm font-medium relative z-10">TikTok</span>
-                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
+                    <Video className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 relative z-10" />
+                    <span className="text-xs sm:text-sm font-medium relative z-10">TikTok</span>
+                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
                   </a>
                   <a
                     href="https://www.youtube.com/@LaRosa-View"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
+                    className="flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                    <Youtube className="w-5 h-5 text-rose-500 relative z-10" />
-                    <span className="text-sm font-medium relative z-10">YouTube</span>
-                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
+                    <Youtube className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 relative z-10" />
+                    <span className="text-xs sm:text-sm font-medium relative z-10">YouTube</span>
+                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
                   </a>
                   <a
                     href="https://soundcloud.com/la-rosa-view"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-3 p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
+                    className="flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                    <Play className="w-5 h-5 text-rose-500 relative z-10" />
-                    <span className="text-sm font-medium relative z-10">SoundCloud</span>
-                    <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
+                    <Play className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 relative z-10" />
+                    <span className="text-xs sm:text-sm font-medium relative z-10">SoundCloud</span>
+                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 transition-opacity relative z-10" />
                   </a>
                 </div>
               </div>
@@ -423,18 +428,18 @@ const LaRosaView = () => {
       {/* Latest Drops - SoundCloud Mixes */}
       <section className="py-24 px-6 bg-gradient-to-b from-background via-rose-950/10 to-background">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
               Latest Drops
             </span>
           </h2>
-          <p className="text-center text-muted-foreground mb-12">Experience our freshest mixes on SoundCloud</p>
+          <p className="text-center text-muted-foreground mb-8 sm:mb-12 px-4">Experience our freshest mixes on SoundCloud</p>
           
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8">
             {soundcloudTracks.map((track, index) => (
               <Card
                 key={index}
-                className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-rose-600/20 overflow-hidden"
+                className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-rose-600/20 overflow-hidden"
               >
                 <CardContent className="p-0">
                   <div className="aspect-square relative overflow-hidden">
@@ -443,18 +448,18 @@ const LaRosaView = () => {
                       alt={track.title} 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex items-end p-6">
-                      <h3 className="text-2xl font-bold text-white drop-shadow-lg">{track.title}</h3>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex items-end p-4 sm:p-6">
+                      <h3 className="text-xl sm:text-2xl font-bold text-white drop-shadow-lg">{track.title}</h3>
                     </div>
                   </div>
-                  <div className="p-6">
+                  <div className="p-4 sm:p-6">
                     <iframe
                       width="100%"
                       height="166"
                       scrolling="no"
                       frameBorder="no"
                       allow="autoplay"
-                      src={`https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${track.trackId}&color=%23e11d48&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`}
+                      src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(track.url)}&color=%23e11d48&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`}
                       className="rounded-lg"
                     />
                   </div>
@@ -481,17 +486,17 @@ const LaRosaView = () => {
       {/* Testimonials */}
       <section className="py-24 px-6">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
               What People Say
             </span>
           </h2>
-          <p className="text-center text-muted-foreground mb-12">Hear from those who've experienced La Rosa View</p>
+          <p className="text-center text-muted-foreground mb-8 sm:mb-12 px-4">Hear from those who've experienced La Rosa View</p>
           
           <div className="relative mb-12">
-            <div className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory">
-              <Card className="flex-shrink-0 w-[400px] border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:scale-105 snap-center">
-                <CardContent className="p-6">
+            <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-4 scrollbar-hide snap-x snap-mandatory px-4 sm:px-0">
+              <Card className="flex-shrink-0 w-[300px] sm:w-[400px] border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:scale-105 snap-center">
+                <CardContent className="p-4 sm:p-6">
                   <div className="flex gap-1 mb-4">
                     {[...Array(5)].map((_, i) => (
                       <span key={i} className="text-rose-500 text-xl">★</span>
@@ -518,12 +523,12 @@ const LaRosaView = () => {
       </section>
 
       {/* Newsletter */}
-      <section className="py-16 px-6 bg-gradient-to-r from-rose-950/20 via-rose-900/10 to-rose-950/20 border-y border-rose-500/20">
+      <section className="py-12 sm:py-16 px-6 bg-gradient-to-r from-rose-950/20 via-rose-900/10 to-rose-950/20 border-y border-rose-500/20">
         <div className="container mx-auto max-w-4xl text-center">
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">Stay in tune with our latest drops & events</h3>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 px-4">Stay in tune with our latest drops & events</h3>
+          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto px-4">
             <Input placeholder="Enter your email" className="bg-background/50" />
-            <Button className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105">
+            <Button className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105 whitespace-nowrap">
               Subscribe
             </Button>
           </div>
