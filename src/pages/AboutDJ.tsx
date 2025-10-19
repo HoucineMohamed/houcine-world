@@ -4,21 +4,22 @@ import { ArrowLeft, Music, Award, Calendar, MapPin, ExternalLink } from "lucide-
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import laRosaLogo from "@/assets/larosa-logo.png";
+import profilePhoto from "@/assets/profile.png";
 
 const AboutDJ = () => {
   const highlights = [
-    { icon: Music, title: "10+ Years Experience", desc: "Mastering the decks since 2013" },
-    { icon: Award, title: "100+ Events", desc: "From intimate parties to massive festivals" },
+    { icon: Music, title: "+1 Year of Experience", desc: "Crafting beats with passion" },
+    { icon: Award, title: "+25 Events", desc: "From private parties to massive clubs" },
     { icon: Calendar, title: "Versatile Sets", desc: "House, Techno, Afrobeat & more" },
-    { icon: MapPin, title: "Based in Tunisia", desc: "Performing locally and internationally" },
+    { icon: MapPin, title: "Based in Tunisia", desc: "Spreading music across the nation" },
   ];
 
   const journey = [
-    { year: "2013", event: "Started DJ journey in local clubs" },
-    { year: "2016", event: "First festival performance" },
-    { year: "2019", event: "Founded La Rosa View" },
-    { year: "2023", event: "Featured on Al Hayet FM" },
-    { year: "2024", event: "International collaborations" },
+    { year: "21 Jun – 23 Dec 2024", event: "Flavera Club – lighting up the crowd with signature La Rosa energy" },
+    { year: "28 Mar & 20 Apr 2025", event: "Two unforgettable nights with Interact, bringing music and youth together" },
+    { year: "18 Apr & 24 Mar 2025", event: "Exclusive SoundCloud playlists released, sharing La Rosa's evolving sound with the world" },
+    { year: "May – Oct 2025", event: "A season filled with private parties — over 15 events spreading good vibes and passion" },
+    { year: "5 Sep 2025", event: "A massive night with Leo Club Kairouan — La Rosa set the floor on fire and made the crowd go wild" },
   ];
 
   return (
@@ -57,8 +58,8 @@ const AboutDJ = () => {
 
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           <div className="mb-8 animate-fade-in">
-            <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-rose-900/40 to-background border-4 border-rose-500/30 shadow-2xl shadow-rose-600/40 flex items-center justify-center overflow-hidden">
-              <img src={laRosaLogo} alt="Hajri Mohamed" className="w-32 h-32 object-contain" />
+            <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-rose-900/40 to-background border-4 border-rose-500/30 shadow-2xl shadow-rose-600/40 overflow-hidden group hover:scale-110 transition-transform duration-500">
+              <img src={profilePhoto} alt="Hajri Mohamed" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-4 animate-fade-in bg-gradient-to-r from-rose-400 via-rose-300 to-rose-500 bg-clip-text text-transparent">
@@ -78,21 +79,27 @@ const AboutDJ = () => {
         <div className="container mx-auto max-w-4xl">
           <Card className="border-border/50 bg-card/50 backdrop-blur">
             <CardContent className="p-8 md:p-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
-                The Story
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent flex items-center gap-3">
+                <span className="text-4xl">🩵</span> The Story of La Rosa View
               </h2>
               <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
                 <p>
-                  From the vibrant streets of Tunisia to stages around the world, Hajri Mohamed has been on a relentless mission to connect people through the universal language of music.
+                  La Rosa is not a DJ who spends hours mixing just to make money or chase fame.
+                  La Rosa has a vision — a way of seeing music, life, and art from a unique perspective. That's why it's called <span className="text-rose-400 font-semibold">La Rosa View</span>.
                 </p>
                 <p>
-                  What started as a passion for mixing tracks in his bedroom evolved into a full-fledged career as one of Tunisia's most sought-after DJs. His unique ability to read the crowd and craft seamless journeys through sound has made him a favorite at clubs, festivals, and private events.
+                  The name <span className="text-rose-400 font-semibold">La Rosa</span> comes from the Spanish word for rose — an iconic, rare, and timeless flower that spreads positivity through its fragrance.
+                  Just like that, La Rosa spreads music, love, and inspiration through sound.
                 </p>
                 <p>
-                  As the driving force behind La Rosa View, Hajri brings more than just technical skill to every performance. He brings energy, authenticity, and an unwavering commitment to creating moments that resonate long after the music stops.
+                  From the young age of 15 and 16, La Rosa was already breaking boundaries — creating, producing, and performing with a unique energy that set him apart.
+                  His story is about more than beats and lights; it's about dreams, creativity, and passion — the belief that with effort and heart, you can turn vision into reality.
                 </p>
                 <p>
-                  His versatile style spans multiple genres — from deep house to afrobeat, techno to progressive — allowing him to curate experiences that are both diverse and deeply personal.
+                  For La Rosa, being a DJ isn't just a passion — it's a <span className="text-rose-400 font-semibold">revolution</span>. A journey of sound and self-expression that keeps inspiring others.
+                </p>
+                <p className="text-xl font-semibold text-rose-300">
+                  La Rosa isn't just a DJ. La Rosa is a vision — a view of music through the soul.
                 </p>
               </div>
             </CardContent>
