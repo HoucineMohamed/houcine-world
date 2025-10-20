@@ -109,3 +109,115 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Hero Section Animations */
+  @keyframes neonPulse {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes soundWave {
+    0%, 100% {
+      transform: translateY(-20px);
+      opacity: 0.1;
+    }
+    50% {
+      transform: translateY(20px);
+      opacity: 0.3;
+    }
+  }
+
+  @keyframes neonGlow {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes ringPulse1 {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.6;
+    }
+  }
+
+  @keyframes ringPulse2 {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.2;
+    }
+    50% {
+      transform: scale(1.15);
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes pulseText {
+    0%, 100% {
+      opacity: 0.9;
+      text-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+    }
+    50% {
+      opacity: 1;
+      text-shadow: 0 0 20px rgba(244, 63, 94, 0.6), 0 0 30px rgba(244, 63, 94, 0.4);
+    }
+  }
+
+  @keyframes soundwaveLine {
+    0%, 100% {
+      height: 3rem;
+      opacity: 0.3;
+    }
+    50% {
+      height: 4rem;
+      opacity: 0.6;
+    }
+  }
+
+  .neon-glow {
+    animation: neonGlow 3s ease-in-out infinite;
+  }
+
+  .neon-ring-1 {
+    animation: ringPulse1 2s ease-in-out infinite;
+  }
+
+  .neon-ring-2 {
+    animation: ringPulse2 2.5s ease-in-out infinite;
+  }
+
+  .pulse-text {
+    animation: pulseText 2s ease-in-out infinite;
+  }
+
+  .soundwave-line {
+    animation: soundwaveLine 1.5s ease-in-out infinite;
+  }
+
+  .neon-button {
+    box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
+  }
+
+  .neon-button:hover {
+    box-shadow: 0 0 30px rgba(244, 63, 94, 0.6), 0 0 40px rgba(244, 63, 94, 0.3);
+  }
+
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
+}

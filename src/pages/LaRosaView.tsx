@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Music, Theater, Video, Users, Mail, ExternalLink, Play, Instagram, Youtube } from "lucide-react";
+import { ArrowLeft, Music, Theater, Video, Users, Mail, ExternalLink, Play, Instagram, Youtube, ChevronDown } from "lucide-react";
 import hajriPhoto from "@/assets/hajri-photo.jpeg";
 import houcinePhoto from "@/assets/houcine-photo.jpg";
 import timbreCover from "@/assets/timbre-cover.jpg";
@@ -73,57 +73,102 @@ const LaRosaView = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-950/40 via-background to-background">
-          <div className="absolute inset-0 opacity-20">
-            {[...Array(50)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute rounded-full bg-rose-500/30"
-                style={{
-                  width: Math.random() * 300 + 50 + "px",
-                  height: Math.random() * 300 + 50 + "px",
-                  left: Math.random() * 100 + "%",
-                  top: Math.random() * 100 + "%",
-                  filter: "blur(60px)",
-                  animation: `float ${Math.random() * 10 + 10}s ease-in-out infinite`,
-                  animationDelay: Math.random() * 5 + "s",
-                }}
-              />
-            ))}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 w-full h-full">
+          {/* Placeholder for background video - user can replace with actual DJ footage */}
+          <div className="absolute inset-0 bg-gradient-to-br from-rose-950/60 via-background/90 to-background/80">
+            {/* Animated particles simulating crowd/lights effect */}
+            <div className="absolute inset-0">
+              {[...Array(80)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute rounded-full"
+                  style={{
+                    width: Math.random() * 4 + 2 + "px",
+                    height: Math.random() * 4 + 2 + "px",
+                    left: Math.random() * 100 + "%",
+                    top: Math.random() * 100 + "%",
+                    background: `rgba(${Math.random() > 0.5 ? '244, 63, 94' : '251, 113, 133'}, ${Math.random() * 0.6 + 0.2})`,
+                    filter: "blur(1px)",
+                    animation: `float ${Math.random() * 15 + 10}s ease-in-out infinite, neonPulse ${Math.random() * 3 + 2}s ease-in-out infinite`,
+                    animationDelay: `${Math.random() * 5}s`,
+                  }}
+                />
+              ))}
+            </div>
+            {/* Sound wave lines */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-10">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-full border-t border-rose-500"
+                  style={{
+                    animation: `soundWave ${3 + i * 0.5}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.2}s`,
+                  }}
+                />
+              ))}
+            </div>
           </div>
+          {/* Vignette overlay */}
+          <div className="absolute inset-0 bg-gradient-radial from-transparent via-background/30 to-background" />
         </div>
 
+        {/* Content */}
         <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-          <div className="mb-8 animate-fade-in group">
+          {/* Logo with neon glow */}
+          <div className="mb-12 relative">
             <div className="relative inline-block">
               <img 
                 src={laRosaLogo} 
                 alt="La Rosa View" 
-                className="w-64 h-64 mx-auto object-contain drop-shadow-2xl animate-pulse hover:animate-none transition-all duration-500 group-hover:scale-110 group-hover:rotate-3" 
+                className="w-56 h-56 sm:w-72 sm:h-72 mx-auto object-contain drop-shadow-2xl" 
+                style={{
+                  filter: "drop-shadow(0 0 30px rgba(244, 63, 94, 0.4))",
+                }}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-rose-500/20 via-transparent to-rose-500/20 blur-3xl animate-pulse group-hover:scale-150 transition-all duration-700" />
+              {/* Neon glow rings */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-64 h-64 sm:w-80 sm:h-80 rounded-full border-2 border-rose-500/30 neon-ring-1" />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-72 h-72 sm:w-96 sm:h-96 rounded-full border border-rose-500/20 neon-ring-2" />
+              </div>
+              {/* Pulsing glow */}
+              <div className="absolute inset-0 bg-rose-500/20 blur-3xl neon-glow" />
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 animate-fade-in bg-gradient-to-r from-rose-400 via-rose-300 to-rose-500 bg-clip-text text-transparent px-4">
-            Where Sound Meets Vision
+
+          {/* Animated Tagline */}
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-8 relative">
+            <span className="inline-block bg-gradient-to-r from-rose-400 via-rose-300 to-rose-500 bg-clip-text text-transparent pulse-text">
+              Where Sound Meets Vision.
+            </span>
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-12 animate-fade-in px-4">
-            Crafting immersive musical and visual experiences
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in px-4">
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 px-4">
             <Link to="/booking">
-              <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105">
-                Book Now
+              <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105 neon-button">
+                Book La Rosa
               </Button>
             </Link>
             <a href="https://www.youtube.com/live/art7YToqAKM" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-105">
+              <Button size="lg" variant="outline" className="border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-105 backdrop-blur-sm">
                 <Play className="w-4 h-4 mr-2" />
                 Watch Showreel
               </Button>
             </a>
+          </div>
+
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-indicator">
+            <div className="flex flex-col items-center gap-2 text-rose-400 animate-bounce">
+              <span className="text-sm font-medium tracking-wider">SCROLL</span>
+              <ChevronDown className="w-6 h-6" />
+              <div className="w-0.5 h-12 bg-gradient-to-b from-rose-500 to-transparent soundwave-line" />
+            </div>
           </div>
         </div>
       </section>
