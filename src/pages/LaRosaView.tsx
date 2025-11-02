@@ -11,6 +11,9 @@ import theViewCover from "@/assets/the-view-cover.png";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import laRosaLogo from "@/assets/larosa-logo.png";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import CustomCursor from "@/components/CustomCursor";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const LaRosaView = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +21,16 @@ const LaRosaView = () => {
     email: "",
     message: "",
   });
+
+  // Scroll animation hooks for different sections
+  const whatWeDoAnimation = useScrollAnimation();
+  const featuredWorksAnimation = useScrollAnimation();
+  const servicesAnimation = useScrollAnimation();
+  const alHayetAnimation = useScrollAnimation();
+  const aboutAnimation = useScrollAnimation();
+  const contactAnimation = useScrollAnimation();
+  const soundcloudAnimation = useScrollAnimation();
+  const testimonialsAnimation = useScrollAnimation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,16 +69,22 @@ const LaRosaView = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* Scroll Progress Bar */}
+      <ScrollProgressBar />
+      
+      {/* Custom Cursor (Desktop Only) */}
+      <CustomCursor />
+      
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
-          <Link to="/manages" className="inline-flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base text-foreground hover:text-accent transition-colors">
+          <Link to="/manages" className="inline-flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base text-foreground hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded">
             <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             <span className="font-semibold">Back</span>
           </Link>
           <Link 
             to="/about-dj" 
-            className="inline-flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base text-foreground hover:text-rose-400 transition-all hover:scale-105 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-rose-500/10"
+            className="inline-flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base text-foreground hover:text-rose-400 transition-all hover:scale-105 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-rose-500/10 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-background"
           >
             About DJ
           </Link>
@@ -122,8 +141,9 @@ const LaRosaView = () => {
             <div className="relative inline-block">
               <img 
                 src={laRosaLogo} 
-                alt="La Rosa View" 
+                alt="La Rosa View - Professional DJ and Music Production Services" 
                 className="w-56 h-56 sm:w-72 sm:h-72 mx-auto object-contain drop-shadow-2xl" 
+                loading="eager"
                 style={{
                   filter: "drop-shadow(0 0 30px rgba(244, 63, 94, 0.4))",
                 }}
@@ -174,7 +194,12 @@ const LaRosaView = () => {
       </section>
 
       {/* What We Do */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 relative">
+      <section 
+        ref={whatWeDoAnimation.ref}
+        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 relative transition-all duration-700 ${
+          whatWeDoAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 md:mb-16 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
@@ -185,12 +210,12 @@ const LaRosaView = () => {
             {highlights.map((item, index) => (
               <Card
                 key={index}
-                className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-rose-600/20"
+                className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-rose-600/20 hover-lift"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <CardContent className="p-4 sm:p-5 md:p-6 text-center">
                   <div className="mb-3 sm:mb-4 inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-                    <item.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-rose-500" />
+                    <item.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-rose-500" aria-hidden="true" />
                   </div>
                   <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1.5 sm:mb-2">{item.title}</h3>
                   <p className="text-sm sm:text-base text-muted-foreground">{item.desc}</p>
@@ -202,7 +227,12 @@ const LaRosaView = () => {
       </section>
 
       {/* Featured Works */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-gradient-to-b from-background via-rose-950/10 to-background">
+      <section 
+        ref={featuredWorksAnimation.ref}
+        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-gradient-to-b from-background via-rose-950/10 to-background transition-all duration-700 ${
+          featuredWorksAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 sm:mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
@@ -215,11 +245,11 @@ const LaRosaView = () => {
             {[1, 2, 3].map((item) => (
               <Card
                 key={item}
-                className="group overflow-hidden border-border/50 hover:border-rose-500/50 transition-all duration-300 hover:scale-105 cursor-pointer"
+                className="group overflow-hidden border-border/50 hover:border-rose-500/50 transition-all duration-300 hover:scale-105 cursor-pointer hover-lift"
               >
                 <div className="aspect-video bg-gradient-to-br from-rose-900/20 to-background relative">
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60">
-                    <Play className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500" />
+                    <Play className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500" aria-hidden="true" />
                   </div>
                 </div>
               </Card>
@@ -235,7 +265,12 @@ const LaRosaView = () => {
       </section>
 
       {/* Services */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6">
+      <section 
+        ref={servicesAnimation.ref}
+        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 transition-all duration-700 ${
+          servicesAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 md:mb-16 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
@@ -246,7 +281,7 @@ const LaRosaView = () => {
             {services.map((service, index) => (
               <Card
                 key={index}
-                className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-rose-600/20"
+                className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-rose-600/20 hover-lift"
               >
                 <CardContent className="p-4 sm:p-5 md:p-6 lg:p-8">
                   <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 sm:mb-3 group-hover:text-rose-400 transition-colors">{service.title}</h3>
@@ -266,7 +301,12 @@ const LaRosaView = () => {
       </section>
 
       {/* Al Hayet FM Interview */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-gradient-to-b from-background via-rose-950/10 to-background">
+      <section 
+        ref={alHayetAnimation.ref}
+        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-gradient-to-b from-background via-rose-950/10 to-background transition-all duration-700 ${
+          alHayetAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 sm:mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
@@ -285,11 +325,12 @@ const LaRosaView = () => {
               <div className="aspect-video bg-gradient-to-br from-rose-900/40 to-background relative">
                 <img 
                   src="https://i.ytimg.com/vi/art7YToqAKM/maxresdefault.jpg" 
-                  alt="La Rosa View X Al Hayet FM" 
+                  alt="La Rosa View featured on Al Hayet FM - Behind the scenes interview with DJ La Rosa" 
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60">
-                  <Play className="w-24 h-24 text-rose-500 animate-pulse" />
+                  <Play className="w-24 h-24 text-rose-500 animate-pulse" aria-hidden="true" />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-black/80 to-transparent">
                   <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">La Rosa View X Al Hayet FM</h3>
@@ -302,7 +343,12 @@ const LaRosaView = () => {
       </section>
 
       {/* About Us */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6">
+      <section 
+        ref={aboutAnimation.ref}
+        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 transition-all duration-700 ${
+          aboutAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 md:mb-0">
@@ -349,7 +395,12 @@ const LaRosaView = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6">
+      <section 
+        ref={contactAnimation.ref}
+        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 transition-all duration-700 ${
+          contactAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 sm:mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
@@ -471,7 +522,12 @@ const LaRosaView = () => {
       </section>
 
       {/* Latest Drops - SoundCloud Mixes */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-gradient-to-b from-background via-rose-950/10 to-background">
+      <section 
+        ref={soundcloudAnimation.ref}
+        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-gradient-to-b from-background via-rose-950/10 to-background transition-all duration-700 ${
+          soundcloudAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 sm:mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
@@ -484,14 +540,15 @@ const LaRosaView = () => {
             {soundcloudTracks.map((track, index) => (
               <Card
                 key={index}
-                className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-rose-600/20 overflow-hidden"
+                className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-rose-600/20 overflow-hidden hover-lift"
               >
                 <CardContent className="p-0">
                   <div className="aspect-square relative overflow-hidden">
                     <img 
                       src={track.coverUrl} 
-                      alt={track.title} 
+                      alt={`${track.title} - Latest music mix by La Rosa View on SoundCloud`} 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex items-end p-3 sm:p-4 md:p-6">
                       <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white drop-shadow-lg">{track.title}</h3>
@@ -531,7 +588,12 @@ const LaRosaView = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6">
+      <section 
+        ref={testimonialsAnimation.ref}
+        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 transition-all duration-700 ${
+          testimonialsAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 sm:mb-6 px-4">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
