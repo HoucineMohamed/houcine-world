@@ -220,4 +220,32 @@ All colors MUST be HSL.
   .bg-gradient-radial {
     background: radial-gradient(circle, var(--tw-gradient-stops));
   }
+
+  /* Mobile Performance - Reduce motion for better performance */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Mobile-specific optimizations */
+  @media (max-width: 640px) {
+    .neon-glow,
+    .neon-ring-1,
+    .neon-ring-2 {
+      animation-duration: 4s;
+    }
+    
+    .pulse-text {
+      animation-duration: 3s;
+    }
+    
+    .soundwave-line {
+      animation-duration: 2s;
+    }
+  }
 }
