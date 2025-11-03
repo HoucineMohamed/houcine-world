@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import laRosaLogo from "@/assets/larosa-logo.png";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
+import ChatWidget from "@/components/ChatWidget";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const LaRosaView = () => {
@@ -74,6 +75,9 @@ const LaRosaView = () => {
       
       {/* Custom Cursor (Desktop Only) */}
       <CustomCursor />
+      
+      {/* Chat Widget */}
+      <ChatWidget />
       
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
@@ -396,6 +400,7 @@ const LaRosaView = () => {
 
       {/* Contact Section */}
       <section 
+        id="quote-form"
         ref={contactAnimation.ref}
         className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 transition-all duration-700 ${
           contactAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
