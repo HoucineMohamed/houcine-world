@@ -627,7 +627,7 @@ const LaRosaView = () => {
 
           <div className="text-center">
             <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">Share your experience with us</p>
-            <Link to="/booking" className="inline-block w-full sm:w-auto">
+            <Link to="/review" className="inline-block w-full sm:w-auto">
               <Button variant="outline" className="w-full sm:w-auto text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3 border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-105">
                 Leave a Review
               </Button>

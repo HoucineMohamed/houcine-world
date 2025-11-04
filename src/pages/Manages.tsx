@@ -2,10 +2,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Briefcase, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import CustomCursor from "@/components/CustomCursor";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const Manages = () => {
+  const contentAnimation = useScrollAnimation();
+  
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ScrollProgressBar />
+      <CustomCursor />
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-6 py-4">
           <Link to="/" className="inline-flex items-center gap-2 text-foreground hover:text-accent transition-colors">
@@ -15,7 +22,12 @@ const Manages = () => {
         </div>
       </header>
 
-      <main className="pt-24 pb-16 px-6">
+      <main 
+        ref={contentAnimation.ref}
+        className={`pt-24 pb-16 px-6 transition-all duration-700 ${
+          contentAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <div className="flex items-center gap-4 mb-8">
             <Briefcase className="w-12 h-12 text-tech-blue" />

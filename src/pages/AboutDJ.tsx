@@ -5,8 +5,18 @@ import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import laRosaLogo from "@/assets/larosa-logo.png";
 import profilePhoto from "@/assets/hajri-photo.jpeg";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import CustomCursor from "@/components/CustomCursor";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const AboutDJ = () => {
+  const heroAnimation = useScrollAnimation();
+  const aboutAnimation = useScrollAnimation();
+  const highlightsAnimation = useScrollAnimation();
+  const journeyAnimation = useScrollAnimation();
+  const interviewAnimation = useScrollAnimation();
+  const ctaAnimation = useScrollAnimation();
+  
   const highlights = [
     { icon: Music, title: "+1 Year of Experience", desc: "Crafting beats with passion" },
     { icon: Award, title: "+25 Events", desc: "From private parties to massive clubs" },
@@ -24,6 +34,8 @@ const AboutDJ = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ScrollProgressBar />
+      <CustomCursor />
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-6 py-4">
@@ -35,7 +47,12 @@ const AboutDJ = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20">
+      <section 
+        ref={heroAnimation.ref}
+        className={`relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20 transition-all duration-700 ${
+          heroAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="absolute inset-0 bg-gradient-to-br from-rose-950/40 via-background to-background">
           <div className="absolute inset-0 opacity-20">
             {[...Array(30)].map((_, i) => (
@@ -75,7 +92,12 @@ const AboutDJ = () => {
       </section>
 
       {/* About Section */}
-      <section className="py-24 px-6">
+      <section 
+        ref={aboutAnimation.ref}
+        className={`py-24 px-6 transition-all duration-700 ${
+          aboutAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-4xl">
           <Card className="border-border/50 bg-card/50 backdrop-blur">
             <CardContent className="p-8 md:p-12">
@@ -108,7 +130,12 @@ const AboutDJ = () => {
       </section>
 
       {/* Highlights */}
-      <section className="py-24 px-6 bg-gradient-to-b from-background via-rose-950/10 to-background">
+      <section 
+        ref={highlightsAnimation.ref}
+        className={`py-24 px-6 bg-gradient-to-b from-background via-rose-950/10 to-background transition-all duration-700 ${
+          highlightsAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
@@ -135,7 +162,12 @@ const AboutDJ = () => {
       </section>
 
       {/* Journey Timeline */}
-      <section className="py-24 px-6">
+      <section 
+        ref={journeyAnimation.ref}
+        className={`py-24 px-6 transition-all duration-700 ${
+          journeyAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-4xl">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
@@ -165,7 +197,12 @@ const AboutDJ = () => {
       </section>
 
       {/* Featured Interview */}
-      <section className="py-24 px-6 bg-gradient-to-b from-background via-rose-950/10 to-background">
+      <section 
+        ref={interviewAnimation.ref}
+        className={`py-24 px-6 bg-gradient-to-b from-background via-rose-950/10 to-background transition-all duration-700 ${
+          interviewAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-4xl">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
@@ -200,7 +237,12 @@ const AboutDJ = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-6">
+      <section 
+        ref={ctaAnimation.ref}
+        className={`py-24 px-6 transition-all duration-700 ${
+          ctaAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">

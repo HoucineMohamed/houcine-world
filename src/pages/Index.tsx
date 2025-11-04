@@ -8,9 +8,14 @@ import { Link } from "react-router-dom";
 import logoH from "@/assets/logo-h.png";
 import profile from "@/assets/profile.png";
 import Footer from "@/components/Footer";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import CustomCursor from "@/components/CustomCursor";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const Index = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const heroAnimation = useScrollAnimation();
+  const trailerAnimation = useScrollAnimation();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -29,6 +34,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ScrollProgressBar />
+      <CustomCursor />
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/about" className="flex items-center gap-3 group">
@@ -71,7 +78,13 @@ const Index = () => {
 
       <main>
         {/* Hero */}
-        <section id="home" className="pt-32 pb-16 px-6">
+        <section 
+          id="home" 
+          ref={heroAnimation.ref}
+          className={`pt-32 pb-16 px-6 transition-all duration-700 ${
+            heroAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+        >
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="text-left space-y-6">
@@ -147,7 +160,13 @@ const Index = () => {
         </section>
 
         {/* Trailer grid (teasers) */}
-        <section id="trailer" className="py-10 px-6 bg-secondary/30">
+        <section 
+          id="trailer" 
+          ref={trailerAnimation.ref}
+          className={`py-10 px-6 bg-secondary/30 transition-all duration-700 ${
+            trailerAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+        >
           <div className="container mx-auto grid md:grid-cols-2 gap-6 max-w-6xl">
             <Link to="/dev" className="block h-full">
               <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-tech-blue/50 transition-all group cursor-pointer">

@@ -8,9 +8,13 @@ import { ArrowLeft, Send, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import CustomCursor from "@/components/CustomCursor";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const BookingForm = () => {
   const { toast } = useToast();
+  const formAnimation = useScrollAnimation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -48,6 +52,8 @@ ${formData.message}
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ScrollProgressBar />
+      <CustomCursor />
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-6 py-4">
@@ -59,7 +65,12 @@ ${formData.message}
       </header>
 
       {/* Main Content */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 pt-24 pb-16">
+      <section 
+        ref={formAnimation.ref}
+        className={`relative min-h-screen flex items-center justify-center px-6 pt-24 pb-16 transition-all duration-700 ${
+          formAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         {/* Animated Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-rose-950/40 via-background to-background">
           <div className="absolute inset-0 opacity-20">

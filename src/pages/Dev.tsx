@@ -5,6 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Star, GitFork, ExternalLink, Loader2 } from "lucide-react";
 import Footer from "@/components/Footer";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import CustomCursor from "@/components/CustomCursor";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 interface GitHubRepo {
   id: number;
@@ -22,6 +25,7 @@ const Dev = () => {
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const contentAnimation = useScrollAnimation();
 
   useEffect(() => {
     const fetchRepos = async () => {
@@ -51,6 +55,8 @@ const Dev = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ScrollProgressBar />
+      <CustomCursor />
       {/* Header */}
       <header className="border-b border-border/40 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
@@ -64,7 +70,12 @@ const Dev = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-12 max-w-6xl">
+      <main 
+        ref={contentAnimation.ref}
+        className={`container mx-auto px-6 py-12 max-w-6xl transition-all duration-700 ${
+          contentAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Houcine.dev</h1>
           <p className="text-xl text-muted-foreground">
