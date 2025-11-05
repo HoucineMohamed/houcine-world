@@ -67,8 +67,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        display: ["Orbitron", "Inter", "sans-serif"],
+        sans: ["Poppins", "system-ui", "-apple-system", "sans-serif"],
+        display: ["Space Grotesk", "Poppins", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

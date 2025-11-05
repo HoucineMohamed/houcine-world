@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const CustomCursor = () => {
+  const location = useLocation();
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+
+  // Determine cursor color based on route
+  const isLaRosaView = location.pathname === "/larosaview";
+  const cursorColor = isLaRosaView ? "rose" : "blue";
+  const cursorBg = isLaRosaView ? "bg-rose-500/50" : "bg-blue-500/50";
+  const cursorBorder = isLaRosaView ? "border-rose-400/30" : "border-blue-400/30";
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -51,7 +59,7 @@ const CustomCursor = () => {
     <>
       {/* Main cursor */}
       <div
-        className="fixed w-4 h-4 rounded-full bg-rose-500/50 pointer-events-none z-[9999] transition-transform duration-100 mix-blend-screen"
+        className={`fixed w-4 h-4 rounded-full ${cursorBg} pointer-events-none z-[9999] transition-all duration-300 mix-blend-screen`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -60,7 +68,7 @@ const CustomCursor = () => {
       />
       {/* Glow effect */}
       <div
-        className="fixed w-8 h-8 rounded-full border-2 border-rose-400/30 pointer-events-none z-[9998] transition-all duration-200"
+        className={`fixed w-8 h-8 rounded-full border-2 ${cursorBorder} pointer-events-none z-[9998] transition-all duration-300`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,

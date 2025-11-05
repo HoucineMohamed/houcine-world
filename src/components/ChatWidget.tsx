@@ -95,7 +95,12 @@ const ChatWidget = () => {
   };
 
   const openEmail = () => {
-    window.location.href = "mailto:contactlarosaview@gmail.com";
+    const mailtoLink = "mailto:contactlarosaview@gmail.com";
+    const link = document.createElement('a');
+    link.href = mailtoLink;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.click();
     setIsOpen(false);
   };
 
