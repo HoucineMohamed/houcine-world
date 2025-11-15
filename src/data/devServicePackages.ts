@@ -12,7 +12,7 @@ export const devServicePackages: DevServicePackage[] = [
   {
     name: "Landing Page",
     description: "Perfect for creators and personal brands — fast, elegant, and mobile-optimized.",
-    basePrice: 500,
+    basePrice: 449,
     features: [
       "Single-page responsive design",
       "Modern animations & interactions",
@@ -28,7 +28,7 @@ export const devServicePackages: DevServicePackage[] = [
   {
     name: "Portfolio Website",
     description: "Fully custom, SEO-friendly, and easily updatable portfolios for artists, developers, and designers.",
-    basePrice: 800,
+    basePrice: 599,
     features: [
       "Multi-page custom design",
       "Project showcase galleries",
@@ -44,7 +44,7 @@ export const devServicePackages: DevServicePackage[] = [
   {
     name: "Business Website",
     description: "Conversion-oriented websites built with React, Tailwind, and modern integrations.",
-    basePrice: 1200,
+    basePrice: 889,
     features: [
       "Multi-page professional design",
       "Service/product pages",
@@ -60,7 +60,7 @@ export const devServicePackages: DevServicePackage[] = [
   {
     name: "Educational Platform",
     description: "Websites for schools, clubs, and projects with login systems or course sections.",
-    basePrice: 1500,
+    basePrice: 989,
     features: [
       "User authentication system",
       "Course/content management",
