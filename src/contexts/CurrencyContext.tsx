@@ -9,15 +9,15 @@ interface CurrencyContextType {
 }
 
 const exchangeRates: Record<Currency, number> = {
-  EUR: 1,
-  USD: 1.09,
-  TND: 3.36,
+  TND: 1,
+  EUR: 0.298,
+  USD: 0.324,
 };
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currency, setCurrency] = useState<Currency>("EUR");
+  const [currency, setCurrency] = useState<Currency>("TND");
 
   const convertPrice = (basePrice: number): number => {
     return Math.round(basePrice * exchangeRates[currency]);

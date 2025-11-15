@@ -10,7 +10,7 @@ export const brandingPackages: ServicePackage[] = [
   {
     name: "Brand Essentials",
     description: "Perfect for startups and small businesses",
-    basePrice: 500,
+    basePrice: 299,
     features: [
       "Logo design (3 concepts)",
       "Color palette",
@@ -23,7 +23,7 @@ export const brandingPackages: ServicePackage[] = [
   {
     name: "Brand Identity Pro",
     description: "Complete brand identity system",
-    basePrice: 1200,
+    basePrice: 349,
     features: [
       "Logo design (5 concepts)",
       "Complete color system",
@@ -38,7 +38,7 @@ export const brandingPackages: ServicePackage[] = [
   {
     name: "Brand Excellence",
     description: "Premium brand strategy and design",
-    basePrice: 2500,
+    basePrice: 899,
     features: [
       "Full brand strategy",
       "Logo & identity system",
@@ -56,7 +56,7 @@ export const graphicDesignPackages: ServicePackage[] = [
   {
     name: "Social Media Pack",
     description: "Engaging content for your platforms",
-    basePrice: 300,
+    basePrice: 149,
     features: [
       "15 social media posts",
       "Story templates",
@@ -69,7 +69,7 @@ export const graphicDesignPackages: ServicePackage[] = [
   {
     name: "Marketing Materials",
     description: "Print and digital collateral",
-    basePrice: 600,
+    basePrice: 299,
     features: [
       "Brochure design",
       "Flyer design",
@@ -83,7 +83,7 @@ export const graphicDesignPackages: ServicePackage[] = [
   {
     name: "Visual Campaign",
     description: "Complete campaign design suite",
-    basePrice: 1500,
+    basePrice: 649,
     features: [
       "Campaign concept",
       "Key visuals",
@@ -100,7 +100,7 @@ export const uiuxPackages: ServicePackage[] = [
   {
     name: "Landing Page Design",
     description: "High-converting single page",
-    basePrice: 800,
+    basePrice: 399,
     features: [
       "Custom landing page",
       "Mobile responsive",
@@ -113,7 +113,7 @@ export const uiuxPackages: ServicePackage[] = [
   {
     name: "Website Design",
     description: "Multi-page website experience",
-    basePrice: 2000,
+    basePrice: 599,
     features: [
       "Up to 5 pages",
       "Custom design system",
@@ -127,7 +127,7 @@ export const uiuxPackages: ServicePackage[] = [
   {
     name: "App Design (Mobile/Web)",
     description: "Full application interface",
-    basePrice: 3500,
+    basePrice: 899,
     features: [
       "Complete app design",
       "User research",
