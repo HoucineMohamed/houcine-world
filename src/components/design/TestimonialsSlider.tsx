@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 
-interface Testimonial {
+export interface Testimonial {
   id: number;
   name: string;
   comment: string;
@@ -31,8 +31,12 @@ const initialTestimonials: Testimonial[] = [
   },
 ];
 
-export const TestimonialsSlider = () => {
-  const [testimonials] = useState<Testimonial[]>(initialTestimonials);
+interface TestimonialsSliderProps {
+  testimonials?: Testimonial[];
+}
+
+export const TestimonialsSlider = ({ testimonials: externalTestimonials }: TestimonialsSliderProps = {}) => {
+  const testimonials = externalTestimonials || initialTestimonials;
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextTestimonial = () => {

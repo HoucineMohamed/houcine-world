@@ -15,7 +15,9 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { CurrencyProvider, useCurrency, Currency } from "@/contexts/CurrencyContext";
 import { ServicePackageCard } from "@/components/design/ServicePackageCard";
 import { PortfolioLightbox } from "@/components/design/PortfolioLightbox";
-import { TestimonialsSlider } from "@/components/design/TestimonialsSlider";
+import { TestimonialsSlider, Testimonial } from "@/components/design/TestimonialsSlider";
+import { ReviewModal } from "@/components/design/ReviewModal";
+import { WhatYouReceiveSection } from "@/components/design/WhatYouReceiveSection";
 import { brandingPackages, graphicDesignPackages, uiuxPackages } from "@/data/servicePackages";
 import { toast } from "sonner";
 import profilePhoto from "@/assets/profile.png";
@@ -84,6 +86,8 @@ const DesignsContent = () => {
   const [selectedPortfolio, setSelectedPortfolio] = useState<PortfolioItem | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<string>("");
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const contactSectionRef = useRef<HTMLDivElement>(null);
   const portfolioSectionRef = useRef<HTMLDivElement>(null);
 
@@ -130,6 +134,17 @@ const DesignsContent = () => {
 
   const handleContactEmail = () => {
     window.location.href = "mailto:contact@houcine.world";
+  };
+
+  const handleReviewSubmit = (review: { name: string; rating: number; comment: string }) => {
+    const newTestimonial: Testimonial = {
+      id: Date.now(),
+      name: review.name,
+      rating: review.rating,
+      comment: review.comment,
+    };
+    setTestimonials((prev) => [newTestimonial, ...prev]);
+    toast.success("Review submitted successfully!");
   };
 
   // Letter-by-letter animation
@@ -200,10 +215,10 @@ const DesignsContent = () => {
             <Button
               size="lg"
               className="gap-2"
-              onClick={() => scrollToSection(portfolioSectionRef)}
+              onClick={() => window.open("https://www.behance.net/HoucineDesigns", "_blank")}
             >
               Explore My Work
-              <ArrowDown className="w-4 h-4" />
+              <ExternalLink className="w-4 h-4" />
             </Button>
             <Button
               size="lg"
@@ -254,6 +269,16 @@ const DesignsContent = () => {
                   <div className="text-3xl font-bold text-accent mb-1">5</div>
                   <div className="text-sm text-muted-foreground">Design Categories</div>
                 </Card>
+              </div>
+              <div className="pt-4">
+                <Button
+                  variant="outline"
+                  className="gap-2"
+                  onClick={() => window.open("https://www.behance.net/HoucineDesigns", "_blank")}
+                >
+                  View Portfolio on Behance
+                  <ExternalLink className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           </div>
@@ -313,6 +338,7 @@ const DesignsContent = () => {
                   />
                 ))}
               </div>
+              <WhatYouReceiveSection category="Branding" />
             </TabsContent>
 
             <TabsContent value="graphic">
@@ -325,6 +351,7 @@ const DesignsContent = () => {
                   />
                 ))}
               </div>
+              <WhatYouReceiveSection category="Graphic Design" />
             </TabsContent>
 
             <TabsContent value="uiux">
@@ -337,6 +364,7 @@ const DesignsContent = () => {
                   />
                 ))}
               </div>
+              <WhatYouReceiveSection category="UI/UX Design" />
             </TabsContent>
           </Tabs>
 
@@ -404,11 +432,11 @@ const DesignsContent = () => {
           <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-12">
             What My Clients Say
           </h2>
-          <TestimonialsSlider />
+          <TestimonialsSlider testimonials={testimonials.length > 0 ? testimonials : undefined} />
           <div className="text-center mt-8">
-            <Link to="/review">
-              <Button variant="outline">Leave a Review</Button>
-            </Link>
+            <Button variant="outline" onClick={() => setReviewModalOpen(true)}>
+              Leave a Review
+            </Button>
           </div>
         </div>
       </section>
@@ -509,6 +537,12 @@ const DesignsContent = () => {
         item={selectedPortfolio}
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
+      />
+
+      <ReviewModal
+        isOpen={reviewModalOpen}
+        onClose={() => setReviewModalOpen(false)}
+        onSubmit={handleReviewSubmit}
       />
     </div>
   );
