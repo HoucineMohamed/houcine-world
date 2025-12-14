@@ -125,6 +125,127 @@ All colors MUST be HSL.
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Orbitron', 'Inter', sans-serif;
   }
+
+  /* ========================================
+     GLOBAL MOBILE OPTIMIZATION SYSTEM
+     Responsive scaling for boxes, typography, spacing
+     ======================================== */
+
+  /* Mobile-first responsive typography */
+  h1 {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+  }
+  
+  h2 {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl;
+  }
+  
+  h3 {
+    @apply text-lg sm:text-xl md:text-2xl;
+  }
+  
+  h4 {
+    @apply text-base sm:text-lg md:text-xl;
+  }
+
+  p, span, li {
+    @apply text-sm sm:text-base;
+  }
+}
+
+/* ========================================
+   GLOBAL RESPONSIVE CARD/BOX SYSTEM
+   ======================================== */
+@layer components {
+  /* Responsive card padding */
+  .card, [class*="Card"] {
+    @apply p-3 sm:p-4 md:p-5 lg:p-6;
+  }
+
+  /* Responsive section spacing */
+  section {
+    @apply py-8 sm:py-12 md:py-16 lg:py-20;
+  }
+
+  /* Responsive container padding */
+  .container {
+    @apply px-4 sm:px-6 md:px-8;
+  }
+
+  /* Mobile-optimized button scaling */
+  button, [role="button"], .btn {
+    @apply text-sm sm:text-base py-2 px-3 sm:py-2.5 sm:px-4 md:py-3 md:px-5;
+  }
+
+  /* Responsive gap utilities for grids */
+  .grid {
+    @apply gap-3 sm:gap-4 md:gap-6 lg:gap-8;
+  }
+
+  /* Responsive margin/padding for boxes */
+  .box-responsive {
+    @apply p-3 sm:p-4 md:p-6 lg:p-8;
+    @apply my-2 sm:my-3 md:my-4;
+  }
+}
+
+/* ========================================
+   MOBILE-SPECIFIC OVERRIDES
+   ======================================== */
+@media (max-width: 640px) {
+  /* Tighter card dimensions on mobile */
+  .card, [class*="rounded-"] {
+    border-radius: 0.5rem !important;
+  }
+
+  /* Reduce oversized gaps on mobile */
+  .space-y-8 { gap: 1rem; }
+  .space-y-6 { gap: 0.75rem; }
+  .gap-8 { gap: 1rem; }
+  .gap-6 { gap: 0.75rem; }
+  
+  /* Prevent full-height cards on mobile */
+  .min-h-screen {
+    min-height: auto;
+  }
+
+  /* Tighter padding on mobile cards */
+  .p-8 { padding: 1rem; }
+  .p-6 { padding: 0.75rem; }
+  .px-8 { padding-left: 1rem; padding-right: 1rem; }
+  .px-6 { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .py-8 { padding-top: 1rem; padding-bottom: 1rem; }
+  .py-6 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+
+  /* Reduce margins on mobile */
+  .my-8 { margin-top: 1.5rem; margin-bottom: 1.5rem; }
+  .my-6 { margin-top: 1rem; margin-bottom: 1rem; }
+  .mb-8 { margin-bottom: 1.5rem; }
+  .mb-6 { margin-bottom: 1rem; }
+  .mt-8 { margin-top: 1.5rem; }
+  .mt-6 { margin-top: 1rem; }
+
+  /* Typography scaling for mobile */
+  .text-5xl { font-size: 1.75rem; line-height: 2rem; }
+  .text-4xl { font-size: 1.5rem; line-height: 1.75rem; }
+  .text-3xl { font-size: 1.25rem; line-height: 1.5rem; }
+  .text-2xl { font-size: 1.125rem; line-height: 1.375rem; }
+  .text-xl { font-size: 1rem; line-height: 1.25rem; }
+}
+
+/* ========================================
+   TABLET-SPECIFIC OPTIMIZATIONS
+   ======================================== */
+@media (min-width: 641px) and (max-width: 1023px) {
+  /* Moderate scaling for tablets */
+  .p-8 { padding: 1.25rem; }
+  .p-6 { padding: 1rem; }
+  .gap-8 { gap: 1.25rem; }
+  .gap-6 { gap: 1rem; }
+  
+  .text-5xl { font-size: 2.25rem; }
+  .text-4xl { font-size: 1.875rem; }
+  .text-3xl { font-size: 1.5rem; }
 }
 
 @layer utilities {
