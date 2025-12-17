@@ -13,6 +13,7 @@ export interface Experience {
   endDate?: string; // Leave empty for "Present"
   description: string[];
   skills?: string[];
+  category: "development" | "design" | "fintech" | "leadership";
 }
 
 export interface Education {
@@ -36,6 +37,7 @@ export interface Certification {
   expiryDate?: string;
   credentialId?: string;
   credentialUrl?: string;
+  category: "development" | "design" | "fintech" | "leadership";
 }
 
 export interface Skill {
@@ -127,7 +129,7 @@ My expertise spans across FinTech development, UI/UX design, brand identity crea
 
 When I'm not coding or designing, you'll find me leading community initiatives, mentoring aspiring developers, or exploring the latest trends in artificial intelligence and financial technology.`,
 
-  // Experience
+  // Experience - Now with categories
   experience: [
     {
       id: "exp-1",
@@ -135,45 +137,63 @@ When I'm not coding or designing, you'll find me leading community initiatives, 
       company: "PyTunisia",
       location: "Tunisia",
       startDate: "2022",
+      category: "leadership",
       description: [
         "Founded an educational initiative focused on teaching Python and data science to Tunisian students",
         "Created and delivered 10+ comprehensive programming courses reaching 500+ learners",
         "Organized 3 successful seminars on technology and programming",
         "Built and maintained the PyTunisia digital platform using modern web technologies"
       ],
-      skills: ["Python", "Data Science", "Education", "Community Building"]
+      skills: ["Python", "Data Science", "Education", "Community Building", "Leadership"]
     },
     {
       id: "exp-2",
-      title: "Web Developer & Designer",
+      title: "Creative Director & Brand Designer",
       company: "Freelance",
       location: "Remote",
       startDate: "2021",
+      category: "design",
       description: [
-        "Designed and developed custom websites for businesses and individuals",
-        "Created brand identities including logos, visual systems, and marketing materials",
-        "Specialized in React, Tailwind CSS, and modern frontend technologies",
-        "Delivered 30+ successful projects across various industries"
+        "Created complete brand identities including logos, visual systems, and brand guidelines",
+        "Designed marketing materials, social media assets, and promotional campaigns",
+        "Developed UI/UX designs for web and mobile applications",
+        "Delivered 25+ branding projects for startups and established businesses"
       ],
-      skills: ["React", "Tailwind CSS", "UI/UX Design", "Branding"]
+      skills: ["Brand Identity", "UI/UX Design", "Graphic Design", "Adobe Creative Suite", "Figma"]
     },
     {
       id: "exp-3",
+      title: "Web Developer",
+      company: "Freelance",
+      location: "Remote",
+      startDate: "2021",
+      category: "development",
+      description: [
+        "Designed and developed custom websites for businesses and individuals",
+        "Specialized in React, Tailwind CSS, and modern frontend technologies",
+        "Built responsive, SEO-optimized, and high-performance web applications",
+        "Delivered 30+ successful projects across various industries"
+      ],
+      skills: ["React", "Tailwind CSS", "TypeScript", "JavaScript", "HTML/CSS"]
+    },
+    {
+      id: "exp-4",
       title: "FinTech Developer",
       company: "Independent Projects",
       location: "Tunisia",
       startDate: "2023",
+      category: "fintech",
       description: [
         "Developed financial dashboards and automation tools",
         "Created data visualization solutions for stock market analysis",
         "Built automation scripts for financial data processing",
         "Integrated APIs for real-time market data retrieval"
       ],
-      skills: ["Python", "Pandas", "Financial APIs", "Data Visualization"]
+      skills: ["Python", "Pandas", "Financial APIs", "Data Visualization", "Automation"]
     }
   ],
 
-  // Education
+  // Education (kept for data but not displayed)
   education: [
     {
       id: "edu-1",
@@ -187,28 +207,102 @@ When I'm not coding or designing, you'll find me leading community initiatives, 
     }
   ],
 
-  // Certifications
+  // Certifications - Now with categories and expanded
   certifications: [
+    // Development
     {
-      id: "cert-1",
-      name: "Python for Data Science",
-      issuer: "Coursera",
-      issueDate: "2023",
-      credentialUrl: "#"
-    },
-    {
-      id: "cert-2",
+      id: "cert-dev-1",
       name: "Web Development Fundamentals",
       issuer: "freeCodeCamp",
       issueDate: "2022",
-      credentialUrl: "#"
+      credentialUrl: "#",
+      category: "development"
     },
     {
-      id: "cert-3",
+      id: "cert-dev-2",
+      name: "React - The Complete Guide",
+      issuer: "Udemy",
+      issueDate: "2023",
+      credentialUrl: "#",
+      category: "development"
+    },
+    {
+      id: "cert-dev-3",
+      name: "JavaScript Algorithms and Data Structures",
+      issuer: "freeCodeCamp",
+      issueDate: "2022",
+      credentialUrl: "#",
+      category: "development"
+    },
+    
+    // Design
+    {
+      id: "cert-design-1",
       name: "UI/UX Design Principles",
       issuer: "Google",
       issueDate: "2023",
-      credentialUrl: "#"
+      credentialUrl: "#",
+      category: "design"
+    },
+    {
+      id: "cert-design-2",
+      name: "Graphic Design Specialization",
+      issuer: "Coursera",
+      issueDate: "2023",
+      credentialUrl: "#",
+      category: "design"
+    },
+    {
+      id: "cert-design-3",
+      name: "Brand Identity Design",
+      issuer: "Skillshare",
+      issueDate: "2022",
+      credentialUrl: "#",
+      category: "design"
+    },
+    
+    // Finance / FinTech
+    {
+      id: "cert-fintech-1",
+      name: "Python for Data Science",
+      issuer: "Coursera",
+      issueDate: "2023",
+      credentialUrl: "#",
+      category: "fintech"
+    },
+    {
+      id: "cert-fintech-2",
+      name: "Financial Markets",
+      issuer: "Yale University (Coursera)",
+      issueDate: "2023",
+      credentialUrl: "#",
+      category: "fintech"
+    },
+    {
+      id: "cert-fintech-3",
+      name: "Data Analysis with Python",
+      issuer: "IBM",
+      issueDate: "2023",
+      credentialUrl: "#",
+      category: "fintech"
+    },
+    
+    // Management & Leadership
+    {
+      id: "cert-lead-1",
+      name: "Project Management Fundamentals",
+      issuer: "Google",
+      issueDate: "2023",
+      credentialUrl: "#",
+      category: "leadership"
+    },
+    {
+      id: "cert-lead-2",
+      name: "Leadership and Management",
+      issuer: "LinkedIn Learning",
+      issueDate: "2022",
+      credentialUrl: "#",
+      category: "leadership"
     }
   ],
 
@@ -241,7 +335,7 @@ When I'm not coding or designing, you'll find me leading community initiatives, 
     { name: "English", category: "language" }
   ],
 
-  // Volunteer Experience
+  // Volunteer Experience (kept for data but not displayed)
   volunteerExperience: [
     {
       id: "vol-1",
@@ -261,7 +355,7 @@ When I'm not coding or designing, you'll find me leading community initiatives, 
     }
   ],
 
-  // Organizations
+  // Organizations (kept for data but not displayed)
   organizations: [
     {
       id: "org-1",
