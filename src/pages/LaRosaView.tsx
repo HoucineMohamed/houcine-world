@@ -8,6 +8,7 @@ import hajriPhoto from "@/assets/hajri-photo.jpeg";
 import houcinePhoto from "@/assets/houcine-photo.jpg";
 import timbreCover from "@/assets/timbre-cover.jpg";
 import theViewCover from "@/assets/the-view-cover.png";
+import n30Cover from "@/assets/n30-cover.png";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import laRosaLogo from "@/assets/larosa-logo.png";
@@ -27,6 +28,7 @@ const LaRosaView = () => {
   const whatWeDoAnimation = useScrollAnimation();
   const featuredWorksAnimation = useScrollAnimation();
   const servicesAnimation = useScrollAnimation();
+  const n30Animation = useScrollAnimation();
   const alHayetAnimation = useScrollAnimation();
   const aboutAnimation = useScrollAnimation();
   const contactAnimation = useScrollAnimation();
@@ -300,6 +302,75 @@ const LaRosaView = () => {
                 Request a Quote
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* N30 Concept */}
+      <section 
+        ref={n30Animation.ref}
+        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-gradient-to-b from-background via-rose-950/10 to-background transition-all duration-700 ${
+          n30Animation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 sm:mb-6 px-4">
+            <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
+              N30 Concept
+            </span>
+          </h2>
+          <p className="text-sm sm:text-base md:text-lg text-center text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto px-4 leading-relaxed">
+            N30 is La Rosa View's annual signature mix.<br />
+            One date. One mix. One vision.<br />
+            Every November 30, the old N30 disappears and a new one takes its place.
+          </p>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-center">
+            {/* N30 Cover */}
+            <div className="relative group flex justify-center">
+              <div className="relative">
+                <img 
+                  src={n30Cover} 
+                  alt="N30 - La Rosa View Annual Signature Mix Cover" 
+                  className="w-full max-w-sm sm:max-w-md rounded-2xl shadow-2xl shadow-rose-600/30 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-rose-500/50"
+                  loading="lazy"
+                />
+                {/* Subtle glow effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-rose-500/20 via-rose-400/10 to-rose-600/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-80 transition-opacity duration-500 -z-10 animate-pulse" />
+              </div>
+            </div>
+
+            {/* YouTube Embed */}
+            <div className="relative">
+              <Card className="border-rose-500/30 bg-card/50 backdrop-blur overflow-hidden hover:border-rose-500/50 transition-all duration-300">
+                <CardContent className="p-0">
+                  <div className="aspect-video">
+                    <iframe
+                      src="https://www.youtube.com/embed/60qJDqOgB70"
+                      title="N30 - La Rosa View Annual Signature Mix"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-4 sm:p-6 text-center">
+                    <h3 className="text-lg sm:text-xl font-semibold mb-2 text-rose-400">Listen Now</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-4">Experience the current N30 mix</p>
+                    <a 
+                      href="https://youtu.be/60qJDqOgB70" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm text-rose-400 hover:text-rose-300 transition-colors"
+                    >
+                      <Youtube className="w-4 h-4" />
+                      Watch on YouTube
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
