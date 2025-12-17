@@ -210,19 +210,19 @@ const LaRosaView = () => {
               What We Do
             </span>
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-6">
             {highlights.map((item, index) => (
               <Card
                 key={index}
                 className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-rose-600/20 hover-lift"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <CardContent className="p-4 sm:p-5 md:p-6 text-center">
-                  <div className="mb-3 sm:mb-4 inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
-                    <item.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-rose-500" aria-hidden="true" />
+                <CardContent className="p-2.5 sm:p-4 md:p-6 text-center">
+                  <div className="mb-2 sm:mb-4 inline-flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors">
+                    <item.icon className="w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8 text-rose-500" aria-hidden="true" />
                   </div>
-                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1.5 sm:mb-2">{item.title}</h3>
-                  <p className="text-sm sm:text-base text-muted-foreground">{item.desc}</p>
+                  <h3 className="text-sm sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2">{item.title}</h3>
+                  <p className="text-xs sm:text-sm md:text-base text-muted-foreground">{item.desc}</p>
                 </CardContent>
               </Card>
             ))}
@@ -245,7 +245,7 @@ const LaRosaView = () => {
           </h2>
           <p className="text-sm sm:text-base text-center text-muted-foreground mb-6 sm:mb-8 md:mb-12 px-4">Experience our latest projects and performances</p>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
             {[1, 2, 3].map((item) => (
               <Card
                 key={item}
@@ -253,7 +253,7 @@ const LaRosaView = () => {
               >
                 <div className="aspect-video bg-gradient-to-br from-rose-900/20 to-background relative">
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60">
-                    <Play className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500" aria-hidden="true" />
+                    <Play className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 text-rose-500" aria-hidden="true" />
                   </div>
                 </div>
               </Card>
@@ -281,15 +281,15 @@ const LaRosaView = () => {
               Our Services
             </span>
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-6 mb-6 sm:mb-8 md:mb-12">
             {services.map((service, index) => (
               <Card
                 key={index}
                 className="group border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-rose-600/20 hover-lift"
               >
-                <CardContent className="p-4 sm:p-5 md:p-6 lg:p-8">
-                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 sm:mb-3 group-hover:text-rose-400 transition-colors">{service.title}</h3>
-                  <p className="text-muted-foreground text-xs sm:text-sm">{service.desc}</p>
+                <CardContent className="p-2.5 sm:p-4 md:p-6 lg:p-8">
+                  <h3 className="text-xs sm:text-base md:text-xl font-semibold mb-1 sm:mb-3 group-hover:text-rose-400 transition-colors">{service.title}</h3>
+                  <p className="text-muted-foreground text-[10px] sm:text-xs md:text-sm leading-tight">{service.desc}</p>
                 </CardContent>
               </Card>
             ))}

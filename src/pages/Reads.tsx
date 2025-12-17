@@ -139,7 +139,7 @@ const ReadsContent = () => {
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Featured eBooks</h2>
             <p className="text-xl text-muted-foreground">Handpicked titles to accelerate your learning journey</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-8">
             {booksData.filter(book => book.isBestseller || book.isNew).slice(0, 3).map((book) => (
               <BookCard key={book.id} book={book} onBuyNow={handleBuyNow} />
             ))}
@@ -160,7 +160,7 @@ const ReadsContent = () => {
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Browse by Category</h2>
             <p className="text-xl text-muted-foreground">Find resources tailored to your interests</p>
           </div>
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {(Object.keys(categoryIcons) as BookCategory[]).map((category) => {
               const Icon = categoryIcons[category];
               const count = booksData.filter(b => b.category === category).length;
@@ -175,12 +175,12 @@ const ReadsContent = () => {
                     document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  <CardHeader className="text-center">
-                    <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-4 mx-auto">
-                      <Icon className="w-8 h-8 text-primary" />
+                  <CardHeader className="text-center p-3 sm:p-4 md:p-6">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-2 sm:mb-4 mx-auto">
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-primary" />
                     </div>
-                    <CardTitle className="text-xl">{category}</CardTitle>
-                    <CardDescription>{count} books</CardDescription>
+                    <CardTitle className="text-sm sm:text-lg md:text-xl">{category}</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">{count} books</CardDescription>
                   </CardHeader>
                 </Card>
               );
@@ -229,7 +229,7 @@ const ReadsContent = () => {
 
           {/* Books Grid */}
           {filteredBooks.length > 0 ? (
-            <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {filteredBooks.map((book) => (
                 <BookCard key={book.id} book={book} onBuyNow={handleBuyNow} />
               ))}
