@@ -157,7 +157,7 @@ const DevContent = () => {
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">What I Build</h2>
             <p className="text-xl text-muted-foreground">Professional web development services tailored to your needs</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8">
             {devServicePackages.map((service, index) => (
               <DevServiceCard 
                 key={index} 
