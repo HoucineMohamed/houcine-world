@@ -17,7 +17,6 @@ import { ServicePackageCard } from "@/components/design/ServicePackageCard";
 import { PortfolioLightbox } from "@/components/design/PortfolioLightbox";
 import { TestimonialsSlider, Testimonial } from "@/components/design/TestimonialsSlider";
 import { ReviewModal } from "@/components/design/ReviewModal";
-import { WhatYouReceiveSection } from "@/components/design/WhatYouReceiveSection";
 import { brandingPackages, graphicDesignPackages, uiuxPackages } from "@/data/servicePackages";
 import { toast } from "sonner";
 import profilePhoto from "@/assets/profile.png";
@@ -338,7 +337,6 @@ const DesignsContent = () => {
                   />
                 ))}
               </div>
-              <WhatYouReceiveSection category="Branding" />
             </TabsContent>
 
             <TabsContent value="graphic">
@@ -351,7 +349,6 @@ const DesignsContent = () => {
                   />
                 ))}
               </div>
-              <WhatYouReceiveSection category="Graphic Design" />
             </TabsContent>
 
             <TabsContent value="uiux">
@@ -364,7 +361,6 @@ const DesignsContent = () => {
                   />
                 ))}
               </div>
-              <WhatYouReceiveSection category="UI/UX Design" />
             </TabsContent>
           </Tabs>
 

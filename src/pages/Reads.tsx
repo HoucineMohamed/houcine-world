@@ -7,32 +7,42 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, BookOpen, Search, Mail, ExternalLink,
-  TrendingUp, Code2, Palette, Users, DollarSign
+  TrendingUp, Code2, Palette, Users, DollarSign, Cpu, Heart, GraduationCap, Construction
 } from "lucide-react";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { CurrencyProvider, useCurrency, Currency } from "@/contexts/CurrencyContext";
-import { booksData, BookCategory } from "@/data/booksData";
+import { booksData, BookCategory, Book } from "@/data/booksData";
 import BookCard from "@/components/reads/BookCard";
 import ReviewsSection from "@/components/reads/ReviewsSection";
+import ShoppingCart from "@/components/reads/ShoppingCart";
+import UnderConstructionModal from "@/components/reads/UnderConstructionModal";
 import { toast } from "sonner";
 import profileImage from "@/assets/profile.png";
 
-const categoryIcons = {
+const categoryIcons: Record<BookCategory, React.ComponentType<any>> = {
   FinTech: TrendingUp,
   Development: Code2,
   Design: Palette,
-  Management: Users
+  Management: Users,
+  Tech: Cpu,
+  "Soft Skills": Heart,
+  Educational: GraduationCap
 };
+
+const allCategories: BookCategory[] = ["Tech", "FinTech", "Design", "Soft Skills", "Management", "Educational", "Development"];
 
 const ReadsContent = () => {
   const { currency, setCurrency } = useCurrency();
   const [selectedCategory, setSelectedCategory] = useState<BookCategory | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [selectedBook, setSelectedBook] = useState<any>(null);
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [cartItems, setCartItems] = useState<Book[]>([]);
+  const [constructionModalOpen, setConstructionModalOpen] = useState(false);
+  const [constructionBookTitle, setConstructionBookTitle] = useState("");
 
   const heroAnimation = useScrollAnimation();
   const featuredAnimation = useScrollAnimation();
@@ -49,12 +59,28 @@ const ReadsContent = () => {
     return matchesCategory && matchesSearch;
   });
 
-  const handleBuyNow = (book: any) => {
-    setSelectedBook(book);
-    const element = document.getElementById('payment');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const handleBuyNow = (book: Book) => {
+    setConstructionBookTitle(book.title);
+    setConstructionModalOpen(true);
+  };
+
+  const handleAddToCart = (book: Book) => {
+    if (cartItems.find(item => item.id === book.id)) {
+      toast.info("This book is already in your basket");
+      return;
     }
+    setCartItems([...cartItems, book]);
+    toast.success(`"${book.title}" added to basket`);
+  };
+
+  const handleRemoveFromCart = (bookId: string) => {
+    setCartItems(cartItems.filter(item => item.id !== bookId));
+    toast.success("Removed from basket");
+  };
+
+  const handleClearCart = () => {
+    setCartItems([]);
+    toast.success("Basket cleared");
   };
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
@@ -74,13 +100,18 @@ const ReadsContent = () => {
       
       {/* Header */}
       <header className="border-b border-border/40 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <Link to="/">
             <Button variant="ghost" size="sm" className="gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back to Home
             </Button>
           </Link>
+          <ShoppingCart 
+            items={cartItems} 
+            onRemoveItem={handleRemoveFromCart}
+            onClearCart={handleClearCart}
+          />
         </div>
       </header>
 
@@ -105,7 +136,7 @@ const ReadsContent = () => {
             Empowering the Next Generation of Innovators
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
-            Curated eBooks and resources by Houcine Mohamed for finance, tech, design, and management enthusiasts.
+            Curated eBooks and digital resources for finance, tech, design, and management enthusiasts.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -121,7 +152,7 @@ const ReadsContent = () => {
               onClick={() => window.open('https://ba9chich.com/fr/Mohamed.Houcine', '_blank')}
             >
               <ExternalLink className="w-5 h-5 mr-2" />
-              Visit Backchi Store
+              Visit Ba9chich Store
             </Button>
           </div>
         </div>
@@ -141,7 +172,16 @@ const ReadsContent = () => {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-8">
             {booksData.filter(book => book.isBestseller || book.isNew).slice(0, 3).map((book) => (
-              <BookCard key={book.id} book={book} onBuyNow={handleBuyNow} />
+              <div key={book.id} className="relative">
+                <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-lg z-10">
+                  <div className="text-center p-4">
+                    <Construction className="w-8 h-8 text-primary mx-auto mb-2" />
+                    <p className="text-sm font-medium text-foreground">Under Construction</p>
+                    <p className="text-xs text-muted-foreground">Coming Soon</p>
+                  </div>
+                </div>
+                <BookCard book={book} onBuyNow={handleBuyNow} onAddToCart={handleAddToCart} />
+              </div>
             ))}
           </div>
         </div>
@@ -160,8 +200,8 @@ const ReadsContent = () => {
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Browse by Category</h2>
             <p className="text-xl text-muted-foreground">Find resources tailored to your interests</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-            {(Object.keys(categoryIcons) as BookCategory[]).map((category) => {
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4">
+            {allCategories.map((category) => {
               const Icon = categoryIcons[category];
               const count = booksData.filter(b => b.category === category).length;
               return (
@@ -175,12 +215,12 @@ const ReadsContent = () => {
                     document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  <CardHeader className="text-center p-3 sm:p-4 md:p-6">
-                    <div className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-2 sm:mb-4 mx-auto">
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-primary" />
+                  <CardHeader className="text-center p-3 sm:p-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-2 mx-auto">
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                     </div>
-                    <CardTitle className="text-sm sm:text-lg md:text-xl">{category}</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">{count} books</CardDescription>
+                    <CardTitle className="text-xs sm:text-sm">{category}</CardTitle>
+                    <CardDescription className="text-xs">{count} books</CardDescription>
                   </CardHeader>
                 </Card>
               );
@@ -219,10 +259,9 @@ const ReadsContent = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="All">All Categories</SelectItem>
-                <SelectItem value="FinTech">FinTech</SelectItem>
-                <SelectItem value="Development">Development</SelectItem>
-                <SelectItem value="Design">Design</SelectItem>
-                <SelectItem value="Management">Management</SelectItem>
+                {allCategories.map(cat => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -231,7 +270,16 @@ const ReadsContent = () => {
           {filteredBooks.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {filteredBooks.map((book) => (
-                <BookCard key={book.id} book={book} onBuyNow={handleBuyNow} />
+                <div key={book.id} className="relative">
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-lg z-10">
+                    <div className="text-center p-4">
+                      <Construction className="w-8 h-8 text-primary mx-auto mb-2" />
+                      <p className="text-sm font-medium text-foreground">Under Construction</p>
+                      <p className="text-xs text-muted-foreground">Coming Soon</p>
+                    </div>
+                  </div>
+                  <BookCard book={book} onBuyNow={handleBuyNow} onAddToCart={handleAddToCart} />
+                </div>
               ))}
             </div>
           ) : (
@@ -304,34 +352,27 @@ const ReadsContent = () => {
               </CardContent>
             </Card>
 
-            {selectedBook && (
-              <Card className="border-primary/50 bg-card/50 backdrop-blur shadow-lg shadow-primary/20">
-                <CardHeader>
-                  <CardTitle className="text-2xl">Selected Book</CardTitle>
-                  <CardDescription>Ready to purchase</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <p className="font-semibold text-lg">{selectedBook.title}</p>
-                    <p className="text-sm text-muted-foreground">{selectedBook.author}</p>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold text-primary">
-                      {currency === "EUR" ? "€" : currency === "USD" ? "$" : "TND "}
-                      {currency === "EUR" ? selectedBook.basePrice : 
-                       currency === "USD" ? Math.round(selectedBook.basePrice * 1.09) :
-                       Math.round(selectedBook.basePrice * 3.36)}
-                    </span>
-                  </div>
-                  <Button className="w-full bg-primary hover:bg-primary/90">
-                    Proceed to Checkout
-                  </Button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    Instant PDF download after payment
+            <Card className="border-primary/50 bg-card/50 backdrop-blur shadow-lg shadow-primary/20">
+              <CardHeader>
+                <CardTitle className="text-2xl flex items-center gap-2">
+                  <Construction className="w-6 h-6 text-primary" />
+                  Store Status
+                </CardTitle>
+                <CardDescription>Currently preparing for launch</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                  <p className="font-semibold text-lg mb-2">Under Construction</p>
+                  <p className="text-sm text-muted-foreground">
+                    Houcine.reads is being prepared. Purchases will be available soon. 
+                    In the meantime, feel free to browse the collection and add books to your basket.
                   </p>
-                </CardContent>
-              </Card>
-            )}
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  Instant PDF download after payment (when available)
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -356,10 +397,13 @@ const ReadsContent = () => {
                   />
                 </div>
                 <div>
-                  <Badge className="mb-4 bg-primary/10 text-primary border-primary/30">Author & Curator</Badge>
+                  <Badge className="mb-4 bg-primary/10 text-primary border-primary/30">Founder & Curator</Badge>
                   <h3 className="text-3xl font-display font-bold mb-4">Houcine Mohamed</h3>
-                  <p className="text-lg text-muted-foreground mb-6">
+                  <p className="text-lg text-muted-foreground mb-4">
                     Curating resources to empower innovators in finance, tech, and design. With years of experience in FinTech and education, I'm passionate about making complex topics accessible to everyone.
+                  </p>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    Houcine.reads features carefully selected digital books from various authors, all curated to help you grow professionally and personally.
                   </p>
                   <div className="flex gap-3">
                     <Button variant="outline" onClick={() => window.location.href = 'mailto:contact@houcine.world'}>
@@ -400,38 +444,34 @@ const ReadsContent = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-primary/30 to-accent/30 rounded-full blur-3xl" />
         </div>
         <div className="container mx-auto px-6 max-w-2xl relative z-10">
-          <Card className="border-border/50 bg-card/50 backdrop-blur">
-            <CardHeader className="text-center">
-              <CardTitle className="text-3xl md:text-4xl font-display font-bold mb-4">
-                Stay Updated
-              </CardTitle>
-              <CardDescription className="text-lg">
-                Get notified about new books, exclusive content, and special offers
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4">
-                <Input 
-                  type="email"
-                  placeholder="Enter your email"
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="flex-1"
-                  required
-                />
-                <Button type="submit" className="bg-primary hover:bg-primary/90">
-                  Subscribe
-                </Button>
-              </form>
-              <p className="text-xs text-muted-foreground text-center mt-4">
-                No spam. Unsubscribe anytime.
-              </p>
-            </CardContent>
+          <Card className="border-border/50 bg-card/50 backdrop-blur p-8 text-center">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Stay Updated</h2>
+            <p className="text-muted-foreground mb-8">
+              Get notified about new book releases and exclusive offers.
+            </p>
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <Input 
+                type="email"
+                placeholder="Enter your email"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                className="flex-1"
+              />
+              <Button type="submit" className="bg-primary hover:bg-primary/90">
+                Subscribe
+              </Button>
+            </form>
           </Card>
         </div>
       </section>
 
       <Footer />
+
+      <UnderConstructionModal 
+        isOpen={constructionModalOpen}
+        onClose={() => setConstructionModalOpen(false)}
+        bookTitle={constructionBookTitle}
+      />
     </div>
   );
 };

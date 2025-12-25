@@ -1,4 +1,4 @@
-export type BookCategory = "FinTech" | "Development" | "Design" | "Management";
+export type BookCategory = "FinTech" | "Development" | "Design" | "Management" | "Tech" | "Soft Skills" | "Educational";
 
 export interface Book {
   id: string;
@@ -49,7 +49,7 @@ export const booksData: Book[] = [
     shortDescription: "Build scalable web applications with React from scratch.",
     basePrice: 39,
     coverImage: "/placeholder.svg",
-    category: "Development",
+    category: "Tech",
     isNew: true,
     rating: 4.7,
     reviewCount: 83
@@ -115,5 +115,29 @@ export const booksData: Book[] = [
     category: "Development",
     rating: 4.6,
     reviewCount: 91
+  },
+  {
+    id: "soft-skills-tech",
+    title: "Soft Skills for Tech Professionals",
+    author: "Sarah Chen",
+    description: "Develop essential communication, leadership, and collaboration skills for success in the tech industry.",
+    shortDescription: "Master communication and leadership in tech.",
+    basePrice: 28,
+    coverImage: "/placeholder.svg",
+    category: "Soft Skills",
+    rating: 4.5,
+    reviewCount: 62
+  },
+  {
+    id: "learning-to-learn",
+    title: "Learning to Learn",
+    author: "Dr. James Miller",
+    description: "Evidence-based strategies for accelerating your learning and mastering any new skill efficiently.",
+    shortDescription: "Accelerate your learning with proven techniques.",
+    basePrice: 25,
+    coverImage: "/placeholder.svg",
+    category: "Educational",
+    rating: 4.7,
+    reviewCount: 89
   }
 ];
