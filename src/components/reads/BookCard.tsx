@@ -1,16 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
+import { Star, ShoppingCart } from "lucide-react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { Book } from "@/data/booksData";
 
 interface BookCardProps {
   book: Book;
   onBuyNow: (book: Book) => void;
+  onAddToCart?: (book: Book) => void;
 }
 
-const BookCard = ({ book, onBuyNow }: BookCardProps) => {
+const BookCard = ({ book, onBuyNow, onAddToCart }: BookCardProps) => {
   const { currency, convertPrice } = useCurrency();
 
   return (
@@ -67,12 +68,24 @@ const BookCard = ({ book, onBuyNow }: BookCardProps) => {
             </span>
           </div>
 
-          <Button 
-            className="w-full bg-primary hover:bg-primary/90 text-xs sm:text-sm py-1.5 sm:py-2"
-            onClick={() => onBuyNow(book)}
-          >
-            Buy Now
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              className="flex-1 bg-primary hover:bg-primary/90 text-xs sm:text-sm py-1.5 sm:py-2"
+              onClick={() => onBuyNow(book)}
+            >
+              Buy Now
+            </Button>
+            {onAddToCart && (
+              <Button 
+                variant="outline"
+                size="icon"
+                className="flex-shrink-0"
+                onClick={() => onAddToCart(book)}
+              >
+                <ShoppingCart className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

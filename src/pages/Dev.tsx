@@ -259,8 +259,18 @@ const DevContent = () => {
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-tech-blue/20 to-primary/20 rounded-xl blur-xl" />
-                  <div className="relative aspect-square bg-gradient-to-br from-tech-blue/20 to-primary/20 rounded-xl flex items-center justify-center">
-                    <User className="w-20 h-20 text-tech-blue" />
+                  <div className="relative aspect-square bg-gradient-to-br from-tech-blue/20 to-primary/20 rounded-xl flex flex-col items-center justify-center gap-4 overflow-hidden">
+                    <User className="w-16 h-16 text-tech-blue" />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-card/90 to-transparent p-4">
+                      <div className="flex items-center justify-center gap-2">
+                        <img 
+                          src="/src/assets/pytunisia-logo.png"
+                          alt="PyTunisia Logo"
+                          className="w-12 h-12 object-contain"
+                        />
+                        <span className="text-sm font-semibold text-tech-blue">PyTunisia</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div>
