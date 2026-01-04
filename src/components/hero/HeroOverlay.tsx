@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Phone, Mail, Linkedin, Github, Palette, ExternalLink, ArrowRight } from "lucide-react";
 import { ServiceData } from "./WebGLHero";
+import CharacterPortrait from "./CharacterPortrait";
 
 interface HeroOverlayProps {
   activeService: ServiceData | null;
@@ -13,6 +14,11 @@ export default function HeroOverlay({ activeService }: HeroOverlayProps) {
     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
       {/* Main content */}
       <div className="text-center px-6 max-w-4xl mx-auto">
+        {/* Character Portrait - positioned above brand name */}
+        <div className="mb-6 md:mb-8 pointer-events-auto flex justify-center">
+          <CharacterPortrait />
+        </div>
+        
         {/* Brand name */}
         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground mb-4 md:mb-6 tracking-tight font-display drop-shadow-[0_0_30px_rgba(91,192,235,0.3)]">
           Houcine<span className="text-accent drop-shadow-[0_0_10px_rgba(91,192,235,0.8)]">.</span>world
