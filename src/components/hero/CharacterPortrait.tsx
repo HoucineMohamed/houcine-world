@@ -40,10 +40,18 @@ export default function CharacterPortrait({ className }: CharacterPortraitProps)
   }, []);
 
   // Mouse parallax effect (desktop only, ±6 degrees)
+  // On mobile: use subtle device motion or skip entirely
   useEffect(() => {
     if (prefersReducedMotion) return;
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) return;
+    
+    // Check for mobile at effect time
+    const isMobileDevice = window.innerWidth < 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    
+    if (isMobileDevice) {
+      // On mobile: subtle rotation without heavy parallax
+      // Just keep idle sway animation active
+      return;
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       lastInteractionRef.current = Date.now();
@@ -156,7 +164,7 @@ export default function CharacterPortrait({ className }: CharacterPortraitProps)
           />
           
           {/* Image - seamless integration, no border/frame */}
-          <div className="relative w-44 h-44 md:w-52 md:h-52 lg:w-60 lg:h-60 overflow-hidden">
+          <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-60 lg:h-60 overflow-hidden">
             <img
               src={houcineCharacter}
               alt="Mohamed Houcine - Founder of Houcine.world"

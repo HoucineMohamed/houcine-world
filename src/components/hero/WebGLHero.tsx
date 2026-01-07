@@ -56,6 +56,25 @@ interface WebGLHeroProps {
   onActiveServiceChange?: (service: ServiceData | null) => void;
 }
 
+// Helper to get viewport dimensions (handles iOS Safari address bar)
+const getViewportSize = () => ({
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
+
+// Initial checks (sync to avoid hydration issues)
+const checkIsMobile = () => window.innerWidth < 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const checkReducedMotion = () => typeof window !== 'undefined' && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const checkWebGLSupport = () => {
+  try {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    return !!gl;
+  } catch {
+    return false;
+  }
+};
+
 export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -68,20 +87,37 @@ export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
   const mouseRef = useRef({ x: 0, y: 0 });
   const targetMouseRef = useRef({ x: 0, y: 0 });
   const isVisibleRef = useRef(true);
-  const [isMobile, setIsMobile] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [webglSupported, setWebglSupported] = useState(true);
+  
+  // Initialize state synchronously to avoid render flash
+  const [isMobile, setIsMobile] = useState(() => checkIsMobile());
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => checkReducedMotion());
+  const [webglSupported, setWebglSupported] = useState(() => checkWebGLSupport());
   const [activeServiceIndex, setActiveServiceIndex] = useState(-1);
+  const [isReady, setIsReady] = useState(false);
 
-  // Check device and preferences
+  // Update on client mount and handle orientation changes
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
-    setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const updateState = () => {
+      setIsMobile(checkIsMobile());
+    };
     
-    // Check WebGL support
-    const canvas = document.createElement("canvas");
-    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-    setWebglSupported(!!gl);
+    // Listen for orientation changes (mobile)
+    window.addEventListener("orientationchange", updateState);
+    window.addEventListener("resize", updateState);
+    
+    // Recheck reduced motion preference changes
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handleMotionChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    motionQuery.addEventListener("change", handleMotionChange);
+    
+    // Mark ready after first paint
+    setIsReady(true);
+    
+    return () => {
+      window.removeEventListener("orientationchange", updateState);
+      window.removeEventListener("resize", updateState);
+      motionQuery.removeEventListener("change", handleMotionChange);
+    };
   }, []);
 
   // Notify parent of active service changes
@@ -223,30 +259,53 @@ export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
 
   // Initialize Three.js scene
   useEffect(() => {
-    if (!containerRef.current || !webglSupported) return;
+    if (!containerRef.current || !webglSupported || !isReady) return;
 
     const container = containerRef.current;
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    
+    // Use viewport dimensions, not container (fixes iOS/mobile issues)
+    const { width, height } = getViewportSize();
+    
+    // Ensure dimensions are valid
+    if (width === 0 || height === 0) {
+      console.warn("WebGLHero: Invalid viewport dimensions, retrying...");
+      const retryTimer = setTimeout(() => setIsReady(false), 100);
+      setTimeout(() => setIsReady(true), 150);
+      return () => clearTimeout(retryTimer);
+    }
 
     // Scene setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // Camera
+    // Camera - pull back more on mobile for better framing
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.z = isMobile ? 6 : 5;
+    camera.position.z = isMobile ? 7 : 5;
     cameraRef.current = camera;
 
-    // Renderer
+    // Renderer with mobile-optimized settings
     const renderer = new THREE.WebGLRenderer({
-      antialias: !isMobile,
+      antialias: !isMobile, // Disable antialiasing on mobile for performance
       alpha: true,
-      powerPreference: "high-performance",
+      powerPreference: isMobile ? "low-power" : "high-performance",
+      failIfMajorPerformanceCaveat: false, // Don't fail on low-end devices
     });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
+    // Set size explicitly to viewport (not container)
+    renderer.setSize(width, height, false);
+    
+    // Cap pixel ratio: 1.5 for mobile, 2 for desktop
+    const maxPixelRatio = isMobile ? 1.5 : 2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
     renderer.setClearColor(0x000000, 0);
+    
+    // Style canvas to fill container
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -348,14 +407,23 @@ export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
       serviceSpritesRef.current.push(sprite);
     });
 
-    // Handle resize
+    // Handle resize with debounce for orientation changes
+    let resizeTimeout: number;
     const handleResize = () => {
-      if (!container || !camera || !renderer) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(() => {
+        if (!camera || !renderer) return;
+        const { width: w, height: h } = getViewportSize();
+        if (w === 0 || h === 0) return;
+        
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h, false);
+        
+        // Update pixel ratio on resize (device might change)
+        const maxPixelRatio = checkIsMobile() ? 1.5 : 2;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
+      }, 100);
     };
 
     // Handle mouse move (desktop only)
@@ -374,6 +442,7 @@ export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
     };
 
     window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
     window.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
@@ -463,7 +532,9 @@ export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
 
     // Cleanup
     return () => {
+      clearTimeout(resizeTimeout);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       cancelAnimationFrame(animationFrameRef.current);
@@ -479,10 +550,12 @@ export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
         particlesRef.current.geometry.dispose();
       }
       
-      renderer.dispose();
-      container.removeChild(renderer.domElement);
+      if (renderer.domElement.parentNode) {
+        renderer.dispose();
+        container.removeChild(renderer.domElement);
+      }
     };
-  }, [webglSupported, isMobile, prefersReducedMotion, loadLogoParticles, createIconTexture, activeServiceIndex]);
+  }, [webglSupported, isMobile, prefersReducedMotion, loadLogoParticles, createIconTexture, activeServiceIndex, isReady]);
 
   if (!webglSupported) {
     return (
@@ -502,7 +575,13 @@ export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
   return (
     <div 
       ref={containerRef} 
-      className="absolute inset-0"
+      className="absolute inset-0 w-full h-full"
+      style={{
+        // Ensure full viewport coverage on mobile (fixes iOS Safari address bar)
+        width: '100vw',
+        height: '100vh',
+        minHeight: '-webkit-fill-available',
+      }}
       aria-hidden="true"
     />
   );

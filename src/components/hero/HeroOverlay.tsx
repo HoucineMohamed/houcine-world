@@ -83,13 +83,14 @@ export default function HeroOverlay({ activeService }: HeroOverlayProps) {
         </div>
       </div>
 
-      {/* Service HUD - appears on right side when service is highlighted */}
+      {/* Service HUD - appears on right side when service is highlighted (hidden on mobile) */}
       <div 
         className={`
           fixed right-4 md:right-8 top-1/2 -translate-y-1/2 
           max-w-xs md:max-w-sm
           pointer-events-auto
           transition-all duration-500 ease-out
+          hidden md:block
           ${activeService ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}
         `}
       >

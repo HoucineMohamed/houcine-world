@@ -12,13 +12,29 @@ export default function HeroSection() {
   return (
     <section 
       id="home" 
-      className="relative min-h-screen w-full overflow-hidden bg-background"
+      className="relative w-full overflow-hidden bg-background min-h-screen"
+      style={{
+        // iOS Safari fix for address bar
+        minHeight: 'calc(var(--vh, 1vh) * 100)',
+      }}
       aria-label="Hero section showcasing Houcine.world ecosystem"
     >
+      {/* Set CSS variable for true viewport height on mobile */}
+      <style>{`
+        :root {
+          --vh: 1vh;
+        }
+        @supports (-webkit-touch-callout: none) {
+          :root {
+            --vh: 1svh;
+          }
+        }
+      `}</style>
+      
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-secondary/20 pointer-events-none" />
       
-      {/* WebGL Canvas */}
+      {/* WebGL Canvas - always visible, no conditional rendering */}
       <WebGLHero onActiveServiceChange={handleActiveServiceChange} />
       
       {/* HTML Overlay */}
