@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Download, Briefcase, Mail, Github, Linkedin, ExternalLink } from "lucide-react";
+import { Briefcase, Mail, Github, Linkedin, ExternalLink } from "lucide-react";
 import houcineCharacter from "@/assets/houcine-character.jpg";
 
 interface CharacterPortraitProps {
@@ -14,23 +14,34 @@ export default function CharacterPortrait({ className }: CharacterPortraitProps)
   const [showBio, setShowBio] = useState(false);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [idleTime, setIdleTime] = useState(0);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const idleTimerRef = useRef<number | null>(null);
   const lastInteractionRef = useRef<number>(Date.now());
 
-  // Fade-in on load
+  // Check for reduced motion preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+    
+    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
+  // Fade-in entrance: 0.5s delay, 2s float
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoaded(true);
-      // Delayed visibility for smoother entrance
       setTimeout(() => setIsVisible(true), 100);
     }, 500);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Mouse parallax effect (desktop only)
+  // Mouse parallax effect (desktop only, ±6 degrees)
   useEffect(() => {
+    if (prefersReducedMotion) return;
     const isMobile = window.innerWidth < 768;
     if (isMobile) return;
 
@@ -41,7 +52,7 @@ export default function CharacterPortrait({ className }: CharacterPortraitProps)
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
       
-      // Calculate rotation based on mouse position (±6 degrees)
+      // ±6 degrees rotation based on cursor position
       const rotateY = ((e.clientX - centerX) / centerX) * 6;
       const rotateX = ((centerY - e.clientY) / centerY) * 6;
       
@@ -50,10 +61,12 @@ export default function CharacterPortrait({ className }: CharacterPortraitProps)
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [prefersReducedMotion]);
 
-  // Idle animation timer
+  // Idle sway animation after 5 seconds of no interaction
   useEffect(() => {
+    if (prefersReducedMotion) return;
+    
     idleTimerRef.current = window.setInterval(() => {
       const timeSinceInteraction = Date.now() - lastInteractionRef.current;
       if (timeSinceInteraction > 5000) {
@@ -64,107 +77,138 @@ export default function CharacterPortrait({ className }: CharacterPortraitProps)
     return () => {
       if (idleTimerRef.current) clearInterval(idleTimerRef.current);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
-  // Idle sway calculation
-  const idleSwayX = Math.sin(idleTime * 0.8) * 2;
-  const idleSwayY = Math.cos(idleTime * 0.6) * 1.5;
+  // Idle sway calculation - synced with hero timing
+  const idleSwayX = prefersReducedMotion ? 0 : Math.sin(idleTime * 0.8) * 2;
+  const idleSwayY = prefersReducedMotion ? 0 : Math.cos(idleTime * 0.6) * 1.5;
 
   return (
     <>
       <div
         ref={containerRef}
         className={`
-          relative cursor-pointer select-none
-          transition-all duration-700 ease-out
+          relative cursor-pointer select-none group
+          transition-all ease-out
           ${isLoaded ? "opacity-100" : "opacity-0"}
           ${isVisible ? "translate-y-0 scale-100" : "translate-y-8 scale-95"}
           ${className}
         `}
+        style={{
+          transitionDuration: isVisible ? "2000ms" : "700ms",
+        }}
         onClick={() => setShowBio(true)}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === "Enter" && setShowBio(true)}
-        aria-label="Click to view Mohamed Houcine's bio"
+        aria-label="Click to view Mohamed Houcine's bio and contact information"
       >
-        {/* Glow effect behind character */}
+        {/* Rim glow effect - upper-right light source matching WebGL hero */}
         <div 
-          className="absolute inset-0 -z-10 blur-3xl opacity-40"
+          className="absolute -inset-4 -z-10 opacity-70 pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse at center, hsl(var(--accent) / 0.4) 0%, transparent 70%)",
-            transform: `scale(1.5)`,
-          }}
-        />
-
-        {/* Rim light effect */}
-        <div 
-          className="absolute inset-0 -z-5 rounded-full opacity-60"
-          style={{
-            background: "linear-gradient(135deg, transparent 40%, hsl(var(--accent) / 0.3) 60%, hsl(var(--accent) / 0.5) 80%, transparent 100%)",
-            transform: `scale(1.1) translateX(10px) translateY(-10px)`,
-            filter: "blur(20px)",
-          }}
-        />
-
-        {/* Character image container */}
-        <div
-          className="relative overflow-hidden rounded-full"
-          style={{
-            transform: `
-              perspective(1000px) 
-              rotateX(${rotation.x + idleSwayY}deg) 
-              rotateY(${rotation.y + idleSwayX}deg)
-              translateZ(10px)
+            background: `
+              radial-gradient(ellipse 60% 60% at 70% 20%, 
+                hsl(var(--accent) / 0.5) 0%, 
+                hsl(var(--accent) / 0.2) 30%, 
+                transparent 70%
+              )
             `,
-            transition: "transform 0.15s ease-out",
+            filter: "blur(20px)",
+            transform: `translateX(${idleSwayX * 0.3}px) translateY(${idleSwayY * 0.3}px)`,
+          }}
+        />
+
+        {/* Soft ambient glow beneath */}
+        <div 
+          className="absolute inset-0 -z-10 opacity-30 pointer-events-none"
+          style={{
+            background: "radial-gradient(circle at 50% 80%, hsl(var(--accent) / 0.4) 0%, transparent 60%)",
+            filter: "blur(40px)",
+            transform: "scale(1.5) translateY(20%)",
+          }}
+        />
+
+        {/* Character image with parallax transform */}
+        <div
+          className="relative"
+          style={{
+            transform: prefersReducedMotion
+              ? "none"
+              : `
+                perspective(1000px) 
+                rotateX(${rotation.x + idleSwayY}deg) 
+                rotateY(${rotation.y + idleSwayX}deg)
+                translateZ(15px)
+              `,
+            transition: "transform 0.15s cubic-bezier(0.33, 1, 0.68, 1)",
             transformStyle: "preserve-3d",
           }}
         >
-          {/* Soft shadow */}
+          {/* Soft drop shadow for depth - no circular frame */}
           <div 
-            className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-black/30 blur-xl rounded-full"
+            className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-2/3 h-12 pointer-events-none"
             style={{
+              background: "radial-gradient(ellipse, hsl(var(--background) / 0.8) 0%, transparent 70%)",
+              filter: "blur(15px)",
               transform: `translateY(${2 + idleSwayY * 0.5}px)`,
             }}
           />
           
-          {/* Image with gradient overlay for blending */}
-          <div className="relative w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64">
+          {/* Image - seamless integration, no border/frame */}
+          <div className="relative w-44 h-44 md:w-52 md:h-52 lg:w-60 lg:h-60 overflow-hidden">
             <img
               src={houcineCharacter}
               alt="Mohamed Houcine - Founder of Houcine.world"
-              className="w-full h-full object-cover object-top rounded-full border-2 border-accent/20 shadow-2xl shadow-accent/10"
+              className="w-full h-full object-cover object-top"
+              style={{
+                maskImage: "radial-gradient(ellipse 95% 95% at 50% 45%, black 60%, transparent 100%)",
+                WebkitMaskImage: "radial-gradient(ellipse 95% 95% at 50% 45%, black 60%, transparent 100%)",
+              }}
               loading="eager"
               onLoad={() => setIsLoaded(true)}
             />
             
-            {/* Subtle gradient overlay for scene blending */}
+            {/* Rim highlight overlay - matches hero lighting */}
             <div 
-              className="absolute inset-0 rounded-full pointer-events-none"
+              className="absolute inset-0 pointer-events-none"
               style={{
-                background: "linear-gradient(180deg, transparent 50%, hsl(var(--background) / 0.3) 100%)",
+                background: `
+                  linear-gradient(135deg, 
+                    transparent 50%, 
+                    hsl(var(--accent) / 0.15) 70%, 
+                    hsl(var(--accent) / 0.25) 85%, 
+                    transparent 100%
+                  )
+                `,
               }}
             />
             
-            {/* Click indicator ring */}
+            {/* Bottom fade for scene blending */}
             <div 
-              className="absolute inset-0 rounded-full border-2 border-accent/0 hover:border-accent/40 transition-all duration-300"
+              className="absolute inset-0 pointer-events-none"
               style={{
-                animation: isVisible ? "pulse-ring 3s ease-in-out infinite" : "none",
+                background: "linear-gradient(to top, hsl(var(--background) / 0.6) 0%, transparent 40%)",
               }}
             />
           </div>
+
+          {/* Interactive hover glow pulse */}
+          <div 
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+            style={{
+              background: "radial-gradient(circle at 50% 50%, hsl(var(--accent) / 0.2) 0%, transparent 60%)",
+              filter: "blur(20px)",
+            }}
+          />
         </div>
 
-        {/* Floating label */}
+        {/* Subtle click hint on hover */}
         <div 
-          className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-card/80 backdrop-blur-sm rounded-full border border-border/50 shadow-lg opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity duration-300"
-          style={{
-            transform: `translateX(-50%) translateY(${8 + idleSwayY}px)`,
-          }}
+          className="absolute -bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         >
-          <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
-            Click to learn more
+          <span className="text-xs text-muted-foreground/70 whitespace-nowrap">
+            Click for bio
           </span>
         </div>
       </div>
@@ -177,7 +221,7 @@ export default function CharacterPortrait({ className }: CharacterPortraitProps)
               <img
                 src={houcineCharacter}
                 alt="Mohamed Houcine"
-                className="w-16 h-16 rounded-full object-cover object-top border-2 border-accent/30"
+                className="w-16 h-16 rounded-lg object-cover object-top shadow-lg"
               />
               <div>
                 <h3 className="text-xl font-bold">Mohamed Houcine</h3>
@@ -254,18 +298,6 @@ export default function CharacterPortrait({ className }: CharacterPortraitProps)
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Keyframes for pulse ring animation */}
-      <style>{`
-        @keyframes pulse-ring {
-          0%, 100% {
-            box-shadow: 0 0 0 0 hsl(var(--accent) / 0.4);
-          }
-          50% {
-            box-shadow: 0 0 0 8px hsl(var(--accent) / 0);
-          }
-        }
-      `}</style>
     </>
   );
 }
