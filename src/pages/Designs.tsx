@@ -183,7 +183,7 @@ const DesignsContent = () => {
       {/* Hero Section */}
       <section
         ref={heroAnimation.ref}
-        className={`relative min-h-screen flex items-center justify-center overflow-hidden transition-all duration-1000 ${
+        className={`relative min-h-[80vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden transition-all duration-1000 ${
           heroAnimation.isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -234,12 +234,12 @@ const DesignsContent = () => {
       {/* About Section */}
       <section
         ref={aboutAnimation.ref}
-        className={`py-20 bg-secondary/20 transition-all duration-700 ${
+        className={`py-12 md:py-16 bg-secondary/20 transition-all duration-700 ${
           aboutAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-8">
             Meet the Designer
           </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
@@ -287,13 +287,13 @@ const DesignsContent = () => {
       {/* Services Section */}
       <section
         ref={servicesAnimation.ref}
-        className={`py-20 transition-all duration-700 ${
+        className={`py-12 md:py-16 transition-all duration-700 ${
           servicesAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
         <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
+          <div className="text-center mb-8">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
               Creative Services
             </h2>
             <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -372,13 +372,18 @@ const DesignsContent = () => {
 
       {/* Portfolio Section */}
       <section
-        ref={portfolioSectionRef}
-        className={`py-20 bg-secondary/20 transition-all duration-700 ${
+        ref={(el: HTMLElement | null) => {
+          (portfolioSectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
+          if (portfolioAnimation.ref) {
+            (portfolioAnimation.ref as React.MutableRefObject<HTMLElement | null>).current = el;
+          }
+        }}
+        className={`py-12 md:py-16 bg-secondary/20 transition-all duration-700 ${
           portfolioAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-8">
             Selected Works
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-8">
@@ -420,16 +425,16 @@ const DesignsContent = () => {
       {/* Testimonials Section */}
       <section
         ref={testimonialsAnimation.ref}
-        className={`py-20 transition-all duration-700 ${
+        className={`py-12 md:py-16 transition-all duration-700 ${
           testimonialsAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-8">
             What My Clients Say
           </h2>
           <TestimonialsSlider testimonials={testimonials.length > 0 ? testimonials : undefined} />
-          <div className="text-center mt-8">
+          <div className="text-center mt-6">
             <Button variant="outline" onClick={() => setReviewModalOpen(true)}>
               Leave a Review
             </Button>
@@ -439,8 +444,13 @@ const DesignsContent = () => {
 
       {/* Contact Section */}
       <section
-        ref={contactSectionRef}
-        className={`py-20 bg-secondary/20 transition-all duration-700 ${
+        ref={(el: HTMLElement | null) => {
+          (contactSectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
+          if (contactAnimation.ref) {
+            (contactAnimation.ref as React.MutableRefObject<HTMLElement | null>).current = el;
+          }
+        }}
+        className={`py-12 md:py-16 bg-secondary/20 transition-all duration-700 ${
           contactAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
@@ -448,7 +458,7 @@ const DesignsContent = () => {
           <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-6">
             Let's Create Something Beautiful Together
           </h2>
-          <p className="text-center text-muted-foreground mb-12">
+          <p className="text-center text-muted-foreground mb-8">
             Ready to elevate your brand? Fill out the form below or contact me directly.
           </p>
           <Card className="border-border/50 bg-card/50 backdrop-blur p-8">
