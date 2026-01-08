@@ -54,6 +54,7 @@ const SERVICE_HIGHLIGHT_DURATION = 3; // seconds per service highlight
 
 interface WebGLHeroProps {
   onActiveServiceChange?: (service: ServiceData | null) => void;
+  onSceneReady?: (ready: boolean) => void;
 }
 
 // Helper to get viewport dimensions (handles iOS Safari address bar)
@@ -75,7 +76,7 @@ const checkWebGLSupport = () => {
   }
 };
 
-export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
+export default function WebGLHero({ onActiveServiceChange, onSceneReady }: WebGLHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -94,6 +95,7 @@ export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
   const [webglSupported, setWebglSupported] = useState(() => checkWebGLSupport());
   const [activeServiceIndex, setActiveServiceIndex] = useState(-1);
   const [isReady, setIsReady] = useState(false);
+  const [sceneReady, setSceneReady] = useState(false);
 
   // Update on client mount and handle orientation changes
   useEffect(() => {
@@ -389,6 +391,10 @@ export default function WebGLHero({ onActiveServiceChange }: WebGLHeroProps) {
       const particles = new THREE.Points(geometry, material);
       scene.add(particles);
       particlesRef.current = particles;
+
+      // Mark scene as ready after particles are loaded
+      setSceneReady(true);
+      onSceneReady?.(true);
     });
 
     // Create service sprites
