@@ -14,63 +14,48 @@ import CustomCursor from "@/components/CustomCursor";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { CurrencyProvider, useCurrency, Currency } from "@/contexts/CurrencyContext";
 import { ServicePackageCard } from "@/components/design/ServicePackageCard";
-import { PortfolioLightbox } from "@/components/design/PortfolioLightbox";
+
 import { TestimonialsSlider, Testimonial } from "@/components/design/TestimonialsSlider";
 import { ReviewModal } from "@/components/design/ReviewModal";
 import { brandingPackages, graphicDesignPackages, uiuxPackages } from "@/data/servicePackages";
 import { toast } from "sonner";
 import profilePhoto from "@/assets/profile.png";
 
-interface PortfolioItem {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  behanceUrl?: string;
-}
+const processSteps = [
+  {
+    title: "Discovery",
+    description: "Understanding your vision, audience, and market positioning through strategic research and collaborative dialogue.",
+  },
+  {
+    title: "Concept & Direction",
+    description: "Defining the creative direction with mood boards, typography systems, and visual language foundations.",
+  },
+  {
+    title: "Design Execution",
+    description: "Crafting every element with precision — from logo systems to complete brand collateral.",
+  },
+  {
+    title: "Refinement & Delivery",
+    description: "Polishing details through iterative feedback and delivering production-ready assets.",
+  },
+];
 
-const portfolioItems: PortfolioItem[] = [
+const designPrinciples = [
   {
-    id: 1,
-    title: "Tech Startup Branding",
-    description: "Complete brand identity for an innovative AI startup",
-    image: "https://images.unsplash.com/photo-1634942537034-2531766767d1?w=800&q=80",
-    behanceUrl: "https://www.behance.net/HoucineDesigns",
+    title: "Systems Over Trends",
+    description: "Building scalable design systems that outlast fleeting aesthetics and grow with your brand.",
   },
   {
-    id: 2,
-    title: "Mobile App Design",
-    description: "UI/UX design for a fitness tracking application",
-    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80",
-    behanceUrl: "https://www.behance.net/HoucineDesigns",
+    title: "Clarity Before Aesthetics",
+    description: "Every design decision serves communication first — beauty follows function.",
   },
   {
-    id: 3,
-    title: "Restaurant Brand Identity",
-    description: "Modern branding for an upscale dining experience",
-    image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
-    behanceUrl: "https://www.behance.net/HoucineDesigns",
+    title: "Consistency Creates Trust",
+    description: "Unified visual language across all touchpoints builds recognition and credibility.",
   },
   {
-    id: 4,
-    title: "E-commerce Platform",
-    description: "Clean and intuitive web design for online retail",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
-    behanceUrl: "https://www.behance.net/HoucineDesigns",
-  },
-  {
-    id: 5,
-    title: "Music Festival Branding",
-    description: "Bold visual identity for a summer music event",
-    image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&q=80",
-    behanceUrl: "https://www.behance.net/HoucineDesigns",
-  },
-  {
-    id: 6,
-    title: "Finance App Interface",
-    description: "Professional dashboard design for financial management",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
-    behanceUrl: "https://www.behance.net/HoucineDesigns",
+    title: "Function Meets Emotion",
+    description: "Designs that work seamlessly while creating meaningful emotional connections.",
   },
 ];
 
@@ -78,17 +63,15 @@ const DesignsContent = () => {
   const heroAnimation = useScrollAnimation();
   const aboutAnimation = useScrollAnimation();
   const servicesAnimation = useScrollAnimation();
-  const portfolioAnimation = useScrollAnimation();
+  const processAnimation = useScrollAnimation();
+  const philosophyAnimation = useScrollAnimation();
   const testimonialsAnimation = useScrollAnimation();
   const contactAnimation = useScrollAnimation();
 
-  const [selectedPortfolio, setSelectedPortfolio] = useState<PortfolioItem | null>(null);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<string>("");
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const contactSectionRef = useRef<HTMLDivElement>(null);
-  const portfolioSectionRef = useRef<HTMLDivElement>(null);
 
   const { currency, setCurrency } = useCurrency();
 
@@ -104,10 +87,6 @@ const DesignsContent = () => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handlePortfolioClick = (item: PortfolioItem) => {
-    setSelectedPortfolio(item);
-    setLightboxOpen(true);
-  };
 
   const handleBookClick = (packageName: string) => {
     setSelectedPackage(packageName);
@@ -370,54 +349,61 @@ const DesignsContent = () => {
         </div>
       </section>
 
-      {/* Portfolio Section */}
+      {/* Process-Driven Design Section */}
       <section
-        ref={(el: HTMLElement | null) => {
-          (portfolioSectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
-          if (portfolioAnimation.ref) {
-            (portfolioAnimation.ref as React.MutableRefObject<HTMLElement | null>).current = el;
-          }
-        }}
+        ref={processAnimation.ref}
         className={`py-12 md:py-16 bg-secondary/20 transition-all duration-700 ${
-          portfolioAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          processAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
         <div className="container mx-auto px-6">
           <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-8">
-            Selected Works
+            Process-Driven Design
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-8">
-            {portfolioItems.map((item) => (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
+            {processSteps.map((step, index) => (
               <Card
-                key={item.id}
-                className="border-border/50 bg-card/50 backdrop-blur overflow-hidden cursor-pointer group hover:border-accent/50 transition-all"
-                onClick={() => handlePortfolioClick(item)}
+                key={index}
+                className="border-border/50 bg-card/50 backdrop-blur p-5 md:p-6 group hover:border-accent/50 hover:bg-card/80 transition-all duration-300"
               >
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform group-hover:scale-110"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-accent transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                </div>
+                <div className="text-accent/60 text-sm font-mono mb-2">0{index + 1}</div>
+                <h3 className="font-display font-semibold text-lg mb-3 group-hover:text-accent transition-colors">
+                  {step.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
               </Card>
             ))}
           </div>
-          <div className="text-center">
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() => window.open("https://www.behance.net/HoucineDesigns", "_blank")}
-            >
-              See Full Portfolio on Behance
-              <ExternalLink className="w-4 h-4" />
-            </Button>
+        </div>
+      </section>
+
+      {/* Design Philosophy Section */}
+      <section
+        ref={philosophyAnimation.ref}
+        className={`py-12 md:py-16 transition-all duration-700 ${
+          philosophyAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-8">
+            Design Philosophy
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
+            {designPrinciples.map((principle, index) => (
+              <Card
+                key={index}
+                className="border-border/50 bg-card/50 backdrop-blur p-5 md:p-6 group hover:border-accent/50 hover:bg-card/80 transition-all duration-300"
+              >
+                <h3 className="font-display font-semibold text-lg mb-3 group-hover:text-accent transition-colors">
+                  {principle.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {principle.description}
+                </p>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -539,11 +525,6 @@ const DesignsContent = () => {
 
       <Footer />
 
-      <PortfolioLightbox
-        item={selectedPortfolio}
-        isOpen={lightboxOpen}
-        onClose={() => setLightboxOpen(false)}
-      />
 
       <ReviewModal
         isOpen={reviewModalOpen}
