@@ -3,7 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Music, Theater, Video, Users, Mail, ExternalLink, Play, Instagram, Youtube, ChevronDown } from "lucide-react";
+import { Music, Theater, Video, Users, Mail, ExternalLink, Play, Instagram, Youtube, ChevronDown } from "lucide-react";
+import logoH from "@/assets/logo-h.png";
 import hajriPhoto from "@/assets/hajri-photo.jpeg";
 import houcinePhoto from "@/assets/houcine-photo.jpg";
 import timbreCover from "@/assets/timbre-cover.jpg";
@@ -84,9 +85,17 @@ const LaRosaView = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
-          <Link to="/manages" className="inline-flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base text-foreground hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded">
-            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="font-semibold">Back</span>
+          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
+            <img 
+              src={logoH} 
+              alt="Houcine.world home" 
+              className="h-7 sm:h-8 w-auto opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
+              style={{
+                filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.5))"}
+              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))"}
+            />
           </Link>
           <Link 
             to="/about-dj" 

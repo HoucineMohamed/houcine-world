@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Music, Award, Calendar, MapPin, ExternalLink } from "lucide-react";
+import { Music, Award, Calendar, MapPin, ExternalLink } from "lucide-react";
+import logoH from "@/assets/logo-h.png";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import laRosaLogo from "@/assets/larosa-logo.png";
@@ -39,9 +40,17 @@ const AboutDJ = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-6 py-4">
-          <Link to="/larosaview" className="inline-flex items-center gap-2 text-foreground hover:text-accent transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Back to La Rosa View</span>
+          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
+            <img 
+              src={logoH} 
+              alt="Houcine.world home" 
+              className="h-8 w-auto opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
+              style={{
+                filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.5))"}
+              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))"}
+            />
           </Link>
         </div>
       </header>
