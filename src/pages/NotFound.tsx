@@ -1,7 +1,8 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Home, ArrowLeft } from "lucide-react";
+import { Home } from "lucide-react";
+import logoH from "@/assets/logo-h.png";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 
@@ -28,17 +29,21 @@ const NotFound = () => {
           </p>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
-          <Button 
-            onClick={() => window.history.back()} 
-            variant="outline"
-            className="gap-2 hover:scale-105 transition-all"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Go Back
-          </Button>
+        <div className="flex flex-col items-center gap-6 animate-fade-in">
+          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
+            <img 
+              src={logoH} 
+              alt="Houcine.world home" 
+              className="h-12 w-auto opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
+              style={{
+                filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.5))"}
+              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))"}
+            />
+          </Link>
           <Link to="/">
-            <Button className="gap-2 hover:scale-105 transition-all w-full sm:w-auto">
+            <Button className="gap-2 hover:scale-105 transition-all">
               <Home className="w-4 h-4" />
               Return Home
             </Button>

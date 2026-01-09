@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { 
-  ArrowLeft, BookOpen, Search, Mail, ExternalLink,
+  BookOpen, Search, Mail, ExternalLink,
   TrendingUp, Code2, Palette, Users, DollarSign, Cpu, Heart, GraduationCap, Construction
 } from "lucide-react";
+import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
@@ -101,11 +102,17 @@ const ReadsContent = () => {
       {/* Header */}
       <header className="border-b border-border/40 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <Link to="/">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </Button>
+          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
+            <img 
+              src={logoH} 
+              alt="Houcine.world home" 
+              className="h-8 w-auto opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
+              style={{
+                filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.5))"}
+              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))"}
+            />
           </Link>
           <ShoppingCart 
             items={cartItems} 

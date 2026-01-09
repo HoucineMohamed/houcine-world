@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  ArrowLeft, 
   MapPin, 
   Briefcase, 
   Award, 
@@ -19,6 +18,7 @@ import {
   TrendingUp,
   Users
 } from "lucide-react";
+import logoH from "@/assets/logo-h.png";
 import { Link } from "react-router-dom";
 import profile from "@/assets/profile.png";
 import Footer from "@/components/Footer";
@@ -84,9 +84,17 @@ const AboutMe = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-          <Link to="/" className="inline-flex items-center gap-2 hover:text-primary transition-colors text-sm sm:text-base">
-            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            Back to Home
+          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
+            <img 
+              src={logoH} 
+              alt="Houcine.world home" 
+              className="h-7 sm:h-8 w-auto opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
+              style={{
+                filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.5))"}
+              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))"}
+            />
           </Link>
           <Button 
             variant="outline" 
