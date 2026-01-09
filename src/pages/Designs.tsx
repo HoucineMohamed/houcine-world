@@ -364,9 +364,23 @@ const DesignsContent = () => {
             {processSteps.map((step, index) => (
               <Card
                 key={index}
-                className="border-border/50 bg-card/50 backdrop-blur p-5 md:p-6 group hover:border-accent/50 hover:bg-card/80 transition-all duration-300"
+                className="border-border/50 bg-card/50 backdrop-blur p-5 md:p-6 group hover:border-accent/50 hover:bg-card/80 transition-all duration-300 relative overflow-hidden"
               >
-                <div className="text-accent/60 text-sm font-mono mb-2">0{index + 1}</div>
+                {/* Animated Step Number */}
+                <div className="relative mb-4">
+                  <div 
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-accent/30 flex items-center justify-center group-hover:border-accent group-hover:bg-accent/10 transition-all duration-500 group-hover:scale-110"
+                    style={{ animationDelay: `${index * 150}ms` }}
+                  >
+                    <span className="text-xl md:text-2xl font-display font-bold text-accent/70 group-hover:text-accent transition-colors duration-300">
+                      {index + 1}
+                    </span>
+                  </div>
+                  {/* Connecting line for visual flow (hidden on last item) */}
+                  {index < processSteps.length - 1 && (
+                    <div className="hidden lg:block absolute top-1/2 left-full w-full h-[2px] bg-gradient-to-r from-accent/20 to-transparent -translate-y-1/2 pointer-events-none" />
+                  )}
+                </div>
                 <h3 className="font-display font-semibold text-lg mb-3 group-hover:text-accent transition-colors">
                   {step.title}
                 </h3>
