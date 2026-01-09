@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { X, Headphones, Handshake, Mail } from "lucide-react";
+import { X, Headphones, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import laRosaLogo from "@/assets/larosa-logo.png";
 
@@ -9,12 +9,20 @@ const ChatWidget = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [messageIndex, setMessageIndex] = useState(0);
+  const [showContactInfo, setShowContactInfo] = useState(false);
   const widgetRef = useRef<HTMLDivElement>(null);
 
   const welcomeMessages = [
     "Hey there 👋 — welcome to La Rosa View!",
     "We blend sound, energy, and art — how can we help you today?",
   ];
+
+  const contactInfoMessage = `📩 Contact La Rosa View
+
+Email: larosaview@gmail.com
+Instagram: @larosaview
+
+Bookings & inquiries available 24/7.`;
 
   // Initialize position on mount
   useEffect(() => {
@@ -43,6 +51,7 @@ const ChatWidget = () => {
   useEffect(() => {
     if (!isOpen) {
       setMessageIndex(0);
+      setShowContactInfo(false);
     }
   }, [isOpen]);
 
@@ -94,14 +103,8 @@ const ChatWidget = () => {
     }
   };
 
-  const openEmail = () => {
-    const mailtoLink = "mailto:contactlarosaview@gmail.com";
-    const link = document.createElement('a');
-    link.href = mailtoLink;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    link.click();
-    setIsOpen(false);
+  const handleContactTeam = () => {
+    setShowContactInfo(true);
   };
 
   return (
@@ -203,10 +206,29 @@ const ChatWidget = () => {
                   </div>
                 </div>
               ))}
+
+              {/* Contact Info Message */}
+              {showContactInfo && (
+                <div
+                  className="flex gap-3 animate-fade-in-left"
+                  style={{ animationDelay: "100ms" }}
+                >
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-rose-600 to-rose-800 flex items-center justify-center flex-shrink-0 shadow-lg shadow-rose-600/30">
+                    <img
+                      src={laRosaLogo}
+                      alt=""
+                      className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+                    />
+                  </div>
+                  <div className="flex-1 bg-rose-950/30 backdrop-blur border border-rose-500/20 rounded-2xl rounded-tl-sm p-3 sm:p-4 shadow-lg">
+                    <p className="text-sm sm:text-base text-foreground whitespace-pre-line">{contactInfoMessage}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Action Buttons */}
-            {messageIndex >= welcomeMessages.length && (
+            {messageIndex >= welcomeMessages.length && !showContactInfo && (
               <div className="p-4 sm:p-6 border-t border-border/50 bg-gradient-to-t from-rose-950/20 to-transparent space-y-2 sm:space-y-3 animate-fade-in-up">
                 <Button
                   onClick={scrollToQuoteForm}
@@ -216,20 +238,12 @@ const ChatWidget = () => {
                   Book La Rosa for an event
                 </Button>
                 <Button
-                  onClick={scrollToQuoteForm}
-                  variant="outline"
-                  className="w-full border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-[1.02] text-sm sm:text-base py-5 sm:py-6"
-                >
-                  <Handshake className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  Collaborate or Partnership
-                </Button>
-                <Button
-                  onClick={openEmail}
+                  onClick={handleContactTeam}
                   variant="outline"
                   className="w-full border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-[1.02] text-sm sm:text-base py-5 sm:py-6"
                 >
                   <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  Contact the team
+                  Contact Team
                 </Button>
               </div>
             )}

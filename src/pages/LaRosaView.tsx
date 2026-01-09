@@ -27,7 +27,6 @@ const LaRosaView = () => {
 
   // Scroll animation hooks for different sections
   const whatWeDoAnimation = useScrollAnimation();
-  const featuredWorksAnimation = useScrollAnimation();
   const servicesAnimation = useScrollAnimation();
   const n30Animation = useScrollAnimation();
   const alHayetAnimation = useScrollAnimation();
@@ -189,9 +188,9 @@ const LaRosaView = () => {
                 Book La Rosa
               </Button>
             </Link>
-            <a href="https://www.youtube.com/live/art7YToqAKM" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-              <Button variant="outline" className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 py-2.5 sm:py-3 border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-105 backdrop-blur-sm">
-                <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2" />
+            <a href="https://www.youtube.com/@LaRosaView" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 py-2.5 sm:py-3 border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500 transition-all hover:scale-105 hover:shadow-lg hover:shadow-rose-500/20 backdrop-blur-sm group">
+                <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2 group-hover:scale-110 transition-transform" />
                 Watch Showreel
               </Button>
             </a>
@@ -237,44 +236,6 @@ const LaRosaView = () => {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Works */}
-      <section 
-        ref={featuredWorksAnimation.ref}
-        className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-gradient-to-b from-background via-rose-950/10 to-background transition-all duration-700 ${
-          featuredWorksAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-        }`}
-      >
-        <div className="container mx-auto max-w-6xl">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 sm:mb-6 px-4">
-            <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
-              Our Work in Motion
-            </span>
-          </h2>
-          <p className="text-sm sm:text-base text-center text-muted-foreground mb-6 sm:mb-8 md:mb-12 px-4">Experience our latest projects and performances</p>
-          
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
-            {[1, 2, 3].map((item) => (
-              <Card
-                key={item}
-                className="group overflow-hidden border-border/50 hover:border-rose-500/50 transition-all duration-300 hover:scale-105 cursor-pointer hover-lift"
-              >
-                <div className="aspect-video bg-gradient-to-br from-rose-900/20 to-background relative">
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60">
-                    <Play className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 text-rose-500" aria-hidden="true" />
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="text-center">
-            <Button variant="outline" className="text-sm sm:text-base px-5 sm:px-6 py-2 sm:py-2.5 border-rose-500/50 hover:bg-rose-500/10 hover:border-rose-500">
-              See All Projects
-            </Button>
           </div>
         </div>
       </section>
