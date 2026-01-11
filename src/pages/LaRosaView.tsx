@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Music, Theater, Video, Users, Mail, ExternalLink, Play, Instagram, Youtube, ChevronDown } from "lucide-react";
+import { Music, Theater, Video, Users, Mail, ExternalLink, Play, Instagram, Youtube, ChevronDown, Loader2 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
 import hajriPhoto from "@/assets/hajri-photo.jpeg";
 import houcinePhoto from "@/assets/houcine-photo.jpg";
@@ -17,6 +17,7 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import ChatWidget from "@/components/ChatWidget";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useFormSubmission } from "@/hooks/useFormSubmission";
 
 const LaRosaView = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +25,9 @@ const LaRosaView = () => {
     email: "",
     message: "",
   });
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+
+  const { subscribe, isSubmitting } = useFormSubmission();
 
   // Scroll animation hooks for different sections
   const whatWeDoAnimation = useScrollAnimation();
@@ -39,6 +43,20 @@ const LaRosaView = () => {
     e.preventDefault();
     // Handle form submission
     console.log("Form submitted:", formData);
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+    
+    const success = await subscribe({
+      email: newsletterEmail,
+      source: "La Rosa View",
+    });
+
+    if (success) {
+      setNewsletterEmail("");
+    }
   };
 
   const highlights = [
@@ -681,12 +699,23 @@ const LaRosaView = () => {
       <section className="py-8 sm:py-12 md:py-16 px-4 sm:px-6 bg-gradient-to-r from-rose-950/20 via-rose-900/10 to-rose-950/20 border-y border-rose-500/20">
         <div className="container mx-auto max-w-4xl text-center">
           <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 px-4">Stay in tune with our latest drops & events</h3>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto px-4">
-            <Input placeholder="Enter your email" className="bg-background/50 text-sm sm:text-base" />
-            <Button className="text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3 bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105 whitespace-nowrap">
-              Subscribe
+          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto px-4">
+            <Input 
+              type="email"
+              placeholder="Enter your email" 
+              className="bg-background/50 text-sm sm:text-base"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              required
+            />
+            <Button 
+              type="submit"
+              disabled={isSubmitting}
+              className="text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3 bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105 whitespace-nowrap"
+            >
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Subscribe"}
             </Button>
-          </div>
+          </form>
         </div>
       </section>
 

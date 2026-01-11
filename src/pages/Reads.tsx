@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { 
   BookOpen, Search, Mail, ExternalLink,
-  TrendingUp, Code2, Palette, Users, DollarSign, Cpu, Heart, GraduationCap, Construction
+  TrendingUp, Code2, Palette, Users, DollarSign, Cpu, Heart, GraduationCap, Construction, Loader2
 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
@@ -22,6 +22,7 @@ import ShoppingCart from "@/components/reads/ShoppingCart";
 import UnderConstructionModal from "@/components/reads/UnderConstructionModal";
 import { toast } from "sonner";
 import profileImage from "@/assets/profile.png";
+import { useFormSubmission } from "@/hooks/useFormSubmission";
 
 const categoryIcons: Record<BookCategory, React.ComponentType<any>> = {
   FinTech: TrendingUp,
@@ -84,14 +85,23 @@ const ReadsContent = () => {
     toast.success("Basket cleared");
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const { subscribe, isSubmitting } = useFormSubmission();
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newsletterEmail) {
       toast.error("Please enter your email");
       return;
     }
-    toast.success("Subscribed! You'll receive updates about new books.");
-    setNewsletterEmail("");
+
+    const success = await subscribe({
+      email: newsletterEmail,
+      source: "Houcine.reads",
+    });
+
+    if (success) {
+      setNewsletterEmail("");
+    }
   };
 
   return (
@@ -464,8 +474,12 @@ const ReadsContent = () => {
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 className="flex-1"
               />
-              <Button type="submit" className="bg-primary hover:bg-primary/90">
-                Subscribe
+              <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  "Subscribe"
+                )}
               </Button>
             </form>
           </Card>

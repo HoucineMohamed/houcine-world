@@ -4,18 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Sparkles } from "lucide-react";
+import { Send, Sparkles, Loader2 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
 import { Link } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useFormSubmission } from "@/hooks/useFormSubmission";
 
 const BookingForm = () => {
-  const { toast } = useToast();
   const formAnimation = useScrollAnimation();
+  const { submitForm, isSubmitting } = useFormSubmission();
+  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,29 +28,39 @@ const BookingForm = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Create mailto link with form data
-    const subject = encodeURIComponent(`Booking Request: ${formData.eventType || 'Event'}`);
-    const body = encodeURIComponent(`
-Name: ${formData.name}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Event Type: ${formData.eventType}
-Date: ${formData.date}
-Location: ${formData.location}
+    if (!formData.name || !formData.email || !formData.eventType || !formData.date || !formData.location) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
 
-Message:
-${formData.message}
-    `);
-    
-    window.location.href = `mailto:contactlarosaview@gmail.com?subject=${subject}&body=${body}`;
-    
-    toast({
-      title: "Opening your email client...",
-      description: "Your booking request is ready to send!",
+    const success = await submitForm({
+      pageName: "Booking",
+      formType: "DJ Booking Request",
+      userName: formData.name,
+      userEmail: formData.email,
+      userPhone: formData.phone || undefined,
+      serviceType: formData.eventType,
+      message: formData.message || undefined,
+      additionalData: {
+        eventDate: formData.date,
+        eventLocation: formData.location,
+      },
     });
+
+    if (success) {
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        eventType: "",
+        date: "",
+        location: "",
+        message: "",
+      });
+    }
   };
 
   return (
@@ -238,9 +250,19 @@ ${formData.message}
                     type="submit" 
                     className="w-full bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105"
                     size="lg"
+                    disabled={isSubmitting}
                   >
-                    <Send className="w-4 h-4 mr-2" />
-                    Send Booking Request
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Send Booking Request
+                      </>
+                    )}
                   </Button>
                 </form>
               </CardContent>

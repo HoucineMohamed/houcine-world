@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowDown, ExternalLink, Mail, Palette, Layers, Smartphone } from "lucide-react";
+import { ArrowDown, ExternalLink, Palette, Layers, Smartphone, Send, Loader2 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
@@ -21,6 +21,7 @@ import { ReviewModal } from "@/components/design/ReviewModal";
 import { brandingPackages, graphicDesignPackages, uiuxPackages } from "@/data/servicePackages";
 import { toast } from "sonner";
 import profilePhoto from "@/assets/profile.png";
+import { useFormSubmission } from "@/hooks/useFormSubmission";
 
 const processSteps = [
   {
@@ -95,24 +96,34 @@ const DesignsContent = () => {
     scrollToSection(contactSectionRef);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { submitForm, isSubmitting } = useFormSubmission();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.serviceType || !formData.message) {
       toast.error("Please fill in all required fields");
       return;
     }
-    toast.success("Quote request sent successfully! We'll contact you soon.");
-    setFormData({
-      name: "",
-      email: "",
-      serviceType: "",
-      message: "",
-      payment: "",
-    });
-  };
 
-  const handleContactEmail = () => {
-    window.location.href = "mailto:contact@houcine.world";
+    const success = await submitForm({
+      pageName: "Houcine.designs",
+      formType: "Quote Request",
+      userName: formData.name,
+      userEmail: formData.email,
+      serviceType: formData.serviceType,
+      message: formData.message,
+      additionalData: formData.payment ? { paymentPreference: formData.payment } : undefined,
+    });
+
+    if (success) {
+      setFormData({
+        name: "",
+        email: "",
+        serviceType: "",
+        message: "",
+        payment: "",
+      });
+    }
   };
 
   const handleReviewSubmit = (review: { name: string; rating: number; comment: string }) => {
@@ -525,20 +536,19 @@ const DesignsContent = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button type="submit" className="flex-1">
-                  Request a Quote
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1 gap-2"
-                  onClick={handleContactEmail}
-                >
-                  <Mail className="w-4 h-4" />
-                  Contact via Email
-                </Button>
-              </div>
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4 mr-2" />
+                    Request a Quote
+                  </>
+                )}
+              </Button>
             </form>
           </Card>
         </div>
