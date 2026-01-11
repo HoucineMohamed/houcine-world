@@ -14,7 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      submissions: {
+        Row: {
+          additional_data: Json | null
+          created_at: string
+          form_type: string
+          id: string
+          message: string | null
+          page_name: string
+          service_type: string | null
+          user_email: string
+          user_name: string
+          user_phone: string | null
+        }
+        Insert: {
+          additional_data?: Json | null
+          created_at?: string
+          form_type: string
+          id?: string
+          message?: string | null
+          page_name: string
+          service_type?: string | null
+          user_email: string
+          user_name: string
+          user_phone?: string | null
+        }
+        Update: {
+          additional_data?: Json | null
+          created_at?: string
+          form_type?: string
+          id?: string
+          message?: string | null
+          page_name?: string
+          service_type?: string | null
+          user_email?: string
+          user_name?: string
+          user_phone?: string | null
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          source: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          source?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, Linkedin, Github, DollarSign, User, Instagram } from "lucide-react";
+import { Linkedin, Github, DollarSign, User, Instagram, Send, Loader2 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
@@ -15,6 +15,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { CurrencyProvider, useCurrency, Currency } from "@/contexts/CurrencyContext";
 import { devServicePackages } from "@/data/devServicePackages";
 import DevServiceCard from "@/components/dev/DevServiceCard";
+import { useFormSubmission } from "@/hooks/useFormSubmission";
 import { toast } from "sonner";
 
 const DevContent = () => {
@@ -47,14 +48,28 @@ const DevContent = () => {
     scrollToSection('contact');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { submitForm, isSubmitting } = useFormSubmission();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.service || !formData.message) {
       toast.error("Please fill in all required fields");
       return;
     }
-    toast.success("Message sent! I'll get back to you soon.");
-    setFormData({ name: "", email: "", service: "", budget: "", message: "" });
+    
+    const success = await submitForm({
+      pageName: "Houcine.dev",
+      formType: "Quote Request",
+      userName: formData.name,
+      userEmail: formData.email,
+      serviceType: formData.service,
+      message: formData.message,
+      additionalData: formData.budget ? { budget: formData.budget } : undefined,
+    });
+
+    if (success) {
+      setFormData({ name: "", email: "", service: "", budget: "", message: "" });
+    }
   };
 
   // Currency-dependent budget ranges
@@ -444,24 +459,24 @@ const DevContent = () => {
                   />
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button 
-                    type="submit"
-                    size="lg"
-                    className="bg-tech-blue hover:bg-tech-blue/90 flex-1"
-                  >
-                    Send Message
-                  </Button>
-                  <Button 
-                    type="button"
-                    size="lg"
-                    variant="outline"
-                    onClick={() => window.location.href = 'mailto:contact@houcine.world'}
-                  >
-                    <Mail className="w-5 h-5 mr-2" />
-                    Email Directly
-                  </Button>
-                </div>
+                <Button 
+                  type="submit"
+                  size="lg"
+                  className="bg-tech-blue hover:bg-tech-blue/90 w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5 mr-2" />
+                      Send Message
+                    </>
+                  )}
+                </Button>
               </form>
 
               <div className="mt-8 pt-8 border-t border-border/50 flex flex-wrap justify-center gap-4">
