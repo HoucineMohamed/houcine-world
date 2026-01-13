@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      cta_events: {
+        Row: {
+          created_at: string
+          device_type: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          page_name: string
+          page_path: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_type?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          page_name: string
+          page_path: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          device_type?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          page_name?: string
+          page_path?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
+      page_views: {
+        Row: {
+          created_at: string
+          device_type: string
+          id: string
+          page_name: string
+          page_path: string
+          referrer: string | null
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_type?: string
+          id?: string
+          page_name: string
+          page_path: string
+          referrer?: string | null
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          device_type?: string
+          id?: string
+          page_name?: string
+          page_path?: string
+          referrer?: string | null
+          visitor_id?: string
+        }
+        Relationships: []
+      }
       submissions: {
         Row: {
           additional_data: Json | null
@@ -23,6 +86,7 @@ export type Database = {
           message: string | null
           page_name: string
           service_type: string | null
+          status: string
           user_email: string
           user_name: string
           user_phone: string | null
@@ -35,6 +99,7 @@ export type Database = {
           message?: string | null
           page_name: string
           service_type?: string | null
+          status?: string
           user_email: string
           user_name: string
           user_phone?: string | null
@@ -47,6 +112,7 @@ export type Database = {
           message?: string | null
           page_name?: string
           service_type?: string | null
+          status?: string
           user_email?: string
           user_name?: string
           user_phone?: string | null
@@ -74,15 +140,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -209,6 +302,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const

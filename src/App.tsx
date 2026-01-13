@@ -11,9 +11,15 @@ import BookingForm from "./pages/BookingForm";
 import AboutDJ from "./pages/AboutDJ";
 import Review from "./pages/Review";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
+import { usePageTracking } from "./hooks/useAnalytics";
 
-const App = () => (
-  <Router>
+// Wrapper component to enable page tracking
+const AppRoutes = () => {
+  usePageTracking();
+  
+  return (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/about" element={<AboutMe />} />
@@ -21,12 +27,20 @@ const App = () => (
       <Route path="/designs" element={<Designs />} />
       <Route path="/reads" element={<Reads />} />
       <Route path="/manages" element={<Manages />} />
-        <Route path="/larosaview" element={<LaRosaView />} />
-        <Route path="/booking" element={<BookingForm />} />
-        <Route path="/about-dj" element={<AboutDJ />} />
-        <Route path="/review" element={<Review />} />
+      <Route path="/larosaview" element={<LaRosaView />} />
+      <Route path="/booking" element={<BookingForm />} />
+      <Route path="/about-dj" element={<AboutDJ />} />
+      <Route path="/review" element={<Review />} />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
+  );
+};
+
+const App = () => (
+  <Router>
+    <AppRoutes />
   </Router>
 );
 
