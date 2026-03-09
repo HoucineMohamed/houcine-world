@@ -308,11 +308,11 @@ All colors MUST be HSL.
   @keyframes pulseText {
     0%, 100% {
       opacity: 0.9;
-      text-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
     }
     50% {
       opacity: 1;
-      text-shadow: 0 0 20px rgba(244, 63, 94, 0.6), 0 0 30px rgba(244, 63, 94, 0.4);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.2);
     }
   }
 
