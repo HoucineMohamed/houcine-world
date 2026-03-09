@@ -373,7 +373,7 @@ const DevContent = () => {
         }`}
       >
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-tech-blue/30 to-primary/30 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-accent/15 to-primary/15 rounded-full blur-3xl" />
         </div>
         <div className="container mx-auto px-6 max-w-4xl relative z-10">
           <div className="text-center mb-12">
