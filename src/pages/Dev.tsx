@@ -300,7 +300,7 @@ const DevContent = () => {
                     I'm a web developer and tech enthusiast from Tunisia, passionate about building fast, scalable, and beautifully coded websites. I specialize in React, Tailwind CSS, and modern web technologies.
                   </p>
                   <p className="text-lg text-muted-foreground mb-6">
-                    Beyond development, I'm the founder of <strong className="text-tech-blue">PyTunisia</strong> — an Instagram initiative where I create and share educational content about programming and technology. It's part of my identity as a tech educator and my way of giving back to the community.
+                    Beyond development, I'm the founder of <strong className="text-accent">PyTunisia</strong> — an Instagram initiative where I create and share educational content about programming and technology. It's part of my identity as a tech educator and my way of giving back to the community.
                   </p>
                   <div className="flex flex-wrap gap-4">
                     <Button 
