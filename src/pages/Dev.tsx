@@ -351,7 +351,7 @@ const DevContent = () => {
                       <Badge 
                         key={skillIndex} 
                         variant="secondary"
-                        className="hover:bg-tech-blue/20 hover:border-tech-blue/50 transition-colors cursor-default hover:scale-105"
+                        className="hover:bg-accent/20 hover:border-accent/50 transition-colors cursor-default hover:scale-105"
                       >
                         {skill}
                       </Badge>
