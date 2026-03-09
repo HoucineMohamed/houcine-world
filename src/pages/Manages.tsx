@@ -52,9 +52,9 @@ const Manages = () => {
               to="/larosaview"
               className="group block transition-all duration-300 hover:scale-105"
             >
-              <Card className="border-border/50 bg-card/50 backdrop-blur h-full group-hover:border-tech-blue/50 group-hover:shadow-xl group-hover:shadow-tech-blue/20 transition-all duration-300">
+              <Card className="border-border/50 bg-card/50 backdrop-blur h-full group-hover:border-accent/50 group-hover:shadow-xl group-hover:shadow-white/5 transition-all duration-300">
                 <CardHeader>
-                  <CardTitle className="group-hover:text-tech-blue transition-colors">DJ La Rosa View</CardTitle>
+                  <CardTitle className="group-hover:text-accent transition-colors">DJ La Rosa View</CardTitle>
                   <CardDescription>Music brand management</CardDescription>
                 </CardHeader>
                 <CardContent>

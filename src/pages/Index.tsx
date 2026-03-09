@@ -147,13 +147,13 @@ const Index = () => {
               </Link>
 
               <Link to="/manages" className="block h-full group">
-                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-tech-blue/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-tech-blue/10">
+                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-white/5">
                   <CardHeader>
                     <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-tech-blue/10 group-hover:bg-tech-blue/20 transition-colors">
-                        <Briefcase className="w-6 h-6 text-tech-blue" />
+                      <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
+                        <Briefcase className="w-6 h-6 text-accent" />
                       </div>
-                      <CardTitle className="group-hover:text-tech-blue transition-colors">Houcine.manages</CardTitle>
+                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.manages</CardTitle>
                     </div>
                     <CardDescription className="text-base">
                       Building and managing creative brands, artists, and strategic projects.
@@ -161,7 +161,7 @@ const Index = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground mb-4">DJ La Rosa View • The Shape Shifters • Brand Strategy</p>
-                    <Button variant="outline" size="sm" className="border-tech-blue/30 hover:bg-tech-blue/10 group-hover:border-tech-blue/50">
+                    <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10 group-hover:border-accent/50">
                       View case studies
                     </Button>
                   </CardContent>
