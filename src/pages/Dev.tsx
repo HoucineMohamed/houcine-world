@@ -221,7 +221,7 @@ const DevContent = () => {
               <Button
                 variant={currency === "TND" ? "default" : "outline"}
                 onClick={() => setCurrency("TND")}
-                className={currency === "TND" ? "bg-tech-blue hover:bg-tech-blue/90" : ""}
+                className={currency === "TND" ? "" : ""}
               >
                 TND
               </Button>
