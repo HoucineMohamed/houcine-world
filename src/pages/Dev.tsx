@@ -289,7 +289,7 @@ const DevContent = () => {
                           alt="PyTunisia Logo"
                           className="w-12 h-12 object-contain"
                         />
-                        <span className="text-sm font-semibold text-tech-blue">PyTunisia</span>
+                        <span className="text-sm font-semibold text-accent">PyTunisia</span>
                       </div>
                     </div>
                   </div>
