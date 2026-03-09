@@ -279,9 +279,9 @@ const DevContent = () => {
             <CardContent className="p-8 md:p-12">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-tech-blue/20 to-primary/20 rounded-xl blur-xl" />
-                  <div className="relative aspect-square bg-gradient-to-br from-tech-blue/20 to-primary/20 rounded-xl flex flex-col items-center justify-center gap-4 overflow-hidden">
-                    <User className="w-16 h-16 text-tech-blue" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-primary/10 rounded-xl blur-xl" />
+                  <div className="relative aspect-square bg-gradient-to-br from-accent/10 to-primary/10 rounded-xl flex flex-col items-center justify-center gap-4 overflow-hidden">
+                    <User className="w-16 h-16 text-accent" />
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-card/90 to-transparent p-4">
                       <div className="flex items-center justify-center gap-2">
                         <img 
