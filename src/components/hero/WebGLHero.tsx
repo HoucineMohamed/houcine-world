@@ -312,7 +312,7 @@ export default function WebGLHero({ onActiveServiceChange, onSceneReady }: WebGL
     rendererRef.current = renderer;
 
     // Add fog for depth
-    scene.fog = new THREE.FogExp2(0x0a1628, 0.08);
+    scene.fog = new THREE.FogExp2(0x000000, 0.08);
 
     // Load particles
     loadLogoParticles().then(([startPositions, targetPositions]) => {
