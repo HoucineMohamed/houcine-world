@@ -151,7 +151,6 @@ const DevContent = () => {
             <Button 
               size="lg" 
               onClick={() => scrollToSection('services')}
-              className="bg-tech-blue hover:bg-tech-blue/90 text-white"
             >
               View My Services
             </Button>
