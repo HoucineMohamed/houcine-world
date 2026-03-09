@@ -275,7 +275,7 @@ const DevContent = () => {
             <p className="text-xl text-muted-foreground">The developer behind Houcine.dev</p>
           </div>
           
-          <Card className="border-tech-blue/30 bg-card/50 backdrop-blur hover:border-tech-blue/50 transition-all duration-300">
+          <Card className="border-accent/30 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300">
             <CardContent className="p-8 md:p-12">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative">
