@@ -73,10 +73,10 @@ All colors MUST be HSL.
     --muted: 0 0% 7%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 200 80% 65%;
+    --accent: 0 0% 80%;
     --accent-foreground: 0 0% 0%;
 
-    --tech-blue: 200 80% 65%;
+    --tech-blue: 0 0% 80%;
     --tech-blue-foreground: 0 0% 0%;
 
     --metallic: 0 0% 85%;
