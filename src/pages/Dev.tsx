@@ -118,10 +118,10 @@ const DevContent = () => {
               alt="Houcine.world home" 
               className="h-8 w-auto opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
               style={{
-                filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
+                filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0))",
               }}
-              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.5))"}
-              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))"}
+              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))"}
+              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255, 255, 255, 0))"}
             />
           </Link>
         </div>
