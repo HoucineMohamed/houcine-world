@@ -25,7 +25,7 @@ const SERVICES: ServiceData[] = [
     name: "Houcine.designs",
     path: "/designs",
     description: "Crafting bold visual experiences through branding, UI/UX, and creative direction.",
-    color: "#5BC0EB",
+    color: "#CCCCCC",
     icon: "palette",
   },
   {
