@@ -231,7 +231,7 @@ const DevContent = () => {
           <Card className="border-border/50 bg-card/50 backdrop-blur max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
-                <DollarSign className="w-6 h-6 text-tech-blue" />
+                <DollarSign className="w-6 h-6 text-accent" />
                 Payment Options
               </CardTitle>
               <CardDescription>
