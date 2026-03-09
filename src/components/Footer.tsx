@@ -19,13 +19,13 @@ const Footer = () => {
                 alt="Houcine.world logo" 
                 className="h-6 w-auto opacity-80 group-hover:opacity-100 transition-opacity"
                 style={{
-                  filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
+                  filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0))",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.4))";
+                  e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))";
+                  e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255, 255, 255, 0))";
                 }}
               />
             </Link>

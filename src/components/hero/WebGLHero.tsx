@@ -17,7 +17,7 @@ const SERVICES: ServiceData[] = [
     name: "Houcine.dev",
     path: "/dev",
     description: "Building scalable, modern applications with React, TypeScript, and cutting-edge web technologies.",
-    color: "#5BC0EB",
+    color: "#CCCCCC",
     icon: "terminal",
   },
   {
@@ -25,7 +25,7 @@ const SERVICES: ServiceData[] = [
     name: "Houcine.designs",
     path: "/designs",
     description: "Crafting bold visual experiences through branding, UI/UX, and creative direction.",
-    color: "#5BC0EB",
+    color: "#CCCCCC",
     icon: "palette",
   },
   {
@@ -33,7 +33,7 @@ const SERVICES: ServiceData[] = [
     name: "Houcine.reads",
     path: "/reads",
     description: "A curated digital bookstore for learners exploring tech, design, and innovation.",
-    color: "#5BC0EB",
+    color: "#CCCCCC",
     icon: "book",
   },
   {
@@ -41,7 +41,7 @@ const SERVICES: ServiceData[] = [
     name: "Houcine.manages",
     path: "/manages",
     description: "Building and managing creative brands, artists, and strategic projects.",
-    color: "#5BC0EB",
+    color: "#CCCCCC",
     icon: "briefcase",
   },
 ];
@@ -312,7 +312,7 @@ export default function WebGLHero({ onActiveServiceChange, onSceneReady }: WebGL
     rendererRef.current = renderer;
 
     // Add fog for depth
-    scene.fog = new THREE.FogExp2(0x0a1628, 0.08);
+    scene.fog = new THREE.FogExp2(0x000000, 0.08);
 
     // Load particles
     loadLogoParticles().then(([startPositions, targetPositions]) => {
@@ -333,7 +333,7 @@ export default function WebGLHero({ onActiveServiceChange, onSceneReady }: WebGL
         uniforms: {
           uTime: { value: 0 },
           uProgress: { value: prefersReducedMotion ? 1 : 0 },
-          uColor: { value: new THREE.Color(0x5BC0EB) },
+          uColor: { value: new THREE.Color(0xCCCCCC) },
           uGlow: { value: 0 },
           uPixelRatio: { value: renderer.getPixelRatio() },
         },

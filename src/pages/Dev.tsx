@@ -118,10 +118,10 @@ const DevContent = () => {
               alt="Houcine.world home" 
               className="h-8 w-auto opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
               style={{
-                filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
+                filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0))",
               }}
-              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.5))"}
-              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))"}
+              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))"}
+              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255, 255, 255, 0))"}
             />
           </Link>
         </div>
@@ -134,14 +134,14 @@ const DevContent = () => {
           heroAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-tech-blue/5 via-background to-background" />
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-background to-background" />
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-tech-blue/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse delay-1000" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
         
         <div className="container mx-auto px-6 text-center relative z-10">
-          <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 bg-gradient-to-r from-tech-blue via-primary to-tech-blue bg-clip-text text-transparent animate-fade-in">
+          <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 bg-gradient-to-r from-foreground via-accent to-foreground bg-clip-text text-transparent animate-fade-in">
             Building Fast, Scalable, and Beautifully Coded Websites
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
@@ -151,7 +151,6 @@ const DevContent = () => {
             <Button 
               size="lg" 
               onClick={() => scrollToSection('services')}
-              className="bg-tech-blue hover:bg-tech-blue/90 text-white"
             >
               View My Services
             </Button>
@@ -208,21 +207,21 @@ const DevContent = () => {
               <Button
                 variant={currency === "EUR" ? "default" : "outline"}
                 onClick={() => setCurrency("EUR")}
-                className={currency === "EUR" ? "bg-tech-blue hover:bg-tech-blue/90" : ""}
+                className={currency === "EUR" ? "" : ""}
               >
                 EUR (€)
               </Button>
               <Button
                 variant={currency === "USD" ? "default" : "outline"}
                 onClick={() => setCurrency("USD")}
-                className={currency === "USD" ? "bg-tech-blue hover:bg-tech-blue/90" : ""}
+                className={currency === "USD" ? "" : ""}
               >
                 USD ($)
               </Button>
               <Button
                 variant={currency === "TND" ? "default" : "outline"}
                 onClick={() => setCurrency("TND")}
-                className={currency === "TND" ? "bg-tech-blue hover:bg-tech-blue/90" : ""}
+                className={currency === "TND" ? "" : ""}
               >
                 TND
               </Button>
@@ -232,7 +231,7 @@ const DevContent = () => {
           <Card className="border-border/50 bg-card/50 backdrop-blur max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
-                <DollarSign className="w-6 h-6 text-tech-blue" />
+                <DollarSign className="w-6 h-6 text-accent" />
                 Payment Options
               </CardTitle>
               <CardDescription>
@@ -276,13 +275,13 @@ const DevContent = () => {
             <p className="text-xl text-muted-foreground">The developer behind Houcine.dev</p>
           </div>
           
-          <Card className="border-tech-blue/30 bg-card/50 backdrop-blur hover:border-tech-blue/50 transition-all duration-300">
+          <Card className="border-accent/30 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300">
             <CardContent className="p-8 md:p-12">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-tech-blue/20 to-primary/20 rounded-xl blur-xl" />
-                  <div className="relative aspect-square bg-gradient-to-br from-tech-blue/20 to-primary/20 rounded-xl flex flex-col items-center justify-center gap-4 overflow-hidden">
-                    <User className="w-16 h-16 text-tech-blue" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-primary/10 rounded-xl blur-xl" />
+                  <div className="relative aspect-square bg-gradient-to-br from-accent/10 to-primary/10 rounded-xl flex flex-col items-center justify-center gap-4 overflow-hidden">
+                    <User className="w-16 h-16 text-accent" />
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-card/90 to-transparent p-4">
                       <div className="flex items-center justify-center gap-2">
                         <img 
@@ -290,7 +289,7 @@ const DevContent = () => {
                           alt="PyTunisia Logo"
                           className="w-12 h-12 object-contain"
                         />
-                        <span className="text-sm font-semibold text-tech-blue">PyTunisia</span>
+                        <span className="text-sm font-semibold text-accent">PyTunisia</span>
                       </div>
                     </div>
                   </div>
@@ -301,12 +300,11 @@ const DevContent = () => {
                     I'm a web developer and tech enthusiast from Tunisia, passionate about building fast, scalable, and beautifully coded websites. I specialize in React, Tailwind CSS, and modern web technologies.
                   </p>
                   <p className="text-lg text-muted-foreground mb-6">
-                    Beyond development, I'm the founder of <strong className="text-tech-blue">PyTunisia</strong> — an Instagram initiative where I create and share educational content about programming and technology. It's part of my identity as a tech educator and my way of giving back to the community.
+                    Beyond development, I'm the founder of <strong className="text-accent">PyTunisia</strong> — an Instagram initiative where I create and share educational content about programming and technology. It's part of my identity as a tech educator and my way of giving back to the community.
                   </p>
                   <div className="flex flex-wrap gap-4">
                     <Button 
                       onClick={() => window.open('https://www.instagram.com/pytunisia/', '_blank')}
-                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                     >
                       <Instagram className="w-5 h-5 mr-2" />
                       PyTunisia on Instagram
@@ -343,9 +341,9 @@ const DevContent = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {skills.map((skillGroup, index) => (
-              <Card key={index} className="border-border/50 bg-card/50 backdrop-blur hover:border-tech-blue/30 transition-all duration-300">
+              <Card key={index} className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/30 transition-all duration-300">
                 <CardHeader>
-                  <CardTitle className="text-lg text-tech-blue">{skillGroup.category}</CardTitle>
+                  <CardTitle className="text-lg text-accent">{skillGroup.category}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
@@ -353,7 +351,7 @@ const DevContent = () => {
                       <Badge 
                         key={skillIndex} 
                         variant="secondary"
-                        className="hover:bg-tech-blue/20 hover:border-tech-blue/50 transition-colors cursor-default hover:scale-105"
+                        className="hover:bg-accent/20 hover:border-accent/50 transition-colors cursor-default hover:scale-105"
                       >
                         {skill}
                       </Badge>
@@ -375,7 +373,7 @@ const DevContent = () => {
         }`}
       >
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-tech-blue/30 to-primary/30 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-accent/15 to-primary/15 rounded-full blur-3xl" />
         </div>
         <div className="container mx-auto px-6 max-w-4xl relative z-10">
           <div className="text-center mb-12">
@@ -462,7 +460,7 @@ const DevContent = () => {
                 <Button 
                   type="submit"
                   size="lg"
-                  className="bg-tech-blue hover:bg-tech-blue/90 w-full"
+                  className="w-full"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

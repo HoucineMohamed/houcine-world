@@ -42,10 +42,10 @@ const categoryLabels = {
 };
 
 const categoryColors = {
-  development: "from-blue-500 to-cyan-500",
-  design: "from-pink-500 to-rose-500",
-  fintech: "from-emerald-500 to-green-500",
-  leadership: "from-amber-500 to-orange-500"
+  development: "from-white/80 to-white/50",
+  design: "from-white/70 to-white/40",
+  fintech: "from-white/80 to-white/50",
+  leadership: "from-white/70 to-white/40"
 };
 
 const AboutMe = () => {
@@ -90,10 +90,10 @@ const AboutMe = () => {
               alt="Houcine.world home" 
               className="h-7 sm:h-8 w-auto opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
               style={{
-                filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
+                filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0))",
               }}
-              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.5))"}
-              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))"}
+              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))"}
+              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255, 255, 255, 0))"}
             />
           </Link>
           <Button 

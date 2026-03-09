@@ -9,9 +9,8 @@ const CustomCursor = () => {
 
   // Determine cursor color based on route
   const isLaRosaView = location.pathname === "/larosaview";
-  const cursorColor = isLaRosaView ? "rose" : "blue";
-  const cursorBg = isLaRosaView ? "bg-rose-500/50" : "bg-blue-500/50";
-  const cursorBorder = isLaRosaView ? "border-rose-400/30" : "border-blue-400/30";
+  const cursorBg = isLaRosaView ? "bg-rose-500/50" : "bg-white/30";
+  const cursorBorder = isLaRosaView ? "border-rose-400/30" : "border-white/20";
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

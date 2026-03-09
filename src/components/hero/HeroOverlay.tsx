@@ -20,8 +20,8 @@ export default function HeroOverlay({ activeService }: HeroOverlayProps) {
         </div>
         
         {/* Brand name */}
-        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground mb-4 md:mb-6 tracking-tight font-display drop-shadow-[0_0_30px_rgba(91,192,235,0.3)]">
-          Houcine<span className="text-accent drop-shadow-[0_0_10px_rgba(91,192,235,0.8)]">.</span>world
+        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground mb-4 md:mb-6 tracking-tight font-display drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]">
+          Houcine<span className="text-accent drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">.</span>world
         </h1>
         
         {/* Description */}
