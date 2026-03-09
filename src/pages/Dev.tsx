@@ -341,9 +341,9 @@ const DevContent = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {skills.map((skillGroup, index) => (
-              <Card key={index} className="border-border/50 bg-card/50 backdrop-blur hover:border-tech-blue/30 transition-all duration-300">
+              <Card key={index} className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/30 transition-all duration-300">
                 <CardHeader>
-                  <CardTitle className="text-lg text-tech-blue">{skillGroup.category}</CardTitle>
+                  <CardTitle className="text-lg text-accent">{skillGroup.category}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
