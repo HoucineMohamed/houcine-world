@@ -141,7 +141,7 @@ const DevContent = () => {
         </div>
         
         <div className="container mx-auto px-6 text-center relative z-10">
-          <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 bg-gradient-to-r from-tech-blue via-primary to-tech-blue bg-clip-text text-transparent animate-fade-in">
+          <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 bg-gradient-to-r from-foreground via-accent to-foreground bg-clip-text text-transparent animate-fade-in">
             Building Fast, Scalable, and Beautifully Coded Websites
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
