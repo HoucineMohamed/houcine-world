@@ -451,8 +451,8 @@ All colors MUST be HSL.
   /* Input focus glow */
   input:focus,
   textarea:focus {
-    box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.2), 0 0 20px rgba(244, 63, 94, 0.15);
-    border-color: rgb(244, 63, 94);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
   }
 
   /* Smooth transitions for all interactive elements */
