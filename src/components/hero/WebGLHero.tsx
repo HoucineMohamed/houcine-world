@@ -333,7 +333,7 @@ export default function WebGLHero({ onActiveServiceChange, onSceneReady }: WebGL
         uniforms: {
           uTime: { value: 0 },
           uProgress: { value: prefersReducedMotion ? 1 : 0 },
-          uColor: { value: new THREE.Color(0x5BC0EB) },
+          uColor: { value: new THREE.Color(0xCCCCCC) },
           uGlow: { value: 0 },
           uPixelRatio: { value: renderer.getPixelRatio() },
         },

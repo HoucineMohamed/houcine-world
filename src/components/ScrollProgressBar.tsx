@@ -17,7 +17,7 @@ const ScrollProgressBar = () => {
   return (
     <div className="fixed top-0 left-0 right-0 h-1 z-[100] bg-background/20 backdrop-blur-sm">
       <div
-        className="h-full bg-gradient-to-r from-rose-500 via-rose-400 to-rose-600 transition-all duration-150 ease-out shadow-lg shadow-rose-500/50"
+        className="h-full bg-gradient-to-r from-white/70 via-white/50 to-white/70 transition-all duration-150 ease-out shadow-lg shadow-white/20"
         style={{ width: `${scrollProgress}%` }}
       />
     </div>
