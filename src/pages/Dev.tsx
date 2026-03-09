@@ -460,7 +460,7 @@ const DevContent = () => {
                 <Button 
                   type="submit"
                   size="lg"
-                  className="bg-tech-blue hover:bg-tech-blue/90 w-full"
+                  className="w-full"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
