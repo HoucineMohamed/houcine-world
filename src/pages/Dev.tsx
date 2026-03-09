@@ -214,7 +214,7 @@ const DevContent = () => {
               <Button
                 variant={currency === "USD" ? "default" : "outline"}
                 onClick={() => setCurrency("USD")}
-                className={currency === "USD" ? "bg-tech-blue hover:bg-tech-blue/90" : ""}
+                className={currency === "USD" ? "" : ""}
               >
                 USD ($)
               </Button>
