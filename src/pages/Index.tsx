@@ -81,13 +81,13 @@ const Index = () => {
             
             <div className="grid md:grid-cols-2 gap-6">
               <Link to="/dev" className="block h-full group">
-                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-tech-blue/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-tech-blue/10">
+                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-white/5">
                   <CardHeader>
                     <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-tech-blue/10 group-hover:bg-tech-blue/20 transition-colors">
-                        <Terminal className="w-6 h-6 text-tech-blue" />
+                      <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
+                        <Terminal className="w-6 h-6 text-accent" />
                       </div>
-                      <CardTitle className="group-hover:text-tech-blue transition-colors">Houcine.dev</CardTitle>
+                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.dev</CardTitle>
                     </div>
                     <CardDescription className="text-base">
                       Building scalable, modern applications with React, TypeScript, and cutting-edge web technologies.
@@ -95,7 +95,7 @@ const Index = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground mb-4">Web Apps • API Design • Full-Stack Development</p>
-                    <Button variant="outline" size="sm" className="border-tech-blue/30 hover:bg-tech-blue/10 group-hover:border-tech-blue/50">
+                    <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10 group-hover:border-accent/50">
                       View projects
                     </Button>
                   </CardContent>
