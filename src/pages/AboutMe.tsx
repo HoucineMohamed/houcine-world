@@ -42,10 +42,10 @@ const categoryLabels = {
 };
 
 const categoryColors = {
-  development: "from-blue-500 to-cyan-500",
-  design: "from-pink-500 to-rose-500",
-  fintech: "from-emerald-500 to-green-500",
-  leadership: "from-amber-500 to-orange-500"
+  development: "from-white/80 to-white/50",
+  design: "from-white/70 to-white/40",
+  fintech: "from-white/80 to-white/50",
+  leadership: "from-white/70 to-white/40"
 };
 
 const AboutMe = () => {
