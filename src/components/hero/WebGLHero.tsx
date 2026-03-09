@@ -33,7 +33,7 @@ const SERVICES: ServiceData[] = [
     name: "Houcine.reads",
     path: "/reads",
     description: "A curated digital bookstore for learners exploring tech, design, and innovation.",
-    color: "#5BC0EB",
+    color: "#CCCCCC",
     icon: "book",
   },
   {
