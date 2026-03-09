@@ -17,7 +17,7 @@ const SERVICES: ServiceData[] = [
     name: "Houcine.dev",
     path: "/dev",
     description: "Building scalable, modern applications with React, TypeScript, and cutting-edge web technologies.",
-    color: "#5BC0EB",
+    color: "#CCCCCC",
     icon: "terminal",
   },
   {
