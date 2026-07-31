@@ -130,8 +130,8 @@ const AboutMe = () => {
               <div className="relative group mx-auto md:mx-0">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity" />
                 <img 
-                  src={profile} 
-                  alt={`${profileData.firstName} ${profileData.lastName}`}
+                  src={profilePhoto} 
+                  alt="Portrait of Houcine Mohamed"
                   className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-background shadow-2xl"
                 />
               </div>
