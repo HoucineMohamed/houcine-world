@@ -8,8 +8,10 @@ export const ScrollToTop = () => {
   useLayoutEffect(() => {
     // Let the browser handle scroll restoration for Back/Forward navigation.
     if (navigationType === "POP") {
+      console.log("ScrollToTop POP skipped", pathname, hash);
       return;
     }
+    console.log("ScrollToTop running", pathname, hash, navigationType);
 
     if (hash) {
       const target = document.getElementById(hash.replace("#", ""));
