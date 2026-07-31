@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
 import { Link } from "react-router-dom";
-import profile from "@/assets/profile.png";
+import profilePhoto from "@/assets/images/profile-photo.jpg";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
