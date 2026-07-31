@@ -41,6 +41,7 @@ const AppRoutes = () => {
 
 const App = () => (
   <Router>
+    <ScrollToTop />
     <AppRoutes />
   </Router>
 );
