@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Linkedin, Github, DollarSign, User, Instagram, Send, Loader2 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
+import houcineTechProfile from "@/assets/images/houcine-tech-profile.jpg";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
