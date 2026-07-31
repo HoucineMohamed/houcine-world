@@ -13,9 +13,9 @@ const corsHeaders = {
 // Owner emails by page
 const OWNER_EMAILS: Record<string, string> = {
   "La Rosa View": "contactlarosaview@gmail.com",
-  "Houcine.dev": "mohamedhoucine2024@gmail.com",
-  "Houcine.designs": "mohamedhoucine2024@gmail.com",
-  "Houcine.reads": "mohamedhoucine2024@gmail.com",
+  "Houcine.tech": "mohamedhoucine2024@gmail.com",
+  "Houcine.studio": "mohamedhoucine2024@gmail.com",
+  "Houcine.education": "mohamedhoucine2024@gmail.com",
   "Houcine.world": "mohamedhoucine2024@gmail.com",
   "Booking": "contactlarosaview@gmail.com",
   default: "mohamedhoucine2024@gmail.com",

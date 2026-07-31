@@ -106,7 +106,7 @@ const DesignsContent = () => {
     }
 
     const success = await submitForm({
-      pageName: "Houcine.designs",
+      pageName: "Houcine.studio",
       formType: "Quote Request",
       userName: formData.name,
       userEmail: formData.email,

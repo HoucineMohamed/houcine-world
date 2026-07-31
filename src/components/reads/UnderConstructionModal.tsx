@@ -23,7 +23,7 @@ const UnderConstructionModal = ({ isOpen, onClose, bookTitle }: UnderConstructio
           </DialogTitle>
           <DialogDescription className="text-center space-y-3">
             <p className="text-muted-foreground">
-              Houcine.reads is currently being prepared for launch.
+              Houcine.education is currently being prepared for launch.
             </p>
             {bookTitle && (
               <p className="text-sm text-muted-foreground">

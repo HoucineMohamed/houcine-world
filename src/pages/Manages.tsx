@@ -40,7 +40,7 @@ const Manages = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="flex items-center gap-4 mb-8">
             <Briefcase className="w-12 h-12 text-accent" />
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">Houcine.manages</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground">Houcine.management</h1>
           </div>
           
           <p className="text-xl text-muted-foreground mb-12">
