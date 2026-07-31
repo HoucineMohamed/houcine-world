@@ -12,7 +12,7 @@ import theViewCover from "@/assets/the-view-cover.png";
 import n30Cover from "@/assets/n30-cover.png";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
-import laRosaLogo from "@/assets/larosa-logo.png";
+import laRosaLogo from "@/assets/images/larosaview-logo.png";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import ChatWidget from "@/components/ChatWidget";
