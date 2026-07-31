@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Headphones, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import laRosaLogo from "@/assets/larosa-logo.png";
+import laRosaLogo from "@/assets/images/larosaview-logo.png";
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
