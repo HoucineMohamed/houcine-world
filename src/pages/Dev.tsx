@@ -58,7 +58,7 @@ const DevContent = () => {
     }
     
     const success = await submitForm({
-      pageName: "Houcine.dev",
+      pageName: "Houcine.tech",
       formType: "Quote Request",
       userName: formData.name,
       userEmail: formData.email,
@@ -272,7 +272,7 @@ const DevContent = () => {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">About Me</h2>
-            <p className="text-xl text-muted-foreground">The developer behind Houcine.dev</p>
+            <p className="text-xl text-muted-foreground">The developer behind Houcine.tech</p>
           </div>
           
           <Card className="border-accent/30 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300">

@@ -87,7 +87,7 @@ const Index = () => {
                       <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
                         <Terminal className="w-6 h-6 text-accent" />
                       </div>
-                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.dev</CardTitle>
+                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.tech</CardTitle>
                     </div>
                     <CardDescription className="text-base">
                       Building scalable, modern applications with React, TypeScript, and cutting-edge web technologies.
@@ -109,7 +109,7 @@ const Index = () => {
                       <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
                         <Palette className="w-6 h-6 text-accent" />
                       </div>
-                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.designs</CardTitle>
+                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.studio</CardTitle>
                     </div>
                     <CardDescription className="text-base">
                       Crafting bold visual experiences through branding, UI/UX, and creative direction.
@@ -131,7 +131,7 @@ const Index = () => {
                       <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
                         <BookOpen className="w-6 h-6 text-accent" />
                       </div>
-                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.reads</CardTitle>
+                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.education</CardTitle>
                     </div>
                     <CardDescription className="text-base">
                       A curated digital bookstore for learners exploring tech, design, and innovation.
@@ -153,7 +153,7 @@ const Index = () => {
                       <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
                         <Briefcase className="w-6 h-6 text-accent" />
                       </div>
-                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.manages</CardTitle>
+                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.management</CardTitle>
                     </div>
                     <CardDescription className="text-base">
                       Building and managing creative brands, artists, and strategic projects.

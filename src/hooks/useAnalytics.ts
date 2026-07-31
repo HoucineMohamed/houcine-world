@@ -23,9 +23,9 @@ const getDeviceType = (): string => {
 // Page name mapping
 const PAGE_NAMES: Record<string, string> = {
   "/": "Houcine.world",
-  "/dev": "Houcine.dev",
-  "/designs": "Houcine.designs",
-  "/reads": "Houcine.reads",
+  "/dev": "Houcine.tech",
+  "/designs": "Houcine.studio",
+  "/reads": "Houcine.education",
   "/larosaview": "La Rosa View",
   "/booking": "La Rosa Booking",
   "/about": "About Me",

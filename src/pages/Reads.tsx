@@ -96,7 +96,7 @@ const ReadsContent = () => {
 
     const success = await subscribe({
       email: newsletterEmail,
-      source: "Houcine.reads",
+      source: "Houcine.education",
     });
 
     if (success) {
@@ -381,7 +381,7 @@ const ReadsContent = () => {
                 <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
                   <p className="font-semibold text-lg mb-2">Under Construction</p>
                   <p className="text-sm text-muted-foreground">
-                    Houcine.reads is being prepared. Purchases will be available soon. 
+                    Houcine.education is being prepared. Purchases will be available soon. 
                     In the meantime, feel free to browse the collection and add books to your basket.
                   </p>
                 </div>
@@ -420,7 +420,7 @@ const ReadsContent = () => {
                     Curating resources to empower innovators in finance, tech, and design. With years of experience in FinTech and education, I'm passionate about making complex topics accessible to everyone.
                   </p>
                   <p className="text-sm text-muted-foreground mb-6">
-                    Houcine.reads features carefully selected digital books from various authors, all curated to help you grow professionally and personally.
+                    Houcine.education features carefully selected digital books from various authors, all curated to help you grow professionally and personally.
                   </p>
                   <div className="flex gap-3">
                     <Button variant="outline" onClick={() => window.location.href = 'mailto:contact@houcine.world'}>

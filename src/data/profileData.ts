@@ -390,12 +390,12 @@ When I'm not coding or designing, you'll find me leading community initiatives, 
   // Featured
   featuredLinks: [
     {
-      title: "Houcine.dev",
+      title: "Houcine.tech",
       description: "Web development services and portfolio",
       url: "/dev"
     },
     {
-      title: "Houcine.designs",
+      title: "Houcine.studio",
       description: "Design services and creative work",
       url: "/designs"
     },

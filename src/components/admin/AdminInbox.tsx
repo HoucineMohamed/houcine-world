@@ -115,9 +115,9 @@ const AdminInbox: React.FC<AdminInboxProps> = ({ onStatusChange }) => {
 
   const getSourceBadge = (source: string) => {
     const colors: Record<string, string> = {
-      "Houcine.designs": "bg-purple-500/20 text-purple-300",
-      "Houcine.dev": "bg-blue-500/20 text-blue-300",
-      "Houcine.reads": "bg-green-500/20 text-green-300",
+      "Houcine.studio": "bg-purple-500/20 text-purple-300",
+      "Houcine.tech": "bg-blue-500/20 text-blue-300",
+      "Houcine.education": "bg-green-500/20 text-green-300",
       "La Rosa View": "bg-pink-500/20 text-pink-300",
       "Houcine.world": "bg-cyan-500/20 text-cyan-300",
     };
@@ -154,9 +154,9 @@ const AdminInbox: React.FC<AdminInboxProps> = ({ onStatusChange }) => {
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
                 <SelectItem value="all">All Sources</SelectItem>
-                <SelectItem value="Houcine.designs">Houcine.designs</SelectItem>
-                <SelectItem value="Houcine.dev">Houcine.dev</SelectItem>
-                <SelectItem value="Houcine.reads">Houcine.reads</SelectItem>
+                <SelectItem value="Houcine.studio">Houcine.studio</SelectItem>
+                <SelectItem value="Houcine.tech">Houcine.tech</SelectItem>
+                <SelectItem value="Houcine.education">Houcine.education</SelectItem>
                 <SelectItem value="La Rosa View">La Rosa View</SelectItem>
                 <SelectItem value="Houcine.world">Houcine.world</SelectItem>
               </SelectContent>

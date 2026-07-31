@@ -14,7 +14,7 @@ interface ServiceData {
 const SERVICES: ServiceData[] = [
   {
     id: "dev",
-    name: "Houcine.dev",
+    name: "Houcine.tech",
     path: "/dev",
     description: "Building scalable, modern applications with React, TypeScript, and cutting-edge web technologies.",
     color: "#CCCCCC",
@@ -22,7 +22,7 @@ const SERVICES: ServiceData[] = [
   },
   {
     id: "designs",
-    name: "Houcine.designs",
+    name: "Houcine.studio",
     path: "/designs",
     description: "Crafting bold visual experiences through branding, UI/UX, and creative direction.",
     color: "#CCCCCC",
@@ -30,7 +30,7 @@ const SERVICES: ServiceData[] = [
   },
   {
     id: "reads",
-    name: "Houcine.reads",
+    name: "Houcine.education",
     path: "/reads",
     description: "A curated digital bookstore for learners exploring tech, design, and innovation.",
     color: "#CCCCCC",
@@ -38,7 +38,7 @@ const SERVICES: ServiceData[] = [
   },
   {
     id: "manages",
-    name: "Houcine.manages",
+    name: "Houcine.management",
     path: "/manages",
     description: "Building and managing creative brands, artists, and strategic projects.",
     color: "#CCCCCC",
