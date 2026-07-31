@@ -5,7 +5,7 @@ export const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
   const navigationType = useNavigationType();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Let the browser handle scroll restoration for Back/Forward navigation.
     if (navigationType === "POP") {
       return;
