@@ -14,7 +14,6 @@ const AboutDJ = () => {
   const heroAnimation = useScrollAnimation();
   const aboutAnimation = useScrollAnimation();
   const highlightsAnimation = useScrollAnimation();
-  const journeyAnimation = useScrollAnimation();
   const interviewAnimation = useScrollAnimation();
   const ctaAnimation = useScrollAnimation();
   
