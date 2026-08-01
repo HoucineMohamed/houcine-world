@@ -173,41 +173,6 @@ const AboutDJ = () => {
         </div>
       </section>
 
-      {/* Journey Timeline */}
-      <section 
-        ref={journeyAnimation.ref}
-        className={`py-24 px-6 transition-all duration-700 ${
-          journeyAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-        }`}
-      >
-        <div className="container mx-auto max-w-4xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
-            <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
-              The Journey
-            </span>
-          </h2>
-          <div className="space-y-6">
-            {journey.map((item, index) => (
-              <div
-                key={index}
-                className="flex gap-6 items-start group animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="flex-shrink-0 w-20 text-right">
-                  <span className="text-2xl font-bold text-rose-500">{item.year}</span>
-                </div>
-                <div className="flex-shrink-0 w-4 h-4 rounded-full bg-rose-500 mt-2 group-hover:scale-150 transition-transform" />
-                <Card className="flex-1 border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:scale-105">
-                  <CardContent className="p-4">
-                    <p className="text-lg">{item.event}</p>
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Featured Interview */}
       <section 
         ref={interviewAnimation.ref}
