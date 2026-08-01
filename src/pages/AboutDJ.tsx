@@ -24,14 +24,6 @@ const AboutDJ = () => {
     { icon: MapPin, title: "Based in Tunisia", desc: "Spreading music across the nation" },
   ];
 
-  const journey = [
-    { year: "21 Jun – 23 Dec 2024", event: "Flavera Club – lighting up the crowd with signature La Rosa energy" },
-    { year: "28 Mar & 20 Apr 2025", event: "Two unforgettable nights with Interact, bringing music and youth together" },
-    { year: "18 Apr & 24 Mar 2025", event: "Exclusive SoundCloud playlists released, sharing La Rosa's evolving sound with the world" },
-    { year: "May – Oct 2025", event: "A season filled with private parties — over 15 events spreading good vibes and passion" },
-    { year: "5 Sep 2025", event: "A massive night with Leo Club Kairouan — La Rosa set the floor on fire and made the crowd go wild" },
-  ];
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <ScrollProgressBar />
