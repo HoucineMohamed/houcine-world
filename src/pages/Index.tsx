@@ -34,10 +34,10 @@ const Index = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <Link to="/dev" className="hover:text-accent transition-all hover:scale-105 duration-200">Dev</Link>
-            <Link to="/designs" className="hover:text-accent transition-all hover:scale-105 duration-200">Designs</Link>
-            <Link to="/reads" className="hover:text-accent transition-all hover:scale-105 duration-200">Reads</Link>
-            <Link to="/manages" className="hover:text-accent transition-all hover:scale-105 duration-200">Manages</Link>
+            <Link to="/dev" className="hover:text-accent transition-all hover:scale-105 duration-200">Tech</Link>
+            <Link to="/designs" className="hover:text-accent transition-all hover:scale-105 duration-200">Studio</Link>
+            <Link to="/reads" className="hover:text-accent transition-all hover:scale-105 duration-200">Education</Link>
+            <Link to="/manages" className="hover:text-accent transition-all hover:scale-105 duration-200">Management</Link>
           </nav>
 
           {/* Mobile Navigation */}
@@ -49,10 +49,10 @@ const Index = () => {
             </SheetTrigger>
             <SheetContent>
               <nav className="flex flex-col gap-4 mt-8">
-                <Link to="/dev" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Dev</Link>
-                <Link to="/designs" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Designs</Link>
-                <Link to="/reads" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Reads</Link>
-                <Link to="/manages" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Manages</Link>
+                <Link to="/dev" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Tech</Link>
+                <Link to="/designs" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Studio</Link>
+                <Link to="/reads" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Education</Link>
+                <Link to="/manages" className="text-lg hover:text-accent transition-all hover:scale-105 duration-200">Management</Link>
               </nav>
             </SheetContent>
           </Sheet>
