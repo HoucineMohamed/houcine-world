@@ -14,7 +14,6 @@ const AboutDJ = () => {
   const heroAnimation = useScrollAnimation();
   const aboutAnimation = useScrollAnimation();
   const highlightsAnimation = useScrollAnimation();
-  const journeyAnimation = useScrollAnimation();
   const interviewAnimation = useScrollAnimation();
   const ctaAnimation = useScrollAnimation();
   
@@ -23,14 +22,6 @@ const AboutDJ = () => {
     { icon: Award, title: "+25 Events", desc: "From private parties to massive clubs" },
     { icon: Calendar, title: "Versatile Sets", desc: "House, Techno, Afrobeat & more" },
     { icon: MapPin, title: "Based in Tunisia", desc: "Spreading music across the nation" },
-  ];
-
-  const journey = [
-    { year: "21 Jun – 23 Dec 2024", event: "Flavera Club – lighting up the crowd with signature La Rosa energy" },
-    { year: "28 Mar & 20 Apr 2025", event: "Two unforgettable nights with Interact, bringing music and youth together" },
-    { year: "18 Apr & 24 Mar 2025", event: "Exclusive SoundCloud playlists released, sharing La Rosa's evolving sound with the world" },
-    { year: "May – Oct 2025", event: "A season filled with private parties — over 15 events spreading good vibes and passion" },
-    { year: "5 Sep 2025", event: "A massive night with Leo Club Kairouan — La Rosa set the floor on fire and made the crowd go wild" },
   ];
 
   return (
@@ -177,41 +168,6 @@ const AboutDJ = () => {
                   <p className="text-muted-foreground text-sm">{item.desc}</p>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Journey Timeline */}
-      <section 
-        ref={journeyAnimation.ref}
-        className={`py-24 px-6 transition-all duration-700 ${
-          journeyAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-        }`}
-      >
-        <div className="container mx-auto max-w-4xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
-            <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
-              The Journey
-            </span>
-          </h2>
-          <div className="space-y-6">
-            {journey.map((item, index) => (
-              <div
-                key={index}
-                className="flex gap-6 items-start group animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="flex-shrink-0 w-20 text-right">
-                  <span className="text-2xl font-bold text-rose-500">{item.year}</span>
-                </div>
-                <div className="flex-shrink-0 w-4 h-4 rounded-full bg-rose-500 mt-2 group-hover:scale-150 transition-transform" />
-                <Card className="flex-1 border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:scale-105">
-                  <CardContent className="p-4">
-                    <p className="text-lg">{item.event}</p>
-                  </CardContent>
-                </Card>
-              </div>
             ))}
           </div>
         </div>
