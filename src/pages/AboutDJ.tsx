@@ -18,8 +18,8 @@ const AboutDJ = () => {
   const ctaAnimation = useScrollAnimation();
   
   const highlights = [
-    { icon: Music, title: "+1 Year of Experience", desc: "Crafting beats with passion" },
-    { icon: Award, title: "+25 Events", desc: "From private parties to massive clubs" },
+    { icon: Music, title: "+2 Years of Experience", desc: "Crafting beats with passion" },
+    { icon: Award, title: "+50 Events", desc: "From private parties to massive clubs" },
     { icon: Calendar, title: "Versatile Sets", desc: "House, Techno, Afrobeat & more" },
     { icon: MapPin, title: "Based in Tunisia", desc: "Spreading music across the nation" },
   ];
