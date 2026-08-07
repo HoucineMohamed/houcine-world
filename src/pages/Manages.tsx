@@ -47,36 +47,30 @@ const Manages = () => {
             Building creative brands and projects — coming soon.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <Link 
+          <div className="flex flex-wrap justify-center gap-12 sm:gap-16 md:gap-24 py-8 sm:py-12">
+            <Link
               to="/larosaview"
-              className="group block transition-all duration-300 hover:scale-105"
+              className="group relative flex flex-col items-center gap-5 outline-none"
+              aria-label="DJ La Rosa View — music brand management"
             >
-              <Card className="border-border/50 bg-card/50 backdrop-blur h-full group-hover:border-accent/50 group-hover:shadow-xl group-hover:shadow-white/5 transition-all duration-300">
-                <CardHeader>
-                  <CardTitle className="group-hover:text-accent transition-colors">DJ La Rosa View</CardTitle>
-                  <CardDescription>Music brand management</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Creative direction and brand development for DJ La Rosa View.
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Card className="border-border/50 bg-card/50 backdrop-blur h-full opacity-60 cursor-not-allowed">
-              <CardHeader>
-                <CardTitle>The Shape Shifters</CardTitle>
-                <CardDescription>Creative collective — Coming Soon</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Managing and developing innovative creative projects.
+              <div className="absolute -inset-8 rounded-full bg-accent/0 blur-2xl transition-all duration-500 group-hover:bg-accent/10" />
+              <img
+                src={laRosaLogo}
+                alt="DJ La Rosa View logo"
+                loading="lazy"
+                className="relative h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 object-contain opacity-75 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:-translate-y-1.5 group-hover:scale-[1.04]"
+              />
+              <div className="relative text-center">
+                <p className="font-display text-sm sm:text-base tracking-[0.2em] uppercase text-foreground/80 transition-colors duration-300 group-hover:text-foreground">
+                  La Rosa View
                 </p>
-              </CardContent>
-            </Card>
+                <p className="mt-1 text-xs text-muted-foreground opacity-0 translate-y-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                  Music brand management
+                </p>
+              </div>
+            </Link>
           </div>
+
         </div>
       </main>
       
