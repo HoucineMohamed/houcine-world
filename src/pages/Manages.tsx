@@ -1,7 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoH from "@/assets/logo-h.png";
+import laRosaLogo from "@/assets/images/larosaview-logo.png";
+
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
