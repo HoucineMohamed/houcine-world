@@ -537,6 +537,16 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: never; Returns: boolean }
+      manage_brand_membership: {
+        Args: {
+          p_action: string
+          p_brand_id: string
+          p_email?: string
+          p_role?: string
+          p_user_id?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"
