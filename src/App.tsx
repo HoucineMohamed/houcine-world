@@ -71,9 +71,6 @@ const AppRoutes = () => {
     </Routes>
   );
 };
-    </Routes>
-  );
-};
 
 const App = () => (
   <Router>
