@@ -48,7 +48,29 @@ const AppRoutes = () => {
       <Route path="/review" element={<Review />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/login" element={<AdminLogin />} />
+
+      {/* Workspace: login is public, everything else is auth + membership guarded */}
+      <Route path="/workspace/login" element={<WorkspaceLogin />} />
+      <Route element={<AuthGuard />}>
+        <Route path="/workspace" element={<WorkspaceResolver />} />
+        <Route path="/workspace/select" element={<BrandSelect />} />
+        <Route path="/workspace/ecosystem" element={<EcosystemView />} />
+        <Route path="/workspace/denied" element={<WorkspaceDenied />} />
+        <Route path="/workspace/:brandId" element={<BrandGuard />}>
+          <Route path="dashboard" element={<BrandDashboard />} />
+          <Route path="bookings" element={<BrandBookings />} />
+          <Route path="notifications" element={<BrandNotifications />} />
+          <Route path="analytics" element={<BrandAnalytics />} />
+          <Route path="messages" element={<BrandMessages />} />
+          <Route path="settings" element={<BrandSettings />} />
+        </Route>
+      </Route>
+      <Route path="/workspace/*" element={<WorkspaceNotFound />} />
+
       <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
     </Routes>
   );
 };
