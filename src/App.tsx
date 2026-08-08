@@ -15,6 +15,20 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import { usePageTracking } from "./hooks/useAnalytics";
+import AuthGuard from "./components/workspace/AuthGuard";
+import BrandGuard from "./components/workspace/BrandGuard";
+import WorkspaceLogin from "./pages/workspace/WorkspaceLogin";
+import WorkspaceResolver from "./pages/workspace/WorkspaceResolver";
+import BrandSelect from "./pages/workspace/BrandSelect";
+import BrandDashboard from "./pages/workspace/BrandDashboard";
+import BrandBookings from "./pages/workspace/BrandBookings";
+import BrandNotifications from "./pages/workspace/BrandNotifications";
+import BrandAnalytics from "./pages/workspace/BrandAnalytics";
+import BrandMessages from "./pages/workspace/BrandMessages";
+import BrandSettings from "./pages/workspace/BrandSettings";
+import EcosystemView from "./pages/workspace/EcosystemView";
+import WorkspaceDenied from "./pages/workspace/WorkspaceDenied";
+import WorkspaceNotFound from "./pages/workspace/WorkspaceNotFound";
 
 // Wrapper component to enable page tracking
 const AppRoutes = () => {
@@ -34,6 +48,25 @@ const AppRoutes = () => {
       <Route path="/review" element={<Review />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/login" element={<AdminLogin />} />
+
+      {/* Workspace: login is public, everything else is auth + membership guarded */}
+      <Route path="/workspace/login" element={<WorkspaceLogin />} />
+      <Route element={<AuthGuard />}>
+        <Route path="/workspace" element={<WorkspaceResolver />} />
+        <Route path="/workspace/select" element={<BrandSelect />} />
+        <Route path="/workspace/ecosystem" element={<EcosystemView />} />
+        <Route path="/workspace/denied" element={<WorkspaceDenied />} />
+        <Route path="/workspace/:brandId" element={<BrandGuard />}>
+          <Route path="dashboard" element={<BrandDashboard />} />
+          <Route path="bookings" element={<BrandBookings />} />
+          <Route path="notifications" element={<BrandNotifications />} />
+          <Route path="analytics" element={<BrandAnalytics />} />
+          <Route path="messages" element={<BrandMessages />} />
+          <Route path="settings" element={<BrandSettings />} />
+        </Route>
+      </Route>
+      <Route path="/workspace/*" element={<WorkspaceNotFound />} />
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
