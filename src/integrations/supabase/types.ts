@@ -523,6 +523,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bootstrap_admins: {
+        Args: {
+          p_brand_admin_email: string
+          p_brand_slug: string
+          p_super_email: string
+        }
+        Returns: Json
+      }
       brand_role_rank: { Args: { role: string }; Returns: number }
       has_brand_access: { Args: { target_brand_id: string }; Returns: boolean }
       has_brand_role: {
