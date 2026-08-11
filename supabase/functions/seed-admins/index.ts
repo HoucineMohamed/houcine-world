@@ -27,15 +27,22 @@ Deno.serve(async (req) => {
     return json({ error: "Seed credentials are not configured" }, 500);
   }
 
-  if (req.headers.get("x-seed-key") !== superPassword) {
-    return json({ error: "Unauthorized" }, 401);
-  }
-
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     { auth: { persistSession: false } },
   );
+
+  // Self-disabling bootstrap: runs freely only while no super admin exists.
+  // Once seeded, the correct seed key is required.
+  const { count: superAdmins } = await admin
+    .from("profiles")
+    .select("id", { count: "exact", head: true })
+    .eq("platform_role", "super_admin");
+
+  if ((superAdmins ?? 0) > 0 && req.headers.get("x-seed-key") !== superPassword) {
+    return json({ error: "Already seeded" }, 401);
+  }
 
   const ensureUser = async (email: string, password: string, fullName: string) => {
     const { data, error } = await admin.auth.admin.createUser({
