@@ -26,7 +26,12 @@ const AuthCallback = () => {
       const hash = new URLSearchParams(url.hash.replace(/^#/, ""));
       const q = url.searchParams;
 
-      const next = q.get("next") || hash.get("next") || "/workspace";
+      const requestedNext = q.get("next") || hash.get("next") || "/workspace";
+      // The old admin panel is no longer the authenticated destination. Keep all
+      // admin magic-link entry points inside the membership-aware workspace.
+      const next = requestedNext === "/admin" || requestedNext === "/admin/login"
+        ? "/workspace"
+        : requestedNext;
 
       const errCode = q.get("error_code") || hash.get("error_code");
       const errDesc = q.get("error_description") || hash.get("error_description");
@@ -47,13 +52,20 @@ const AuthCallback = () => {
       const refreshToken = hash.get("refresh_token");
 
       try {
-        if (code) {
+        // The client has detectSessionInUrl enabled by default. It may have
+        // consumed an implicit URL or PKCE code while initializing, so always
+        // wait for that initialization and inspect the persisted session before
+        // attempting an explicit exchange. This prevents exchanging a code twice.
+        const { data: initialData, error: initialError } = await supabase.auth.getSession();
+        if (initialError) throw initialError;
+
+        if (!initialData.session && code) {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
           if (error) throw error;
-        } else if (tokenHash) {
+        } else if (!initialData.session && tokenHash) {
           const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
           if (error) throw error;
-        } else if (accessToken && refreshToken) {
+        } else if (!initialData.session && accessToken && refreshToken) {
           const { error } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
@@ -61,11 +73,13 @@ const AuthCallback = () => {
           if (error) throw error;
         }
 
-        // detectSessionInUrl may already have consumed the params — re-check.
-        const { data } = await supabase.auth.getSession();
+        const { data, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
         if (!data.session) {
           setError(
-            "We couldn't establish a session from that link. It may have expired or already been used. Request a new login link.",
+            code || tokenHash || accessToken
+              ? "We couldn't establish a session from that link. It may have expired or already been used. Request a new login link."
+              : "This callback does not contain a login token. Request a new login link and open the full link from the email.",
           );
           return;
         }

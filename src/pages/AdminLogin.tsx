@@ -10,14 +10,14 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const { user, isAdmin, loading, signInWithMagicLink } = useAuth();
+  const { user, loading, signInWithMagicLink } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user && isAdmin) {
-      navigate("/admin");
+    if (!loading && user) {
+      navigate("/workspace", { replace: true });
     }
-  }, [user, isAdmin, loading, navigate]);
+  }, [user, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
