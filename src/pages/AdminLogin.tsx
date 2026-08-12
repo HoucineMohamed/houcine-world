@@ -10,7 +10,7 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const { user, isAdmin, loading, signInWithMagicLink } = useAuth();
+  const { user, loading, signInWithMagicLink } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
