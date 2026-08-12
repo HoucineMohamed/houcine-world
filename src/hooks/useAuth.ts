@@ -80,7 +80,7 @@ export const useAuth = () => {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/admin`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=%2Fadmin`,
       },
     });
     return { error };

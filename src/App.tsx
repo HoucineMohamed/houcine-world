@@ -14,6 +14,7 @@ import Review from "./pages/Review";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
+import AuthCallback from "./pages/AuthCallback";
 import { usePageTracking } from "./hooks/useAnalytics";
 import AuthGuard from "./components/workspace/AuthGuard";
 import BrandGuard from "./components/workspace/BrandGuard";
@@ -48,6 +49,7 @@ const AppRoutes = () => {
       <Route path="/review" element={<Review />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
 
       {/* Workspace: login is public, everything else is auth + membership guarded */}
       <Route path="/workspace/login" element={<WorkspaceLogin />} />
