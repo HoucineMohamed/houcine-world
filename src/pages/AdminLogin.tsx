@@ -14,10 +14,10 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user && isAdmin) {
-      navigate("/admin");
+    if (!loading && user) {
+      navigate("/workspace", { replace: true });
     }
-  }, [user, isAdmin, loading, navigate]);
+  }, [user, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
