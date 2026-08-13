@@ -84,6 +84,14 @@ const AuthCallback = () => {
           return;
         }
 
+        // Do not route into the protected workspace based only on a token from
+        // browser storage. Re-validate it with Auth before navigation so the
+        // guard receives a real, durable session rather than a transient one.
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        if (userError || !userData.user) {
+          throw userError ?? new Error("The login session could not be verified.");
+        }
+
         window.history.replaceState({}, "", window.location.pathname);
         navigate(next.startsWith("/") ? next : "/workspace", { replace: true });
       } catch (e) {
