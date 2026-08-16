@@ -2,3 +2,12 @@ project_id = "uxixfhthdgwxqfltvudt"
 
 [functions.send-notification]
 verify_jwt = false
+
+# instagram-oauth serves both the authenticated "start connection" call and
+# Instagram's own unauthenticated callback redirect from one router, so JWT
+# verification happens inside the function instead of at the gateway.
+[functions.instagram-oauth]
+verify_jwt = false
+
+[functions.instagram-metrics]
+verify_jwt = true

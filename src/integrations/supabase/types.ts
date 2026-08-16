@@ -234,6 +234,107 @@ export type Database = {
           },
         ]
       }
+      connected_account_secrets: {
+        Row: {
+          access_token: string
+          connected_account_id: string
+          created_at: string
+          provider_meta: Json | null
+          refresh_token: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token: string
+          connected_account_id: string
+          created_at?: string
+          provider_meta?: Json | null
+          refresh_token?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          connected_account_id?: string
+          created_at?: string
+          provider_meta?: Json | null
+          refresh_token?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connected_account_secrets_connected_account_id_fkey"
+            columns: ["connected_account_id"]
+            isOneToOne: true
+            referencedRelation: "connected_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connected_accounts: {
+        Row: {
+          account_external_id: string | null
+          account_name: string | null
+          brand_id: string
+          connected_at: string | null
+          connected_by: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          last_refreshed_at: string | null
+          platform: string
+          scopes: string[] | null
+          status: string
+          token_expires_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_external_id?: string | null
+          account_name?: string | null
+          brand_id: string
+          connected_at?: string | null
+          connected_by?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          last_refreshed_at?: string | null
+          platform: string
+          scopes?: string[] | null
+          status?: string
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_external_id?: string | null
+          account_name?: string | null
+          brand_id?: string
+          connected_at?: string | null
+          connected_by?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          last_refreshed_at?: string | null
+          platform?: string
+          scopes?: string[] | null
+          status?: string
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connected_accounts_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connected_accounts_connected_by_fkey"
+            columns: ["connected_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cta_events: {
         Row: {
           created_at: string
@@ -347,6 +448,54 @@ export type Database = {
           },
         ]
       }
+      oauth_flow_states: {
+        Row: {
+          brand_id: string
+          created_at: string
+          expires_at: string
+          platform: string
+          return_origin: string
+          state: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          brand_id: string
+          created_at?: string
+          expires_at: string
+          platform: string
+          return_origin: string
+          state: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          brand_id?: string
+          created_at?: string
+          expires_at?: string
+          platform?: string
+          return_origin?: string
+          state?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "oauth_flow_states_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "oauth_flow_states_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_views: {
         Row: {
           created_at: string
@@ -376,6 +525,38 @@ export type Database = {
           visitor_id?: string
         }
         Relationships: []
+      }
+      platform_metrics_snapshots: {
+        Row: {
+          brand_id: string
+          fetched_at: string
+          id: string
+          metrics: Json
+          platform: string
+        }
+        Insert: {
+          brand_id: string
+          fetched_at?: string
+          id?: string
+          metrics: Json
+          platform: string
+        }
+        Update: {
+          brand_id?: string
+          fetched_at?: string
+          id?: string
+          metrics?: Json
+          platform?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_metrics_snapshots_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -532,6 +713,10 @@ export type Database = {
         Returns: Json
       }
       brand_role_rank: { Args: { role: string }; Returns: number }
+      disconnect_platform_account: {
+        Args: { p_brand_id: string; p_platform: string }
+        Returns: undefined
+      }
       has_brand_access: { Args: { target_brand_id: string }; Returns: boolean }
       has_brand_role: {
         Args: { min_role: string; target_brand_id: string }

@@ -12,6 +12,7 @@ import { fetchAnalyticsEvents, type AnalyticsEvent } from "@/services/analytics"
 import { initAnalytics, analyticsEnabled, captureBrandEvent } from "@/lib/analytics";
 import { summarize, timeSeries, countBy, type Bucket } from "@/lib/brandMetrics";
 import { MetricCard, Panel, EmptyState } from "@/components/workspace/analytics/AnalyticsCards";
+import InstagramMetricsCard from "@/components/workspace/analytics/InstagramMetricsCard";
 
 const PIE_COLORS = [
   "hsl(var(--accent))", "hsl(var(--primary))", "hsl(var(--muted-foreground))", "hsl(var(--destructive))",
@@ -215,6 +216,9 @@ const BrandAnalytics = () => {
           )}
         </Panel>
       </div>
+
+      {/* Connected-platform data slots in here, alongside the website metrics above. */}
+      {brandId && <InstagramMetricsCard brandId={brandId} />}
 
       {!analyticsEnabled() && (
         <p className="text-xs text-muted-foreground mt-6 flex items-center gap-2">
