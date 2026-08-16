@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabaseClient";
  * brand_id filtering here only reduces noise — RLS decides what the socket may deliver.
  */
 export const useRealtimeTable = (
-  table: "bookings" | "notifications" | "messages",
+  table: "bookings" | "notifications" | "messages" | "connected_accounts",
   brandId: string | undefined,
   onChange: () => void
 ) => {

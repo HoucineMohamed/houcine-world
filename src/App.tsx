@@ -28,6 +28,7 @@ import BrandAnalytics from "./pages/workspace/BrandAnalytics";
 import BrandMessages from "./pages/workspace/BrandMessages";
 import BrandSettings from "./pages/workspace/BrandSettings";
 import EcosystemView from "./pages/workspace/EcosystemView";
+import PlatformCredentials from "./pages/workspace/PlatformCredentials";
 import WorkspaceDenied from "./pages/workspace/WorkspaceDenied";
 import WorkspaceNotFound from "./pages/workspace/WorkspaceNotFound";
 
@@ -57,6 +58,7 @@ const AppRoutes = () => {
         <Route path="/workspace" element={<WorkspaceResolver />} />
         <Route path="/workspace/select" element={<BrandSelect />} />
         <Route path="/workspace/ecosystem" element={<EcosystemView />} />
+        <Route path="/workspace/platform-credentials" element={<PlatformCredentials />} />
         <Route path="/workspace/denied" element={<WorkspaceDenied />} />
         <Route path="/workspace/:brandId" element={<BrandGuard />}>
           <Route path="dashboard" element={<BrandDashboard />} />

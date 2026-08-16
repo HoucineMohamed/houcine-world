@@ -13,6 +13,7 @@ import { updateBrand } from "@/services/brands";
 import {
   changeMemberRole, fetchBrandMembers, grantMembership, revokeMembership, type BrandMember,
 } from "@/services/memberships";
+import ConnectedAccountsCard from "@/components/workspace/settings/ConnectedAccountsCard";
 
 const BrandSettings = () => {
   const { brandId } = useParams();
@@ -122,6 +123,12 @@ const BrandSettings = () => {
           </p>
         </CardContent>
       </Card>
+
+      {brandId && (
+        <div className="mt-8">
+          <ConnectedAccountsCard brandId={brandId} canManage={canManage} />
+        </div>
+      )}
     </div>
   );
 };

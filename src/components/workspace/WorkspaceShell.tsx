@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   LayoutDashboard, CalendarDays, Bell, BarChart3, MessageSquare,
-  Settings as SettingsIcon, LogOut, Globe, ChevronDown,
+  Settings as SettingsIcon, LogOut, Globe, ChevronDown, KeyRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -82,6 +82,14 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50"
             >
               <Globe className="w-4 h-4" /> Ecosystem
+            </NavLink>
+          )}
+          {isSuperAdmin && (
+            <NavLink
+              to="/workspace/platform-credentials"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            >
+              <KeyRound className="w-4 h-4" /> Platform Credentials
             </NavLink>
           )}
         </nav>

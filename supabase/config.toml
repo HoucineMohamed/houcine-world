@@ -2,3 +2,35 @@ project_id = "uxixfhthdgwxqfltvudt"
 
 [functions.send-notification]
 verify_jwt = false
+
+# instagram-oauth serves both the authenticated "start connection" call and
+# Instagram's own unauthenticated callback redirect from one router, so JWT
+# verification happens inside the function instead of at the gateway.
+[functions.instagram-oauth]
+verify_jwt = false
+
+[functions.instagram-metrics]
+verify_jwt = true
+
+# Same reasoning as instagram-oauth: each *-oauth function's /callback route is
+# hit directly by the provider with no Authorization header.
+[functions.tiktok-oauth]
+verify_jwt = false
+
+[functions.tiktok-metrics]
+verify_jwt = true
+
+[functions.spotify-oauth]
+verify_jwt = false
+
+[functions.spotify-metrics]
+verify_jwt = true
+
+[functions.soundcloud-oauth]
+verify_jwt = false
+
+[functions.soundcloud-metrics]
+verify_jwt = true
+
+[functions.platform-credentials]
+verify_jwt = true
