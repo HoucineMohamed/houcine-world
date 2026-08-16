@@ -70,12 +70,19 @@ const handleCallback = async (req: Request) => {
   const origin = stateRow?.return_origin || fallbackOrigin;
   const brandId = stateRow?.brand_id ?? null;
 
+  // The state is single-use: consume it on *any* terminal outcome (denied or
+  // otherwise), not just success, so a leaked state can't be replayed later.
+  const stateUsable = Boolean(stateRow) && !stateRow.used_at && new Date(stateRow.expires_at) >= new Date()
+    && Boolean(stateRow.pkce_verifier);
+  if (stateUsable) {
+    await svc.from("oauth_flow_states").update({ used_at: new Date().toISOString() }).eq("state", stateParam);
+  }
+
   if (url.searchParams.get("error")) return redirectToSettings(origin, brandId, { soundcloud: "denied" });
 
-  if (!stateRow || stateRow.used_at || new Date(stateRow.expires_at) < new Date() || !stateRow.pkce_verifier) {
+  if (!stateUsable) {
     return redirectToSettings(origin, brandId, { soundcloud: "error", reason: "invalid_state" });
   }
-  await svc.from("oauth_flow_states").update({ used_at: new Date().toISOString() }).eq("state", stateParam);
 
   const code = url.searchParams.get("code");
   if (!code) return redirectToSettings(origin, brandId, { soundcloud: "error", reason: "missing_code" });

@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2.49.1";
 import { corsHeaders } from "../_shared/cors.ts";
+import { getPlatformCredentials, redirectUriFor } from "../_shared/credentials.ts";
 import {
   buildAuthorizeUrl,
   exchangeCodeForToken,
@@ -71,15 +72,16 @@ const handleAuthorize = async (req: Request) => {
     return json({ error: "Only a brand admin can connect this brand's accounts" }, 403);
   }
 
-  let authorizeUrl: string;
-  try {
-    authorizeUrl = buildAuthorizeUrl(randomState());
-  } catch (e) {
-    return json({ error: e instanceof Error ? e.message : "Instagram is not configured yet" }, 500);
-  }
-  const state = new URL(authorizeUrl).searchParams.get("state")!;
-
   const svc = serviceClient();
+  const creds = await getPlatformCredentials(svc, "instagram");
+  if (!creds) {
+    return json({ error: "Instagram isn't configured yet. Ask a super admin to set it up under Platform Credentials." }, 409);
+  }
+
+  const state = randomState();
+  const redirectUri = redirectUriFor("instagram");
+  const authorizeUrl = buildAuthorizeUrl(creds, redirectUri, state);
+
   const { error: insertError } = await svc.from("oauth_flow_states").insert({
     state,
     brand_id: brandId,
@@ -112,23 +114,32 @@ const handleCallback = async (req: Request) => {
   const origin = stateRow?.return_origin || fallbackOrigin;
   const brandId = stateRow?.brand_id ?? null;
 
+  // The state is single-use: consume it on *any* terminal outcome (denied or
+  // otherwise), not just success, so a leaked state can't be replayed later.
+  const stateUsable = Boolean(stateRow) && !stateRow.used_at && new Date(stateRow.expires_at) >= new Date();
+  if (stateUsable) {
+    await svc.from("oauth_flow_states").update({ used_at: new Date().toISOString() }).eq("state", stateParam);
+  }
+
   // User denied the Instagram/Facebook consent screen.
   const oauthError = url.searchParams.get("error");
   if (oauthError) {
     return redirectToSettings(origin, brandId, { instagram: "denied" });
   }
 
-  if (!stateRow || stateRow.used_at || new Date(stateRow.expires_at) < new Date()) {
+  if (!stateUsable) {
     return redirectToSettings(origin, brandId, { instagram: "error", reason: "invalid_state" });
   }
-  await svc.from("oauth_flow_states").update({ used_at: new Date().toISOString() }).eq("state", stateParam);
 
   const code = url.searchParams.get("code");
   if (!code) return redirectToSettings(origin, brandId, { instagram: "error", reason: "missing_code" });
 
   try {
-    const shortLived = await exchangeCodeForToken(code);
-    const longLived = await exchangeForLongLivedToken(shortLived.access_token);
+    const creds = await getPlatformCredentials(svc, "instagram");
+    if (!creds) return redirectToSettings(origin, brandId, { instagram: "error", reason: "config_error" });
+
+    const shortLived = await exchangeCodeForToken(creds, code, redirectUriFor("instagram"));
+    const longLived = await exchangeForLongLivedToken(creds, shortLived.access_token);
     const link = await findInstagramBusinessAccount(longLived.access_token);
     if (!link) {
       return redirectToSettings(origin, brandId, { instagram: "error", reason: "no_instagram_business_account" });

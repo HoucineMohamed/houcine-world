@@ -1,5 +1,6 @@
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.49.1";
 import { corsHeaders } from "../_shared/cors.ts";
+import { getPlatformCredentials } from "../_shared/credentials.ts";
 import {
   exchangeForLongLivedToken,
   expiryFromTokenResponse,
@@ -50,7 +51,9 @@ interface SecretRow {
  * lifetime from it, re-derives a fresh Page access token for the same Page. */
 const refreshToken = async (svc: SupabaseClient, account: ConnectedAccountRow, secret: SecretRow) => {
   if (!secret.refresh_token) throw new InstagramApiError("No refresh token stored", "invalid_token");
-  const longLived = await exchangeForLongLivedToken(secret.refresh_token);
+  const creds = await getPlatformCredentials(svc, "instagram");
+  if (!creds) throw new InstagramApiError("Instagram is not configured", "config_error");
+  const longLived = await exchangeForLongLivedToken(creds, secret.refresh_token);
   const link = await findInstagramBusinessAccount(longLived.access_token);
   if (!link) throw new InstagramApiError("Instagram account is no longer linked to a Facebook Page", "no_ig_account");
 

@@ -9,6 +9,8 @@
  * official, non-deprecated path to the metrics this task asks for.
  */
 
+import type { PlatformCredentials } from "./credentials.ts";
+
 export const GRAPH_VERSION = "v21.0";
 const GRAPH_BASE = `https://graph.facebook.com/${GRAPH_VERSION}`;
 const OAUTH_DIALOG_BASE = `https://www.facebook.com/${GRAPH_VERSION}/dialog/oauth`;
@@ -29,17 +31,9 @@ export class InstagramApiError extends Error {
   }
 }
 
-export const requireEnv = (name: string): string => {
-  const v = Deno.env.get(name);
-  if (!v) throw new InstagramApiError(`Missing required secret: ${name}`, "config_error");
-  return v;
-};
-
-export const buildAuthorizeUrl = (state: string) => {
-  const clientId = requireEnv("INSTAGRAM_APP_ID");
-  const redirectUri = requireEnv("INSTAGRAM_REDIRECT_URI");
+export const buildAuthorizeUrl = (creds: PlatformCredentials, redirectUri: string, state: string) => {
   const url = new URL(OAUTH_DIALOG_BASE);
-  url.searchParams.set("client_id", clientId);
+  url.searchParams.set("client_id", creds.clientId);
   url.searchParams.set("redirect_uri", redirectUri);
   url.searchParams.set("state", state);
   url.searchParams.set("scope", INSTAGRAM_SCOPES);
@@ -68,29 +62,22 @@ const graphGet = async <T>(path: string, params: Record<string, string>): Promis
   return body as T;
 };
 
-export const exchangeCodeForToken = (code: string) => {
-  const clientId = requireEnv("INSTAGRAM_APP_ID");
-  const clientSecret = requireEnv("INSTAGRAM_APP_SECRET");
-  const redirectUri = requireEnv("INSTAGRAM_REDIRECT_URI");
-  return graphGet<TokenResponse>("/oauth/access_token", {
-    client_id: clientId,
-    client_secret: clientSecret,
+export const exchangeCodeForToken = (creds: PlatformCredentials, code: string, redirectUri: string) =>
+  graphGet<TokenResponse>("/oauth/access_token", {
+    client_id: creds.clientId,
+    client_secret: creds.clientSecret,
     redirect_uri: redirectUri,
     code,
   });
-};
 
 /** Also used to *refresh* a still-valid long-lived token — same grant, called again. */
-export const exchangeForLongLivedToken = (shortOrCurrentLivedToken: string) => {
-  const clientId = requireEnv("INSTAGRAM_APP_ID");
-  const clientSecret = requireEnv("INSTAGRAM_APP_SECRET");
-  return graphGet<TokenResponse>("/oauth/access_token", {
+export const exchangeForLongLivedToken = (creds: PlatformCredentials, shortOrCurrentLivedToken: string) =>
+  graphGet<TokenResponse>("/oauth/access_token", {
     grant_type: "fb_exchange_token",
-    client_id: clientId,
-    client_secret: clientSecret,
+    client_id: creds.clientId,
+    client_secret: creds.clientSecret,
     fb_exchange_token: shortOrCurrentLivedToken,
   });
-};
 
 interface PageAccount {
   id: string;

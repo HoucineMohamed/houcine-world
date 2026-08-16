@@ -62,12 +62,18 @@ const handleCallback = async (req: Request) => {
   const origin = stateRow?.return_origin || fallbackOrigin;
   const brandId = stateRow?.brand_id ?? null;
 
+  // The state is single-use: consume it on *any* terminal outcome (denied or
+  // otherwise), not just success, so a leaked state can't be replayed later.
+  const stateUsable = Boolean(stateRow) && !stateRow.used_at && new Date(stateRow.expires_at) >= new Date();
+  if (stateUsable) {
+    await svc.from("oauth_flow_states").update({ used_at: new Date().toISOString() }).eq("state", stateParam);
+  }
+
   if (url.searchParams.get("error")) return redirectToSettings(origin, brandId, { spotify: "denied" });
 
-  if (!stateRow || stateRow.used_at || new Date(stateRow.expires_at) < new Date()) {
+  if (!stateUsable) {
     return redirectToSettings(origin, brandId, { spotify: "error", reason: "invalid_state" });
   }
-  await svc.from("oauth_flow_states").update({ used_at: new Date().toISOString() }).eq("state", stateParam);
 
   const code = url.searchParams.get("code");
   if (!code) return redirectToSettings(origin, brandId, { spotify: "error", reason: "missing_code" });
@@ -77,6 +83,8 @@ const handleCallback = async (req: Request) => {
     if (!creds) return redirectToSettings(origin, brandId, { spotify: "error", reason: "config_error" });
 
     const token = await exchangeCodeForToken(creds, code, redirectUriFor("spotify"));
+    if (!token.refresh_token) throw new SpotifyApiError("Spotify did not return a refresh token", "api_error");
+
     const profile = await fetchProfile(token.access_token);
     const expiresAt = new Date(Date.now() + token.expires_in * 1000);
     const accountName = profile.display_name || profile.id;
@@ -103,7 +111,6 @@ const handleCallback = async (req: Request) => {
       .single();
     if (upsertError || !account) throw new SpotifyApiError("Could not save the connection", "api_error");
 
-    if (!token.refresh_token) throw new SpotifyApiError("Spotify did not return a refresh token", "api_error");
     await svc.from("connected_account_secrets").upsert(
       {
         connected_account_id: account.id,

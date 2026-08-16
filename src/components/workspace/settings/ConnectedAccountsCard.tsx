@@ -148,7 +148,7 @@ const ConnectedAccountsCard = ({ brandId, canManage }: { brandId: string; canMan
                     <AlertTriangle className="w-3 h-3" /> {isExpired ? "Reconnect needed" : "Error"}
                   </Badge>
                 )}
-                {!account && <Badge variant="outline">Not Connected</Badge>}
+                {(!account || account.status === "disconnected") && <Badge variant="outline">Not Connected</Badge>}
 
                 {platform.connectable && canManage && (
                   isConnected ? (
