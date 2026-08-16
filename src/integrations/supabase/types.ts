@@ -453,6 +453,7 @@ export type Database = {
           brand_id: string
           created_at: string
           expires_at: string
+          pkce_verifier: string | null
           platform: string
           return_origin: string
           state: string
@@ -463,6 +464,7 @@ export type Database = {
           brand_id: string
           created_at?: string
           expires_at: string
+          pkce_verifier?: string | null
           platform: string
           return_origin: string
           state: string
@@ -473,6 +475,7 @@ export type Database = {
           brand_id?: string
           created_at?: string
           expires_at?: string
+          pkce_verifier?: string | null
           platform?: string
           return_origin?: string
           state?: string
@@ -525,6 +528,41 @@ export type Database = {
           visitor_id?: string
         }
         Relationships: []
+      }
+      platform_credentials: {
+        Row: {
+          client_id: string | null
+          client_secret: string | null
+          created_at: string
+          platform: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          client_secret?: string | null
+          created_at?: string
+          platform: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          client_secret?: string | null
+          created_at?: string
+          platform?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_credentials_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       platform_metrics_snapshots: {
         Row: {

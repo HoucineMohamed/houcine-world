@@ -11,3 +11,26 @@ verify_jwt = false
 
 [functions.instagram-metrics]
 verify_jwt = true
+
+# Same reasoning as instagram-oauth: each *-oauth function's /callback route is
+# hit directly by the provider with no Authorization header.
+[functions.tiktok-oauth]
+verify_jwt = false
+
+[functions.tiktok-metrics]
+verify_jwt = true
+
+[functions.spotify-oauth]
+verify_jwt = false
+
+[functions.spotify-metrics]
+verify_jwt = true
+
+[functions.soundcloud-oauth]
+verify_jwt = false
+
+[functions.soundcloud-metrics]
+verify_jwt = true
+
+[functions.platform-credentials]
+verify_jwt = true

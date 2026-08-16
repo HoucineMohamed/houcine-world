@@ -4,7 +4,7 @@ import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   BarChart, Bar, PieChart, Pie, Cell, Legend,
 } from "recharts";
-import { CalendarDays, CalendarRange, Users, Clock, CheckCircle2, Loader2, Activity } from "lucide-react";
+import { CalendarDays, CalendarRange, Users, Clock, CheckCircle2, Loader2, Activity, Music2, Cloud, Disc3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActiveBrand } from "@/hooks/useActiveBrand";
 import { fetchBookings, type Booking } from "@/services/bookings";
@@ -13,6 +13,7 @@ import { initAnalytics, analyticsEnabled, captureBrandEvent } from "@/lib/analyt
 import { summarize, timeSeries, countBy, type Bucket } from "@/lib/brandMetrics";
 import { MetricCard, Panel, EmptyState } from "@/components/workspace/analytics/AnalyticsCards";
 import InstagramMetricsCard from "@/components/workspace/analytics/InstagramMetricsCard";
+import PlatformMetricsCard from "@/components/workspace/analytics/PlatformMetricsCard";
 
 const PIE_COLORS = [
   "hsl(var(--accent))", "hsl(var(--primary))", "hsl(var(--muted-foreground))", "hsl(var(--destructive))",
@@ -218,7 +219,14 @@ const BrandAnalytics = () => {
       </div>
 
       {/* Connected-platform data slots in here, alongside the website metrics above. */}
-      {brandId && <InstagramMetricsCard brandId={brandId} />}
+      {brandId && (
+        <>
+          <InstagramMetricsCard brandId={brandId} />
+          <PlatformMetricsCard brandId={brandId} platform="tiktok" label="TikTok" icon={Music2} />
+          <PlatformMetricsCard brandId={brandId} platform="spotify" label="Spotify" icon={Disc3} />
+          <PlatformMetricsCard brandId={brandId} platform="soundcloud" label="SoundCloud" icon={Cloud} />
+        </>
+      )}
 
       {!analyticsEnabled() && (
         <p className="text-xs text-muted-foreground mt-6 flex items-center gap-2">

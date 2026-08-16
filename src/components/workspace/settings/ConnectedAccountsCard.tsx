@@ -1,68 +1,83 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { CheckCircle2, Loader2, AlertTriangle, Unlink } from "lucide-react";
+import { CheckCircle2, Loader2, AlertTriangle, Unlink, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { PLATFORMS } from "@/lib/platforms";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
 import {
-  disconnectPlatformAccount, fetchConnectedAccounts, startInstagramConnect, type ConnectedAccount,
+  disconnectPlatformAccount, fetchConnectedAccounts, startInstagramConnect, startPlatformConnect,
+  type ConnectedAccount, type OAuthPlatform,
 } from "@/services/connectedAccounts";
+import { fetchCredentialsStatus } from "@/services/platformCredentials";
 
-const REASON_MESSAGES: Record<string, string> = {
-  invalid_state: "That connection attempt expired or was already used. Try connecting again.",
-  no_instagram_business_account:
-    "No Instagram professional account is linked to a Facebook Page you manage. Convert the account to a Business or Creator account, link it to a Facebook Page, then reconnect.",
-  no_ig_account: "The linked Instagram account could not be found. Reconnect to relink it.",
-  invalid_token: "Instagram rejected the connection. Reconnect to try again.",
-  config_error: "Instagram isn't configured on this workspace yet. Contact an admin.",
-  missing_code: "Instagram didn't return an authorization code. Try connecting again.",
+const reasonMessage = (platformLabel: string, reason: string): string => {
+  switch (reason) {
+    case "invalid_state":
+      return "That connection attempt expired or was already used. Try connecting again.";
+    case "invalid_token":
+      return `${platformLabel} rejected the connection. Reconnect to try again.`;
+    case "config_error":
+      return `${platformLabel} isn't configured on this workspace yet. Ask a super admin to set it up under Platform Credentials.`;
+    case "missing_code":
+      return `${platformLabel} didn't return an authorization code. Try connecting again.`;
+    case "no_instagram_business_account":
+      return "No Instagram professional account is linked to a Facebook Page you manage. Convert the account to a Business or Creator account, link it to a Facebook Page, then reconnect.";
+    case "no_ig_account":
+      return "The linked account could not be found. Reconnect to relink it.";
+    default:
+      return `Couldn't connect ${platformLabel}. Please try again.`;
+  }
 };
 
 const ConnectedAccountsCard = ({ brandId, canManage }: { brandId: string; canManage: boolean }) => {
   const [accounts, setAccounts] = useState<ConnectedAccount[]>([]);
+  const [configured, setConfigured] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
-  const [connecting, setConnecting] = useState(false);
+  const [connecting, setConnecting] = useState<string | null>(null);
   const [disconnecting, setDisconnecting] = useState<string | null>(null);
   const [params, setParams] = useSearchParams();
 
   const load = useCallback(() => {
     fetchConnectedAccounts(brandId).then(setAccounts).catch(() => setAccounts([])).finally(() => setLoading(false));
+    fetchCredentialsStatus()
+      .then((rows) => setConfigured(Object.fromEntries(rows.map((r) => [r.platform, r.configured]))))
+      .catch(() => setConfigured({}));
   }, [brandId]);
 
   useEffect(() => { load(); }, [load]);
   useRealtimeTable("connected_accounts", brandId, load);
 
-  // Land back here from the Instagram OAuth redirect: surface the result, then clean the URL.
+  // Land back here from a provider's OAuth redirect: surface the result, then clean the URL.
   useEffect(() => {
-    const instagram = params.get("instagram");
-    if (!instagram) return;
-    if (instagram === "connected") toast.success("Instagram connected");
-    else if (instagram === "denied") toast.info("Instagram connection was cancelled");
-    else if (instagram === "error") {
-      const reason = params.get("reason") ?? "";
-      toast.error(REASON_MESSAGES[reason] ?? "Couldn't connect Instagram. Please try again.");
+    for (const platform of PLATFORMS) {
+      const result = params.get(platform.id);
+      if (!result) continue;
+      if (result === "connected") toast.success(`${platform.label} connected`);
+      else if (result === "denied") toast.info(`${platform.label} connection was cancelled`);
+      else if (result === "error") {
+        toast.error(reasonMessage(platform.label, params.get("reason") ?? ""));
+      }
+      const next = new URLSearchParams(params);
+      next.delete(platform.id);
+      next.delete("reason");
+      setParams(next, { replace: true });
+      load();
+      break;
     }
-    const next = new URLSearchParams(params);
-    next.delete("instagram");
-    next.delete("reason");
-    setParams(next, { replace: true });
-    load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Only Instagram has a working OAuth flow in this phase (see PLATFORMS[].connectable);
-  // this switch is where a future TikTok/Spotify/etc. "Connect" handler plugs in.
   const connect = async (platformId: string) => {
-    if (platformId !== "instagram") return;
-    setConnecting(true);
+    setConnecting(platformId);
     try {
-      await startInstagramConnect(brandId);
+      if (platformId === "instagram") await startInstagramConnect(brandId);
+      else await startPlatformConnect(brandId, platformId as OAuthPlatform);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Couldn't start the Instagram connection");
-      setConnecting(false);
+      toast.error(e instanceof Error ? e.message : `Couldn't start the connection`);
+      setConnecting(null);
     }
   };
 
@@ -96,6 +111,7 @@ const ConnectedAccountsCard = ({ brandId, canManage }: { brandId: string; canMan
             const isConnected = account?.status === "connected";
             const isExpired = account?.status === "expired";
             const isError = account?.status === "error";
+            const isConfigured = configured[platform.id] ?? false;
             const Icon = platform.icon;
 
             return (
@@ -110,6 +126,14 @@ const ConnectedAccountsCard = ({ brandId, canManage }: { brandId: string; canMan
                   {(isExpired || isError) && (
                     <p className="text-xs text-destructive truncate">
                       {account?.error_message ?? "Connection needs attention"}
+                    </p>
+                  )}
+                  {platform.connectable && !isConfigured && !isConnected && (
+                    <p className="text-xs text-muted-foreground truncate">
+                      Not configured —{" "}
+                      <Link to="/workspace/platform-credentials" className="underline hover:text-foreground">
+                        set up in Platform Credentials
+                      </Link>
                     </p>
                   )}
                 </div>
@@ -137,10 +161,14 @@ const ConnectedAccountsCard = ({ brandId, canManage }: { brandId: string; canMan
                         ? <Loader2 className="w-4 h-4 animate-spin" />
                         : <><Unlink className="w-4 h-4 mr-1" /> Disconnect</>}
                     </Button>
-                  ) : (
-                    <Button size="sm" disabled={connecting} onClick={() => connect(platform.id)}>
-                      {connecting && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+                  ) : isConfigured ? (
+                    <Button size="sm" disabled={connecting === platform.id} onClick={() => connect(platform.id)}>
+                      {connecting === platform.id && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
                       {isExpired || isError ? "Reconnect" : "Connect"}
+                    </Button>
+                  ) : (
+                    <Button size="sm" variant="outline" disabled title="Set up this platform's credentials first">
+                      <Settings2 className="w-4 h-4 mr-1" /> Connect
                     </Button>
                   )
                 )}

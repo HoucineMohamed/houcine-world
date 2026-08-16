@@ -83,3 +83,60 @@ export const fetchInstagramMetrics = async (brandId: string): Promise<InstagramM
   if (error) throw error;
   return data ?? { connected: false };
 };
+
+// ── Generic platform connect/metrics (TikTok, Spotify, SoundCloud) ─────────
+// Same pattern as the Instagram-specific functions above, parameterized by
+// platform now that every platform's edge functions follow the identical
+// `${platform}-oauth` / `${platform}-metrics` route + response shape.
+
+export type OAuthPlatform = "tiktok" | "spotify" | "soundcloud";
+
+/** Starts a platform's real OAuth flow via its `${platform}-oauth/authorize` edge function. */
+export const startPlatformConnect = async (brandId: string, platform: OAuthPlatform) => {
+  const { data, error } = await supabase.functions.invoke<{ url: string; error?: string }>(
+    `${platform}-oauth/authorize`,
+    { body: { brand_id: brandId } },
+  );
+  if (error) throw error;
+  if (!data?.url) throw new Error(data?.error ?? `${platform} did not return an authorization URL`);
+  window.location.href = data.url;
+};
+
+export interface PlatformMetricStat {
+  label: string;
+  value: number;
+}
+
+export interface PlatformRecentItem {
+  id: string;
+  title: string;
+  permalink: string;
+  stats: PlatformMetricStat[];
+}
+
+/** Normalized shape shared by tiktok-metrics, spotify-metrics, and soundcloud-metrics. */
+export interface PlatformMetrics {
+  followers: number;
+  secondaryLabel: string;
+  secondaryValue: number;
+  engagement: PlatformMetricStat[];
+  recentItems: PlatformRecentItem[];
+}
+
+export interface PlatformMetricsResponse {
+  connected: boolean;
+  status?: "connected" | "expired" | "error";
+  accountName?: string | null;
+  metrics?: PlatformMetrics | null;
+  fetchedAt?: string | null;
+  stale?: boolean;
+  message?: string;
+}
+
+export const fetchPlatformMetrics = async (brandId: string, platform: OAuthPlatform): Promise<PlatformMetricsResponse> => {
+  const { data, error } = await supabase.functions.invoke<PlatformMetricsResponse>(`${platform}-metrics`, {
+    body: { brand_id: brandId },
+  });
+  if (error) throw error;
+  return data ?? { connected: false };
+};
