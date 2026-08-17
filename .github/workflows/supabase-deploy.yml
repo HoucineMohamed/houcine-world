@@ -111,6 +111,24 @@ jobs:
             echo "Applied $base"
             echo "::endgroup::"
           done
+
+          echo "::group::Verifying expected tables exist"
+          printf '%s\n' \
+            "select table_name from information_schema.tables" \
+            "where table_schema = 'public'" \
+            "  and table_name in ('connected_accounts','connected_account_secrets','oauth_flow_states','platform_metrics_snapshots','platform_credentials')" \
+            "order by table_name;" \
+            > "$WORKDIR/verify.sql"
+          run_sql "$WORKDIR/verify.sql" "verify expected tables" > "$WORKDIR/verify.json"
+          echo "Tables found: $(jq -r '[.[].table_name] | join(", ")' "$WORKDIR/verify.json")"
+          for t in connected_accounts connected_account_secrets oauth_flow_states platform_metrics_snapshots platform_credentials; do
+            if ! jq -e --arg t "$t" 'any(.[]; .table_name == $t)' "$WORKDIR/verify.json" > /dev/null; then
+              echo "::error::expected table '$t' is missing after migrations"
+              exit 1
+            fi
+          done
+          echo "All 5 expected tables confirmed present in public schema."
+          echo "::endgroup::"
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
