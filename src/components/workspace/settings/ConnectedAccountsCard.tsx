@@ -27,6 +27,8 @@ const reasonMessage = (platformLabel: string, reason: string): string => {
       return "No Instagram professional account is linked to a Facebook Page you manage. Convert the account to a Business or Creator account, link it to a Facebook Page, then reconnect.";
     case "no_ig_account":
       return "The linked account could not be found. Reconnect to relink it.";
+    case "no_page":
+      return "No Facebook Page is managed by this account. Create or get added to a Facebook Page, then reconnect.";
     default:
       return `Couldn't connect ${platformLabel}. Please try again.`;
   }

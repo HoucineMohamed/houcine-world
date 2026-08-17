@@ -1,4 +1,4 @@
-import { Instagram, Music2, Cloud, Disc3, Mail, type LucideIcon } from "lucide-react";
+import { Instagram, Music2, Cloud, Disc3, Mail, Youtube, Facebook, type LucideIcon } from "lucide-react";
 
 /**
  * The full roster of platforms Connected Accounts will ever show. Adding a
@@ -9,7 +9,7 @@ import { Instagram, Music2, Cloud, Disc3, Mail, type LucideIcon } from "lucide-r
  * before "Connect" is enabled — see PlatformCredentialsCard.
  */
 export interface PlatformDef {
-  id: "instagram" | "tiktok" | "soundcloud" | "spotify" | "gmail";
+  id: "instagram" | "tiktok" | "soundcloud" | "spotify" | "gmail" | "youtube" | "facebook";
   label: string;
   icon: LucideIcon;
   /** Gmail has no OAuth flow built yet — stays a "Not Connected" placeholder. */
@@ -21,5 +21,7 @@ export const PLATFORMS: PlatformDef[] = [
   { id: "tiktok", label: "TikTok", icon: Music2, connectable: true },
   { id: "soundcloud", label: "SoundCloud", icon: Cloud, connectable: true },
   { id: "spotify", label: "Spotify", icon: Disc3, connectable: true },
+  { id: "youtube", label: "YouTube", icon: Youtube, connectable: true },
+  { id: "facebook", label: "Facebook", icon: Facebook, connectable: true },
   { id: "gmail", label: "Gmail", icon: Mail, connectable: false },
 ];

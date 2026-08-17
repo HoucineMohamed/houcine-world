@@ -84,12 +84,12 @@ export const fetchInstagramMetrics = async (brandId: string): Promise<InstagramM
   return data ?? { connected: false };
 };
 
-// ── Generic platform connect/metrics (TikTok, Spotify, SoundCloud) ─────────
+// ── Generic platform connect/metrics (TikTok, Spotify, SoundCloud, YouTube, Facebook) ──
 // Same pattern as the Instagram-specific functions above, parameterized by
 // platform now that every platform's edge functions follow the identical
 // `${platform}-oauth` / `${platform}-metrics` route + response shape.
 
-export type OAuthPlatform = "tiktok" | "spotify" | "soundcloud";
+export type OAuthPlatform = "tiktok" | "spotify" | "soundcloud" | "youtube" | "facebook";
 
 /** Starts a platform's real OAuth flow via its `${platform}-oauth/authorize` edge function. */
 export const startPlatformConnect = async (brandId: string, platform: OAuthPlatform) => {

@@ -9,8 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { PLATFORMS } from "@/lib/platforms";
 import { fetchCredentialsStatus, savePlatformCredentials, type PlatformCredentialStatus } from "@/services/platformCredentials";
 
-// The four platforms with a real OAuth app to configure — Gmail has no OAuth flow built yet.
-const OAUTH_PLATFORMS = PLATFORMS.filter((p) => ["instagram", "tiktok", "spotify", "soundcloud"].includes(p.id));
+// The platforms with a real OAuth app to configure — Gmail has no OAuth flow built yet.
+const OAUTH_PLATFORMS = PLATFORMS.filter((p) => ["instagram", "tiktok", "spotify", "soundcloud", "youtube", "facebook"].includes(p.id));
 
 const PlatformCredentialForm = ({
   status, onSaved,

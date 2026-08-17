@@ -9,15 +9,17 @@ import type { SupabaseClient } from "npm:@supabase/supabase-js@2.49.1";
  * reading Deno.env directly, so both configuration paths just work.
  */
 
-export type PlatformId = "instagram" | "tiktok" | "soundcloud" | "spotify";
+export type PlatformId = "instagram" | "tiktok" | "soundcloud" | "spotify" | "youtube" | "facebook";
 
-export const PLATFORM_IDS: PlatformId[] = ["instagram", "tiktok", "soundcloud", "spotify"];
+export const PLATFORM_IDS: PlatformId[] = ["instagram", "tiktok", "soundcloud", "spotify", "youtube", "facebook"];
 
 const ENV_KEYS: Record<PlatformId, { id: string; secret: string; redirect: string }> = {
   instagram: { id: "INSTAGRAM_APP_ID", secret: "INSTAGRAM_APP_SECRET", redirect: "INSTAGRAM_REDIRECT_URI" },
   tiktok: { id: "TIKTOK_CLIENT_KEY", secret: "TIKTOK_CLIENT_SECRET", redirect: "TIKTOK_REDIRECT_URI" },
   spotify: { id: "SPOTIFY_CLIENT_ID", secret: "SPOTIFY_CLIENT_SECRET", redirect: "SPOTIFY_REDIRECT_URI" },
   soundcloud: { id: "SOUNDCLOUD_CLIENT_ID", secret: "SOUNDCLOUD_CLIENT_SECRET", redirect: "SOUNDCLOUD_REDIRECT_URI" },
+  youtube: { id: "YOUTUBE_CLIENT_ID", secret: "YOUTUBE_CLIENT_SECRET", redirect: "YOUTUBE_REDIRECT_URI" },
+  facebook: { id: "FACEBOOK_APP_ID", secret: "FACEBOOK_APP_SECRET", redirect: "FACEBOOK_REDIRECT_URI" },
 };
 
 export interface PlatformCredentials {

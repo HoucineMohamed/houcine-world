@@ -4,7 +4,7 @@ import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   BarChart, Bar, PieChart, Pie, Cell, Legend,
 } from "recharts";
-import { CalendarDays, CalendarRange, Users, Clock, CheckCircle2, Loader2, Activity, Music2, Cloud, Disc3 } from "lucide-react";
+import { CalendarDays, CalendarRange, Users, Clock, CheckCircle2, Loader2, Activity, Music2, Cloud, Disc3, Youtube, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActiveBrand } from "@/hooks/useActiveBrand";
 import { fetchBookings, type Booking } from "@/services/bookings";
@@ -97,7 +97,7 @@ const BrandAnalytics = () => {
     <div>
       <h1 className="text-2xl font-bold text-foreground mb-1">Analytics</h1>
       <p className="text-muted-foreground text-sm mb-8">
-        {brand?.name} · website data. External platforms (Instagram, TikTok, SoundCloud, Spotify, Gmail) slot into this same grid later.
+        {brand?.name} · website data. External platforms (Instagram, TikTok, SoundCloud, Spotify, YouTube, Facebook, Gmail) slot into this same grid later.
       </p>
 
       {/* Summary tiles */}
@@ -225,6 +225,8 @@ const BrandAnalytics = () => {
           <PlatformMetricsCard brandId={brandId} platform="tiktok" label="TikTok" icon={Music2} />
           <PlatformMetricsCard brandId={brandId} platform="spotify" label="Spotify" icon={Disc3} />
           <PlatformMetricsCard brandId={brandId} platform="soundcloud" label="SoundCloud" icon={Cloud} />
+          <PlatformMetricsCard brandId={brandId} platform="youtube" label="YouTube" icon={Youtube} />
+          <PlatformMetricsCard brandId={brandId} platform="facebook" label="Facebook" icon={Facebook} />
         </>
       )}
 
