@@ -21,7 +21,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  SUPABASE_PROJECT_REF: uxixfhthdgwxqfltvudt
+  SUPABASE_PROJECT_REF: pcdkfpardswfwoiclvtm
 
 permissions:
   contents: read
