@@ -6,14 +6,15 @@ name: Deploy Supabase
 # supabase.co at all, which is why this exists instead of a manual CLI run.
 #
 # Required repository secrets (Settings → Secrets and variables → Actions):
-#   SUPABASE_ACCESS_TOKEN  — personal access token, authenticates the CLI
-#                            (supabase.com/dashboard/account/tokens)
-#   SUPABASE_DB_PASSWORD   — the project's Postgres database password, needed
-#                            by `db push` specifically (link + functions
-#                            deploy only need the access token above; db push
-#                            opens a direct database connection and needs
-#                            this too). Project Settings → Database → reset if
-#                            you don't have it saved from project creation.
+#   SUPABASE_ACCESS_TOKEN  — personal access token, authenticates both the CLI
+#                            (link, functions deploy) and the Management API
+#                            calls below (supabase.com/dashboard/account/tokens).
+#                            No database password is used anywhere in this
+#                            workflow: migrations are applied by POSTing their
+#                            SQL to the Management API's database/query
+#                            endpoint over HTTPS, authenticated with this same
+#                            token, instead of opening a direct Postgres
+#                            connection.
 
 on:
   push:
@@ -43,11 +44,75 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
-      - name: Push database migrations
-        run: supabase db push
+      - name: Apply pending migrations via Management API
+        # Runs each supabase/migrations/*.sql file over HTTPS via
+        # api.supabase.com's database/query endpoint, authenticated with the
+        # access token — no direct Postgres connection, no DB password. A
+        # supabase_migrations.schema_migrations tracking table (the same
+        # name/shape the CLI itself uses) records which versions have already
+        # run, so this is safe to run on every push: already-applied
+        # migrations are skipped, and each new one runs in its own
+        # begin/commit alongside the row that marks it applied.
+        run: |
+          set -euo pipefail
+          API="https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/database/query"
+          WORKDIR=$(mktemp -d)
+
+          run_sql() {
+            # $1 = path to a file containing the SQL to run, $2 = label for errors
+            local sql_file="$1" label="$2"
+            local payload="$WORKDIR/payload.json" resp="$WORKDIR/resp.txt"
+            jq -n --rawfile q "$sql_file" '{query: $q}' > "$payload"
+            local status
+            status=$(curl -sS -o "$resp" -w '%{http_code}' -X POST "$API" \
+              -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+              -H "Content-Type: application/json" \
+              --data-binary "@$payload")
+            if [ "$status" -ge 300 ]; then
+              echo "::error::Management API call failed for $label (HTTP $status)"
+              cat "$resp"
+              exit 1
+            fi
+            cat "$resp"
+          }
+
+          echo "::group::Ensuring migration tracking table exists"
+          printf '%s\n' \
+            'create schema if not exists supabase_migrations;' \
+            'create table if not exists supabase_migrations.schema_migrations (' \
+            '  version text primary key,' \
+            '  name text not null,' \
+            '  applied_at timestamptz not null default now()' \
+            ');' \
+            > "$WORKDIR/init.sql"
+          run_sql "$WORKDIR/init.sql" "tracking table setup" > /dev/null
+          echo "::endgroup::"
+
+          run_sql <(echo "select version from supabase_migrations.schema_migrations order by version;") \
+            "list applied migrations" > "$WORKDIR/applied.json"
+          echo "Already applied: $(jq -r '[.[].version] | join(", ")' "$WORKDIR/applied.json")"
+
+          for f in supabase/migrations/*.sql; do
+            base=$(basename "$f")
+            version="${base%%_*}"
+            if jq -e --arg v "$version" 'any(.[]; .version == $v)' "$WORKDIR/applied.json" > /dev/null; then
+              echo "Skipping already-applied migration $base"
+              continue
+            fi
+            echo "::group::Applying $base"
+            {
+              echo "begin;"
+              cat "$f"
+              printf "\ninsert into supabase_migrations.schema_migrations (version, name) values ('%s', '%s');\n" \
+                "$version" "$base"
+              echo "commit;"
+            } > "$WORKDIR/migration.sql"
+            run_sql "$WORKDIR/migration.sql" "$base" > /dev/null
+            echo "Applied $base"
+            echo "::endgroup::"
+          done
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
 
       - name: Deploy edge functions
         run: |
