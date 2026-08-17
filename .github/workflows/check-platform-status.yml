@@ -51,9 +51,9 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Computed status (env-secret-pair OR db-row wins, matching credentials.ts)"
-          declare -A ID_KEY=( [instagram]=INSTAGRAM_APP_ID [tiktok]=TIKTOK_CLIENT_KEY [spotify]=SPOTIFY_CLIENT_ID [soundcloud]=SOUNDCLOUD_CLIENT_ID )
-          declare -A SECRET_KEY=( [instagram]=INSTAGRAM_APP_SECRET [tiktok]=TIKTOK_CLIENT_SECRET [spotify]=SPOTIFY_CLIENT_SECRET [soundcloud]=SOUNDCLOUD_CLIENT_SECRET )
-          for p in instagram tiktok spotify soundcloud; do
+          declare -A ID_KEY=( [instagram]=INSTAGRAM_APP_ID [tiktok]=TIKTOK_CLIENT_KEY [spotify]=SPOTIFY_CLIENT_ID [soundcloud]=SOUNDCLOUD_CLIENT_ID [youtube]=YOUTUBE_CLIENT_ID [facebook]=FACEBOOK_APP_ID )
+          declare -A SECRET_KEY=( [instagram]=INSTAGRAM_APP_SECRET [tiktok]=TIKTOK_CLIENT_SECRET [spotify]=SPOTIFY_CLIENT_SECRET [soundcloud]=SOUNDCLOUD_CLIENT_SECRET [youtube]=YOUTUBE_CLIENT_SECRET [facebook]=FACEBOOK_APP_SECRET )
+          for p in instagram tiktok spotify soundcloud youtube facebook; do
             idk="${ID_KEY[$p]}"; sk="${SECRET_KEY[$p]}"
             if jq -e --arg a "$idk" --arg b "$sk" 'any(.[]; . == $a) and any(.[]; . == $b)' "$WORKDIR/secret_names.json" > /dev/null; then
               env_ok=true
