@@ -37,8 +37,14 @@ jobs:
             "https://14380d52-15b8-4038-8aa3-b77e47ae090c.lovableproject.com" \
             "https://14380d52-15b8-4038-8aa3-b77e47ae090c.lovable.app" \
             "https://houcine.world" \
-            "https://www.houcine.world" ; do
+            "https://www.houcine.world" \
+            "https://houcine-world.lovable.app" \
+            "https://houcineworld.lovable.app" \
+            "https://la-rosa-view.lovable.app" \
+            "https://larosaview.lovable.app" \
+            "https://houcine.lovable.app" ; do
             echo "::group::$url"
+            : > /tmp/resp.html
             curl -sS -o /tmp/resp.html -w "HTTP %{http_code} | final_url: %{url_effective} | content-type: %{content_type}\n" \
               --max-time 20 -L "$url" || echo "curl failed"
             echo "--- first 500 bytes of body ---"
