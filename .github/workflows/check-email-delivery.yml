@@ -1,0 +1,63 @@
+name: Check Email Delivery Status
+
+# One-off diagnostic, manually triggered only. Investigates why magic-link
+# emails aren't arriving for mohamedhoucine2024@gmail.com:
+#   1. Full Auth service config (SMTP settings + rate-limit fields) via
+#      config/auth — reveals whether a custom SMTP provider is configured or
+#      this project is still on Supabase's built-in mailer, and what the
+#      configured send-rate limit actually is.
+#   2. Real Auth logs via the Management API's Logflare-backed logs endpoint,
+#      most recent rows first, so the actual GoTrue request/response for the
+#      last signInWithOtp attempt is visible — not inferred.
+# Read-only. Same Management API + SUPABASE_ACCESS_TOKEN pattern as every
+# other diagnostic here, no DB password.
+
+on:
+  workflow_dispatch: {}
+
+env:
+  SUPABASE_PROJECT_REF: pcdkfpardswfwoiclvtm
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auth config (SMTP + rate limits) and Auth logs
+        run: |
+          set -uo pipefail
+          MGMT_API="https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF"
+          WORKDIR=$(mktemp -d)
+
+          echo "::group::Full Auth service config"
+          status=$(curl -sS -o "$WORKDIR/auth_config.json" -w '%{http_code}' \
+            "$MGMT_API/config/auth" -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN")
+          echo "HTTP $status"
+          jq . "$WORKDIR/auth_config.json"
+          echo "::endgroup::"
+
+          echo "::group::SMTP-relevant fields only"
+          jq '{smtp_admin_email, smtp_host, smtp_port, smtp_user, smtp_sender_name, smtp_max_frequency, external_email_enabled, mailer_autoconfirm}' \
+            "$WORKDIR/auth_config.json" 2>&1 || echo "(one or more of these keys not present in the response above — see full dump)"
+          echo "::endgroup::"
+
+          echo "::group::Auth logs — last 3 hours, most recent first (raw, to discover the real schema)"
+          end=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
+          start=$(date -u -d '3 hours ago' +%Y-%m-%dT%H:%M:%S.000Z)
+          sql="select cast(timestamp as datetime) as ts, event_message, metadata from auth_logs order by timestamp desc limit 50"
+          encoded_sql=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$sql")
+          logs_url="$MGMT_API/analytics/endpoints/logs.all?sql=${encoded_sql}&iso_timestamp_start=${start}&iso_timestamp_end=${end}"
+          status=$(curl -sS -o "$WORKDIR/auth_logs.json" -w '%{http_code}' \
+            "$logs_url" -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN")
+          echo "HTTP $status"
+          cat "$WORKDIR/auth_logs.json"
+          echo
+          echo "::endgroup::"
+
+          echo "::group::Rows mentioning the test email, otp, magiclink, rate limit, or smtp/mail (grepped from the raw dump above)"
+          grep -io '.\{80\}\(mohamedhoucine2024\|otp\|magiclink\|magic_link\|rate.limit\|429\|smtp\|mail\).\{80\}' "$WORKDIR/auth_logs.json" | head -100 || echo "(no matches found)"
+          echo "::endgroup::"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
