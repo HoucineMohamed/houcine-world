@@ -1,0 +1,115 @@
+name: Fix Admin Magic Link Login
+
+# One-off remediation, manually triggered only (never on push). Two fixes,
+# both scoped strictly to Auth config + the profiles/brand_admins tables —
+# never touches connected_accounts/connected_account_secrets/
+# oauth_flow_states/platform_metrics_snapshots/platform_credentials:
+#
+#   1. Auth service Site URL / Redirect URL allow-list were still at the
+#      fresh-project defaults (http://localhost:3000, empty allow-list) —
+#      set them to this app's real origins so emailRedirectTo is accepted
+#      and the link actually returns to /auth/callback instead of bouncing
+#      to localhost.
+#   2. mohamedhoucine2024@gmail.com already has a profiles row (platform_role
+#      'member', from a recent login attempt) but was never promoted —
+#      confirmed with the repo owner before running this — calls
+#      bootstrap_admins to make it super_admin + brand_admin on la-rosa-view.
+#
+# Re-reads both after writing, so the run's own log is real proof of the new
+# state, not just a trusted 200.
+
+on:
+  workflow_dispatch: {}
+
+env:
+  SUPABASE_PROJECT_REF: pcdkfpardswfwoiclvtm
+  APP_ORIGIN: https://14380d52-15b8-4038-8aa3-b77e47ae090c.lovableproject.com
+  CUSTOM_DOMAIN: https://houcine.world
+  ADMIN_EMAIL: mohamedhoucine2024@gmail.com
+  BRAND_SLUG: la-rosa-view
+
+permissions:
+  contents: read
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply and verify both fixes
+        run: |
+          set -euo pipefail
+          MGMT_API="https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF"
+          WORKDIR=$(mktemp -d)
+
+          run_sql() {
+            local q="$1"
+            local payload="$WORKDIR/payload.json" resp="$WORKDIR/resp.txt"
+            jq -n --arg q "$q" '{query: $q}' > "$payload"
+            local status
+            status=$(curl -sS -o "$resp" -w '%{http_code}' -X POST "$MGMT_API/database/query" \
+              -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
+              --data-binary "@$payload")
+            if [ "$status" -ge 300 ]; then
+              echo "::error::query failed (HTTP $status)"; cat "$resp"; exit 1
+            fi
+            cat "$resp"
+          }
+
+          echo "::group::Before: current Auth config"
+          curl -sS "$MGMT_API/config/auth" -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            | jq '{site_url, uri_allow_list}'
+          echo "::endgroup::"
+
+          echo "::group::Fix 1: set Site URL + Redirect URL allow-list"
+          allow_list="${APP_ORIGIN}/**,${CUSTOM_DOMAIN}/**"
+          patch_payload=$(jq -n --arg site "$APP_ORIGIN" --arg allow "$allow_list" \
+            '{site_url: $site, uri_allow_list: $allow}')
+          patch_resp="$WORKDIR/patch_resp.txt"
+          status=$(curl -sS -o "$patch_resp" -w '%{http_code}' -X PATCH "$MGMT_API/config/auth" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
+            --data-binary "$patch_payload")
+          if [ "$status" -ge 300 ]; then
+            echo "::error::Auth config PATCH failed (HTTP $status)"; cat "$patch_resp"; exit 1
+          fi
+          echo "PATCH accepted (HTTP $status)"
+          echo "::endgroup::"
+
+          echo "::group::After: re-read Auth config (real confirmation, not trusting the PATCH response)"
+          after_config=$(curl -sS "$MGMT_API/config/auth" -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN")
+          echo "$after_config" | jq '{site_url, uri_allow_list}'
+          got_site=$(echo "$after_config" | jq -r '.site_url')
+          got_allow=$(echo "$after_config" | jq -r '.uri_allow_list')
+          if [ "$got_site" != "$APP_ORIGIN" ]; then
+            echo "::error::site_url did not stick: got '$got_site', expected '$APP_ORIGIN'"; exit 1
+          fi
+          case ",$got_allow," in
+            *",${APP_ORIGIN}/**,"*) ;;
+            *) echo "::error::uri_allow_list is missing the app origin: '$got_allow'"; exit 1 ;;
+          esac
+          echo "Confirmed: site_url and uri_allow_list both hold the new values."
+          echo "::endgroup::"
+
+          echo "::group::Before: profiles row for $ADMIN_EMAIL"
+          run_sql "select id, email, platform_role from public.profiles where lower(email) = lower('$ADMIN_EMAIL');"
+          echo "::endgroup::"
+
+          echo "::group::Fix 2: bootstrap_admins (super_admin + brand_admin on $BRAND_SLUG)"
+          run_sql "select public.bootstrap_admins('$ADMIN_EMAIL', '$ADMIN_EMAIL', '$BRAND_SLUG');"
+          echo "::endgroup::"
+
+          echo "::group::After: re-read profiles + brand_admins (real confirmation)"
+          prof_after=$(run_sql "select id, email, platform_role from public.profiles where lower(email) = lower('$ADMIN_EMAIL');")
+          echo "$prof_after"
+          role=$(echo "$prof_after" | jq -r '.[0].platform_role')
+          if [ "$role" != "super_admin" ]; then
+            echo "::error::platform_role is '$role', expected 'super_admin'"; exit 1
+          fi
+          admins_after=$(run_sql "select ba.role, b.slug from public.brand_admins ba join public.brands b on b.id = ba.brand_id join public.profiles p on p.id = ba.user_id where lower(p.email) = lower('$ADMIN_EMAIL');")
+          echo "$admins_after"
+          if ! echo "$admins_after" | jq -e --arg slug "$BRAND_SLUG" 'any(.[]; .slug == $slug and .role == "brand_admin")' > /dev/null; then
+            echo "::error::brand_admins row for $BRAND_SLUG not found after bootstrap_admins"; exit 1
+          fi
+          echo "Confirmed: $ADMIN_EMAIL is now super_admin and brand_admin on $BRAND_SLUG."
+          echo "::endgroup::"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
