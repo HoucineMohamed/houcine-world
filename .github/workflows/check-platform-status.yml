@@ -1,0 +1,76 @@
+name: Check Platform Credentials Status
+
+# One-off diagnostic, manually triggered only (never on push): reports which
+# platforms are "configured" per the same logic
+# supabase/functions/_shared/credentials.ts uses — an Edge Function secret
+# pair (Deno env) OR a platform_credentials table row with both columns set.
+# Uses the Management API with SUPABASE_ACCESS_TOKEN, no DB password.
+#
+# Secret values are never fetched at all: the platform_credentials query
+# only ever selects a boolean (client_id/client_secret IS NOT NULL), and the
+# Edge Function secrets listing is piped straight through `jq '[.[].name]'`
+# before anything is written anywhere else — the raw response (whatever
+# shape it turns out to have) never reaches a log line or a second file.
+
+on:
+  workflow_dispatch: {}
+
+env:
+  SUPABASE_PROJECT_REF: pcdkfpardswfwoiclvtm
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report configured status per platform
+        run: |
+          set -euo pipefail
+          MGMT_API="https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF"
+          WORKDIR=$(mktemp -d)
+
+          echo "::group::platform_credentials table (booleans only, never the values)"
+          payload=$(jq -n '{query: "select platform, (client_id is not null and client_secret is not null) as has_creds from public.platform_credentials order by platform;"}')
+          curl -sS -X POST "$MGMT_API/database/query" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
+            -d "$payload" > "$WORKDIR/db_rows.json"
+          cat "$WORKDIR/db_rows.json"
+          echo "::endgroup::"
+
+          echo "::group::Edge Function secret names"
+          curl -sS "$MGMT_API/secrets" -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            -o "$WORKDIR/secrets_raw.json"
+          # Project to names only, then discard the raw response immediately so
+          # nothing but that projection ever gets echoed or persisted, whatever
+          # fields the raw payload happened to include.
+          jq '[.[].name]' "$WORKDIR/secrets_raw.json" > "$WORKDIR/secret_names.json"
+          rm -f "$WORKDIR/secrets_raw.json"
+          cat "$WORKDIR/secret_names.json"
+          echo "::endgroup::"
+
+          echo "::group::Computed status (env-secret-pair OR db-row wins, matching credentials.ts)"
+          declare -A ID_KEY=( [instagram]=INSTAGRAM_APP_ID [tiktok]=TIKTOK_CLIENT_KEY [spotify]=SPOTIFY_CLIENT_ID [soundcloud]=SOUNDCLOUD_CLIENT_ID )
+          declare -A SECRET_KEY=( [instagram]=INSTAGRAM_APP_SECRET [tiktok]=TIKTOK_CLIENT_SECRET [spotify]=SPOTIFY_CLIENT_SECRET [soundcloud]=SOUNDCLOUD_CLIENT_SECRET )
+          for p in instagram tiktok spotify soundcloud; do
+            idk="${ID_KEY[$p]}"; sk="${SECRET_KEY[$p]}"
+            if jq -e --arg a "$idk" --arg b "$sk" 'any(.[]; . == $a) and any(.[]; . == $b)' "$WORKDIR/secret_names.json" > /dev/null; then
+              env_ok=true
+            else
+              env_ok=false
+            fi
+            if jq -e --arg p "$p" 'any(.[]; .platform == $p and .has_creds == true)' "$WORKDIR/db_rows.json" > /dev/null; then
+              db_ok=true
+            else
+              db_ok=false
+            fi
+            if [ "$env_ok" = true ] || [ "$db_ok" = true ]; then
+              echo "$p: CONFIGURED (env_secret_pair=$env_ok db_row=$db_ok)"
+            else
+              echo "$p: not configured (env_secret_pair=$env_ok db_row=$db_ok)"
+            fi
+          done
+          echo "::endgroup::"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
