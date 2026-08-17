@@ -1,0 +1,66 @@
+name: Deploy Supabase
+
+# Runs the Supabase migration + every edge function against the live project
+# on every push to main. GitHub's runners have normal internet access, unlike
+# the Claude Code session this was authored in — that session cannot reach
+# supabase.co at all, which is why this exists instead of a manual CLI run.
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   SUPABASE_ACCESS_TOKEN  — personal access token, authenticates the CLI
+#                            (supabase.com/dashboard/account/tokens)
+#   SUPABASE_DB_PASSWORD   — the project's Postgres database password, needed
+#                            by `db push` specifically (link + functions
+#                            deploy only need the access token above; db push
+#                            opens a direct database connection and needs
+#                            this too). Project Settings → Database → reset if
+#                            you don't have it saved from project creation.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+env:
+  SUPABASE_PROJECT_REF: uxixfhthdgwxqfltvudt
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link project
+        run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Push database migrations
+        run: supabase db push
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+      - name: Deploy edge functions
+        run: |
+          set -euo pipefail
+          for fn in \
+            instagram-oauth instagram-metrics \
+            tiktok-oauth tiktok-metrics \
+            spotify-oauth spotify-metrics \
+            soundcloud-oauth soundcloud-metrics \
+            platform-credentials; do
+            echo "::group::Deploying $fn"
+            supabase functions deploy "$fn" --project-ref "$SUPABASE_PROJECT_REF"
+            echo "::endgroup::"
+          done
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
