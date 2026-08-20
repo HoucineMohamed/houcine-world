@@ -1,0 +1,45 @@
+name: Check Sidebar Deploy
+
+# One-off, manually triggered only. Confirms the sidebar logo/active-state
+# change actually reached the live Netlify build — compares the live JS
+# bundle's filename and sha256 against a fresh local `npm run build` of the
+# exact same commit. An exact match is real, unambiguous proof this build is
+# live (Vite content-hashes the bundle filename; the workspace routes
+# themselves are behind login so they can't be curled directly to check the
+# sidebar visually from here).
+
+on:
+  workflow_dispatch: {}
+
+env:
+  EXPECTED_BUNDLE_NAME: index-BLUcs44T.js
+  EXPECTED_SHA256: dc2ba662c8e008de9e969d7f880374e18f03fa3cc88d0831470803a52c2902fe
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compare live bundle against the known local build
+        run: |
+          set -uo pipefail
+          base="https://houcineworld.netlify.app"
+          index=$(curl -sS --max-time 20 -L "$base")
+          js_path=$(echo "$index" | grep -o '/assets/index-[A-Za-z0-9_-]*\.js' | head -1)
+          if [ -z "$js_path" ]; then
+            echo "::error::Could not find the main JS bundle path in index.html"; exit 1
+          fi
+          live_name=$(basename "$js_path")
+          echo "Live bundle: $live_name"
+          echo "Expected:    $EXPECTED_BUNDLE_NAME"
+
+          curl -sS --max-time 30 -L -o /tmp/live_bundle.js "${base}${js_path}"
+          live_sha=$(sha256sum /tmp/live_bundle.js | awk '{print $1}')
+          echo "Live sha256:     $live_sha"
+          echo "Expected sha256: $EXPECTED_SHA256"
+
+          if [ "$live_name" = "$EXPECTED_BUNDLE_NAME" ] && [ "$live_sha" = "$EXPECTED_SHA256" ]; then
+            echo "VERIFIED: live Netlify build is byte-identical to the commit with the sidebar fix."
+          else
+            echo "::error::Live build does not match yet — Netlify may still be deploying. Re-run in a bit."
+            exit 1
+          fi
