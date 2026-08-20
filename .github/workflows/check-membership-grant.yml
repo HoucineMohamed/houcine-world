@@ -1,0 +1,72 @@
+name: Check Membership Grant Failure
+
+# One-off diagnostic, manually triggered only. Investigating why granting
+# Brand Admin on La Rosa View to mhajri798@gmail.com fails. Read-only.
+#   1. Does a profiles row exist for that email at all? (manage_brand_membership
+#      looks up the target by email against profiles, not auth.users directly.)
+#   2. The caller's actual platform_role/brand_admins state — is the currently
+#      logged-in admin really recognized as authorized for this brand?
+#   3. Real Postgres logs around recent manage_brand_membership calls, to
+#      surface the exact raised exception text, not an assumption.
+
+on:
+  workflow_dispatch: {}
+
+env:
+  SUPABASE_PROJECT_REF: pcdkfpardswfwoiclvtm
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Investigate
+        run: |
+          set -uo pipefail
+          MGMT_API="https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF"
+          WORKDIR=$(mktemp -d)
+
+          run_sql() {
+            local q="$1"
+            local payload="$WORKDIR/payload.json" resp="$WORKDIR/resp.txt"
+            jq -n --arg q "$q" '{query: $q}' > "$payload"
+            local status
+            status=$(curl -sS -o "$resp" -w '%{http_code}' -X POST "$MGMT_API/database/query" \
+              -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
+              --data-binary "@$payload")
+            echo "HTTP $status"
+            cat "$resp"
+            echo
+          }
+
+          echo "::group::profiles row for mhajri798@gmail.com"
+          run_sql "select id, email, platform_role, created_at, deleted_at from public.profiles where lower(email) = lower('mhajri798@gmail.com');"
+          echo "::endgroup::"
+
+          echo "::group::profiles row for the admin caller (mohamedhoucine2024@gmail.com)"
+          run_sql "select id, email, platform_role from public.profiles where lower(email) = lower('mohamedhoucine2024@gmail.com');"
+          echo "::endgroup::"
+
+          echo "::group::brands row for la-rosa-view"
+          run_sql "select id, slug, name, status from public.brands where slug = 'la-rosa-view';"
+          echo "::endgroup::"
+
+          echo "::group::brand_admins rows for la-rosa-view"
+          run_sql "select ba.user_id, p.email, ba.role from public.brand_admins ba join public.profiles p on p.id = ba.user_id join public.brands b on b.id = ba.brand_id where b.slug = 'la-rosa-view';"
+          echo "::endgroup::"
+
+          echo "::group::Postgres logs — last 2 hours, filtered to manage_brand_membership / brand_admins / relevant errors"
+          end=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
+          start=$(date -u -d '2 hours ago' +%Y-%m-%dT%H:%M:%S.000Z)
+          sql="select cast(timestamp as datetime) as ts, event_message, metadata from postgres_logs order by timestamp desc limit 100"
+          encoded_sql=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$sql")
+          logs_url="$MGMT_API/analytics/endpoints/logs.all?sql=${encoded_sql}&iso_timestamp_start=${start}&iso_timestamp_end=${end}"
+          status=$(curl -sS -o "$WORKDIR/pg_logs.json" -w '%{http_code}' "$logs_url" -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN")
+          echo "HTTP $status"
+          echo "--- lines mentioning manage_brand_membership, brand_admins, exception, error, or the target/actor email ---"
+          grep -io '.\{100\}\(manage_brand_membership\|brand_admins\|exception\|error\|mhajri798\|mohamedhoucine2024\).\{100\}' "$WORKDIR/pg_logs.json" | head -150 || echo "(no matches)"
+          echo "::endgroup::"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
