@@ -57,6 +57,10 @@ jobs:
           run_sql "select ba.user_id, p.email, ba.role from public.brand_admins ba join public.profiles p on p.id = ba.user_id join public.brands b on b.id = ba.brand_id where b.slug = 'la-rosa-view';"
           echo "::endgroup::"
 
+          echo "::group::Live deployed source of manage_brand_membership (real proof the message fix is deployed)"
+          run_sql "select pg_get_functiondef('public.manage_brand_membership(text,uuid,text,text,uuid)'::regprocedure) as def;"
+          echo "::endgroup::"
+
           echo "::group::Postgres logs — last 2 hours, filtered to manage_brand_membership / brand_admins / relevant errors"
           end=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
           start=$(date -u -d '2 hours ago' +%Y-%m-%dT%H:%M:%S.000Z)
