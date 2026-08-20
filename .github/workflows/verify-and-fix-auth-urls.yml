@@ -1,0 +1,125 @@
+name: Verify Live URLs and Fix Auth Config
+
+# One-off, manually triggered only. Two gated steps:
+#   1. Really fetch houcineworld.netlify.app and houcineworld.vercel.app
+#      (and their /auth/callback route) and confirm each genuinely serves
+#      this app — matches the real <title>Houcine.world</title> from
+#      index.html, not just a platform "site not found" page. Fails the job
+#      if either doesn't check out, so step 2 never runs on an unverified URL.
+#   2. Only if both verify: PATCH config/auth to site_url = the Netlify URL
+#      (uri_allow_list is what actually gates which redirect targets GoTrue
+#      accepts — both domains go there, so login works from either regardless
+#      of which one is "primary" in site_url), drop the old
+#      .lovableproject.com/houcine.world entries, then re-read the config
+#      back as real proof it changed.
+
+on:
+  workflow_dispatch: {}
+
+env:
+  SUPABASE_PROJECT_REF: pcdkfpardswfwoiclvtm
+  NETLIFY_URL: https://houcineworld.netlify.app
+  VERCEL_URL: https://houcineworld.vercel.app
+
+permissions:
+  contents: read
+
+jobs:
+  verify-and-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify both URLs actually serve this app
+        run: |
+          set -uo pipefail
+          FAIL=0
+          for base in "$NETLIFY_URL" "$VERCEL_URL"; do
+            echo "::group::$base"
+            : > /tmp/root.html
+            root_status=$(curl -sS -o /tmp/root.html -w '%{http_code}' --max-time 20 -L "$base" || echo "000")
+            echo "root: HTTP $root_status"
+            if grep -q '<title>Houcine.world</title>' /tmp/root.html; then
+              echo "root: title matches Houcine.world — real app content confirmed"
+              root_ok=true
+            else
+              echo "root: title did NOT match — showing first 300 bytes for inspection:"
+              head -c 300 /tmp/root.html
+              echo
+              root_ok=false
+            fi
+
+            : > /tmp/callback.html
+            cb_status=$(curl -sS -o /tmp/callback.html -w '%{http_code}' --max-time 20 -L "${base}/auth/callback" || echo "000")
+            echo "auth/callback: HTTP $cb_status"
+            if grep -q '<title>Houcine.world</title>' /tmp/callback.html; then
+              echo "auth/callback: title matches — SPA route confirmed served (client-side router will render AuthCallback)"
+              cb_ok=true
+            else
+              echo "auth/callback: title did NOT match — showing first 300 bytes:"
+              head -c 300 /tmp/callback.html
+              echo
+              cb_ok=false
+            fi
+
+            if [ "$root_status" = "200" ] && [ "$root_ok" = true ] && [ "$cb_status" = "200" ] && [ "$cb_ok" = true ]; then
+              echo "VERIFIED: $base is live and serving the real app."
+            else
+              echo "::error::$base did NOT verify — root_status=$root_status root_ok=$root_ok cb_status=$cb_status cb_ok=$cb_ok"
+              FAIL=1
+            fi
+            echo "::endgroup::"
+          done
+          if [ "$FAIL" = "1" ]; then
+            echo "::error::One or both candidate URLs failed verification — refusing to touch Auth config."
+            exit 1
+          fi
+          echo "Both URLs verified. Proceeding to Auth config update."
+
+      - name: Before — current Auth config
+        run: |
+          set -euo pipefail
+          curl -sS "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/config/auth" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" | jq '{site_url, uri_allow_list}'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Update Auth config — verified URLs only
+        run: |
+          set -euo pipefail
+          allow_list="${NETLIFY_URL}/**,${VERCEL_URL}/**"
+          payload=$(jq -n --arg site "$NETLIFY_URL" --arg allow "$allow_list" '{site_url: $site, uri_allow_list: $allow}')
+          status=$(curl -sS -o /tmp/patch_resp.json -w '%{http_code}' -X PATCH \
+            "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/config/auth" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
+            --data-binary "$payload")
+          echo "PATCH HTTP $status"
+          if [ "$status" -ge 300 ]; then
+            echo "::error::PATCH failed"; cat /tmp/patch_resp.json; exit 1
+          fi
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: After — re-read Auth config to confirm it actually changed
+        run: |
+          set -euo pipefail
+          after=$(curl -sS "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/config/auth" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN")
+          echo "$after" | jq '{site_url, uri_allow_list}'
+          got_site=$(echo "$after" | jq -r '.site_url')
+          got_allow=$(echo "$after" | jq -r '.uri_allow_list')
+          if [ "$got_site" != "$NETLIFY_URL" ]; then
+            echo "::error::site_url did not stick: got '$got_site'"; exit 1
+          fi
+          case ",$got_allow," in
+            *",${NETLIFY_URL}/**,"*) ;;
+            *) echo "::error::uri_allow_list missing Netlify URL: '$got_allow'"; exit 1 ;;
+          esac
+          case ",$got_allow," in
+            *",${VERCEL_URL}/**,"*) ;;
+            *) echo "::error::uri_allow_list missing Vercel URL: '$got_allow'"; exit 1 ;;
+          esac
+          if echo "$got_allow" | grep -qi 'lovableproject.com\|houcine.world'; then
+            echo "::error::stale entry still present in uri_allow_list: $got_allow"; exit 1
+          fi
+          echo "Confirmed: site_url and uri_allow_list both hold only the verified live URLs."
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
