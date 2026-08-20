@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import AboutMe from "./pages/AboutMe";
@@ -35,7 +35,18 @@ import WorkspaceNotFound from "./pages/workspace/WorkspaceNotFound";
 // Wrapper component to enable page tracking
 const AppRoutes = () => {
   usePageTracking();
-  
+
+  // The public site hides the native cursor globally (src/index.css) in favor
+  // of <CustomCursor />, which only ever renders on public pages — none of
+  // the /workspace routes mount it, so without this the cursor is invisible
+  // there entirely. Toggles a body class so index.css can scope the reset to
+  // exactly the workspace routes, leaving the public site untouched.
+  const location = useLocation();
+  useEffect(() => {
+    document.body.classList.toggle("workspace-active", location.pathname.startsWith("/workspace"));
+    return () => { document.body.classList.remove("workspace-active"); };
+  }, [location.pathname]);
+
   return (
     <Routes>
       <Route path="/" element={<Index />} />

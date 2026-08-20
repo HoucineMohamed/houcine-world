@@ -122,6 +122,14 @@ All colors MUST be HSL.
     }
   }
 
+  /* The admin workspace never mounts <CustomCursor /> (public pages only),
+     so the cursor:none above would leave it invisible there entirely.
+     Restores the normal browser cursor for every /workspace route — see the
+     body class toggle in App.tsx. */
+  body.workspace-active {
+    cursor: auto;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Orbitron', 'Inter', sans-serif;
   }
