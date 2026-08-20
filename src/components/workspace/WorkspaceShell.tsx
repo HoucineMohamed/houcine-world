@@ -14,6 +14,7 @@ import { useWorkspace } from "@/components/workspace/WorkspaceContext";
 import { useActiveBrand, clearBrandMemory } from "@/hooks/useActiveBrand";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
 import { brandRoleLabel } from "@/lib/roles";
+import logoH from "@/assets/logo-h.png";
 
 const NAV = [
   { to: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -55,7 +56,9 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background flex">
       <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-border bg-card/40">
-        <Link to="/" className="px-5 py-5 text-2xl font-bold text-foreground">H</Link>
+        <Link to="/" className="flex items-center px-5 py-5">
+          <img src={logoH} alt="Houcine.world" className="h-10 w-auto" />
+        </Link>
         <nav className="flex-1 px-3 space-y-1">
           {NAV.map(({ to, label, icon: Icon }) => (
             <NavLink
@@ -79,7 +82,11 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
           {isSuperAdmin && (
             <NavLink
               to="/workspace/ecosystem"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                  isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`
+              }
             >
               <Globe className="w-4 h-4" /> Ecosystem
             </NavLink>
@@ -87,7 +94,11 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
           {isSuperAdmin && (
             <NavLink
               to="/workspace/platform-credentials"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                  isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`
+              }
             >
               <KeyRound className="w-4 h-4" /> Platform Credentials
             </NavLink>
