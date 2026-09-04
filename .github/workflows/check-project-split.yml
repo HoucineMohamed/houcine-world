@@ -1,8 +1,9 @@
 name: Check Project Split
 
-# One-off, manually triggered only. .env now points at uxixfhthdgwxqfltvudt
-# while supabase/config.toml still says pcdkfpardswfwoiclvtm — checking what
-# each project actually contains before touching anything else. Read-only.
+# One-off, manually triggered only. Checking which Supabase project the
+# currently-LIVE Netlify build is actually wired to — Vite inlines
+# import.meta.env.VITE_* values as string literals at build time, so the
+# live JS bundle reveals the truth regardless of what .env says right now.
 
 on:
   workflow_dispatch: {}
@@ -11,29 +12,16 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe both project refs via the Management API
+      - name: Which project ref is baked into the live bundle?
         run: |
           set -uo pipefail
-          for ref in pcdkfpardswfwoiclvtm uxixfhthdgwxqfltvudt; do
-            echo "::group::Project $ref — config/auth (proves the token can even see this project)"
-            status=$(curl -sS -o /tmp/resp.json -w '%{http_code}' \
-              "https://api.supabase.com/v1/projects/$ref/config/auth" \
-              -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN")
-            echo "HTTP $status"
-            cat /tmp/resp.json
-            echo
-            echo "::endgroup::"
-
-            echo "::group::Project $ref — tables in public schema"
-            payload=$(jq -n '{query: "select table_name from information_schema.tables where table_schema = '\''public'\'' order by table_name;"}')
-            status=$(curl -sS -o /tmp/tables.json -w '%{http_code}' -X POST \
-              "https://api.supabase.com/v1/projects/$ref/database/query" \
-              -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
-              --data-binary "$payload")
-            echo "HTTP $status"
-            cat /tmp/tables.json
-            echo
-            echo "::endgroup::"
-          done
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          base="https://houcineworld.netlify.app"
+          index=$(curl -sS --max-time 20 -L "$base")
+          js_path=$(echo "$index" | grep -o '/assets/index-[A-Za-z0-9_-]*\.js' | head -1)
+          echo "Live bundle: $js_path"
+          curl -sS --max-time 30 -L -o /tmp/live_bundle.js "${base}${js_path}"
+          echo "--- occurrences of each project ref in the live bundle ---"
+          echo "pcdkfpardswfwoiclvtm: $(grep -o 'pcdkfpardswfwoiclvtm' /tmp/live_bundle.js | wc -l)"
+          echo "uxixfhthdgwxqfltvudt: $(grep -o 'uxixfhthdgwxqfltvudt' /tmp/live_bundle.js | wc -l)"
+          echo "--- the actual supabase.co URL string(s) baked in ---"
+          grep -o '[a-z0-9]\{20\}\.supabase\.co' /tmp/live_bundle.js | sort -u
