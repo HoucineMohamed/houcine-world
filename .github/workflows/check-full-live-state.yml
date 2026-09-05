@@ -1,0 +1,41 @@
+name: Check Full Live State
+
+# One-off, manually triggered. Confirms /terms and /privacy are reachable on
+# the live site, and that the live bundle contains both the Meta Business
+# Suite code and the correct Supabase project ref.
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check routes and bundle content
+        run: |
+          set -uo pipefail
+          base="https://houcineworld.netlify.app"
+
+          for path in "/" "/terms" "/privacy"; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 -L "${base}${path}")
+            echo "GET ${path} -> HTTP $code"
+          done
+
+          index=$(curl -sS --max-time 20 -L "$base")
+          js_path=$(echo "$index" | grep -o '/assets/index-[A-Za-z0-9_-]*\.js' | head -1)
+          echo "Live bundle: $js_path"
+          curl -sS --max-time 30 -L -o /tmp/live_bundle.js "${base}${js_path}"
+
+          echo "--- Supabase project ref ---"
+          echo "pcdkfpardswfwoiclvtm: $(grep -o 'pcdkfpardswfwoiclvtm' /tmp/live_bundle.js | wc -l)"
+          echo "uxixfhthdgwxqfltvudt: $(grep -o 'uxixfhthdgwxqfltvudt' /tmp/live_bundle.js | wc -l)"
+
+          echo "--- Meta Business Suite code present? ---"
+          echo "meta-business-token: $(grep -o 'meta-business-token' /tmp/live_bundle.js | wc -l)"
+          echo "meta-business-metrics: $(grep -o 'meta-business-metrics' /tmp/live_bundle.js | wc -l)"
+          echo "meta_business: $(grep -o 'meta_business' /tmp/live_bundle.js | wc -l)"
+          echo "'Meta Business Suite' label: $(grep -o 'Meta Business Suite' /tmp/live_bundle.js | wc -l)"
+
+          echo "--- Terms/Privacy code present? ---"
+          echo "'Terms of Service' string: $(grep -o 'Terms of Service' /tmp/live_bundle.js | wc -l)"
+          echo "'Privacy Policy' string: $(grep -o 'Privacy Policy' /tmp/live_bundle.js | wc -l)"
