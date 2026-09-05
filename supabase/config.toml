@@ -32,5 +32,17 @@ verify_jwt = false
 [functions.soundcloud-metrics]
 verify_jwt = true
 
+[functions.youtube-oauth]
+verify_jwt = false
+
+[functions.youtube-metrics]
+verify_jwt = true
+
+[functions.facebook-oauth]
+verify_jwt = false
+
+[functions.facebook-metrics]
+verify_jwt = true
+
 [functions.platform-credentials]
 verify_jwt = true
