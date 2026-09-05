@@ -1,0 +1,164 @@
+name: Netlify Diagnose and Deploy
+
+# One-off, manually triggered. Uses the Netlify API (via NETLIFY_AUTH_TOKEN)
+# to see why houcineworld.netlify.app hasn't rebuilt since ~00:12 UTC on
+# 2026-09-05 despite several pushes to main, and to trigger a fresh build if
+# the connected-repo integration is stalled. No dashboard clicking involved —
+# everything here is the same calls the Netlify dashboard itself makes.
+#
+# Required repository secret:
+#   NETLIFY_AUTH_TOKEN — Personal Access Token from
+#   app.netlify.com -> User settings -> Applications -> New access token.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve the site and inspect its build settings + deploy history
+        id: resolve
+        run: |
+          set -euo pipefail
+          API="https://api.netlify.com/api/v1"
+          AUTH="Authorization: Bearer $NETLIFY_AUTH_TOKEN"
+
+          echo "::group::Listing sites for this account"
+          sites=$(curl -sS -H "$AUTH" "$API/sites?per_page=100")
+          echo "$sites" | jq -r '.[] | "\(.id)  \(.name)  \(.url // .ssl_url // "")  \(.custom_domain // "")"'
+          echo "::endgroup::"
+
+          site_id=$(echo "$sites" | jq -r '
+            [.[] | select(
+              (.name // "" | test("houcine"; "i")) or
+              (.custom_domain // "" | test("houcine"; "i")) or
+              (.url // "" | test("houcineworld"; "i")) or
+              (.ssl_url // "" | test("houcineworld"; "i"))
+            )] | .[0].id // empty
+          ')
+          if [ -z "$site_id" ]; then
+            echo "::error::Could not find a site matching 'houcine' under this token's account. Listed sites are above -- does this token belong to the right Netlify account/team?"
+            exit 1
+          fi
+          echo "site_id=$site_id" >> "$GITHUB_OUTPUT"
+
+          echo "::group::Full site record"
+          site=$(curl -sS -H "$AUTH" "$API/sites/$site_id")
+          echo "$site" | jq '{id, name, url, ssl_url, custom_domain, state, build_settings, published_deploy: (.published_deploy // {} | {id, state, branch, commit_ref, created_at, deploy_time, error_message})}'
+          echo "::endgroup::"
+
+          echo "::group::Last 10 deploys"
+          deploys=$(curl -sS -H "$AUTH" "$API/sites/$site_id/deploys?per_page=10")
+          echo "$deploys" | jq -r '.[] | "\(.created_at)  state=\(.state)  branch=\(.branch)  commit=\(.commit_ref // "n/a")  context=\(.context)  error=\(.error_message // "")"'
+          echo "::endgroup::"
+
+          echo "::group::Current HEAD of main in this repo"
+          git rev-parse origin/main || git rev-parse HEAD
+          echo "::endgroup::"
+
+          latest_deploy_commit=$(echo "$deploys" | jq -r '[.[] | select(.branch=="main")] | .[0].commit_ref // "none"')
+          echo "latest_deployed_commit=$latest_deploy_commit" >> "$GITHUB_OUTPUT"
+
+          repo_url=$(echo "$site" | jq -r '.build_settings.repo_url // "none"')
+          repo_branch=$(echo "$site" | jq -r '.build_settings.repo_branch // "none"')
+          build_cmd=$(echo "$site" | jq -r '.build_settings.cmd // "none"')
+          publish_dir=$(echo "$site" | jq -r '.build_settings.dir // "none"')
+          deploy_hook_disabled=$(echo "$site" | jq -r 'if .build_settings.stop_builds == true then "true" else "false" end')
+
+          echo "::group::Build settings summary"
+          echo "repo_url=$repo_url"
+          echo "repo_branch=$repo_branch"
+          echo "build_cmd=$build_cmd (expected: vite build / npm run build)"
+          echo "publish_dir=$publish_dir (expected: dist)"
+          echo "builds_stopped=$deploy_hook_disabled"
+          echo "::endgroup::"
+
+          echo "repo_url=$repo_url" >> "$GITHUB_OUTPUT"
+          echo "build_cmd=$build_cmd" >> "$GITHUB_OUTPUT"
+          echo "publish_dir=$publish_dir" >> "$GITHUB_OUTPUT"
+          echo "builds_stopped=$deploy_hook_disabled" >> "$GITHUB_OUTPUT"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+      - name: Trigger a fresh build via the Netlify API
+        id: trigger
+        run: |
+          set -euo pipefail
+          API="https://api.netlify.com/api/v1"
+          AUTH="Authorization: Bearer $NETLIFY_AUTH_TOKEN"
+          site_id="${{ steps.resolve.outputs.site_id }}"
+
+          echo "::group::POST /sites/$site_id/builds"
+          resp=$(curl -sS -w '\n%{http_code}' -X POST -H "$AUTH" "$API/sites/$site_id/builds")
+          code=$(echo "$resp" | tail -1)
+          body=$(echo "$resp" | sed '$d')
+          echo "HTTP $code"
+          echo "$body" | jq . || echo "$body"
+          echo "::endgroup::"
+
+          if [ "$code" -ge 300 ]; then
+            echo "::error::Triggering a build failed (HTTP $code) -- see body above."
+            exit 1
+          fi
+
+          deploy_id=$(echo "$body" | jq -r '.deploy_id // empty')
+          echo "deploy_id=$deploy_id" >> "$GITHUB_OUTPUT"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+      - name: Poll the triggered deploy until it finishes
+        run: |
+          set -euo pipefail
+          API="https://api.netlify.com/api/v1"
+          AUTH="Authorization: Bearer $NETLIFY_AUTH_TOKEN"
+          site_id="${{ steps.resolve.outputs.site_id }}"
+          deploy_id="${{ steps.trigger.outputs.deploy_id }}"
+
+          if [ -z "$deploy_id" ]; then
+            echo "::error::No deploy_id returned from the trigger step -- cannot poll."
+            exit 1
+          fi
+
+          for i in $(seq 1 40); do
+            d=$(curl -sS -H "$AUTH" "$API/sites/$site_id/deploys/$deploy_id")
+            state=$(echo "$d" | jq -r '.state')
+            commit=$(echo "$d" | jq -r '.commit_ref // "n/a"')
+            echo "poll $i: state=$state commit=$commit"
+            case "$state" in
+              ready|current)
+                echo "::notice::Deploy succeeded. commit=$commit"
+                echo "$d" | jq '{id, state, branch, commit_ref, deploy_time, published_at, error_message}'
+                exit 0
+                ;;
+              error|failed)
+                echo "::error::Deploy failed. Full record below."
+                echo "$d" | jq .
+                exit 1
+                ;;
+            esac
+            sleep 10
+          done
+          echo "::error::Timed out waiting for the deploy to finish."
+          exit 1
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+      - name: Verify the live bundle matches the latest commit
+        run: |
+          set -uo pipefail
+          base="https://houcineworld.netlify.app"
+          index=$(curl -sS --max-time 20 -L "$base")
+          js_path=$(echo "$index" | grep -o '/assets/index-[A-Za-z0-9_-]*\.js' | head -1)
+          echo "Live bundle: $js_path"
+          curl -sS --max-time 30 -L -o /tmp/live_bundle.js "${base}${js_path}"
+          echo "pcdkfpardswfwoiclvtm: $(grep -o 'pcdkfpardswfwoiclvtm' /tmp/live_bundle.js | wc -l)"
+          echo "uxixfhthdgwxqfltvudt: $(grep -o 'uxixfhthdgwxqfltvudt' /tmp/live_bundle.js | wc -l)"
+          echo "Current main HEAD: $(git rev-parse origin/main || git rev-parse HEAD)"
