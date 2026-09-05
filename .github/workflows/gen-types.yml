@@ -1,0 +1,33 @@
+name: Generate Types
+
+# One-off, manually triggered only. Regenerates the Database type
+# definitions for pcdkfpardswfwoiclvtm via the Supabase CLI (Management API
+# under the hood — no DB password) and prints the result so it can be
+# reviewed and committed, rather than trusting a hand-edited types.ts.
+
+on:
+  workflow_dispatch: {}
+
+env:
+  SUPABASE_PROJECT_REF: pcdkfpardswfwoiclvtm
+
+permissions:
+  contents: read
+
+jobs:
+  gen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Generate TypeScript types
+        run: |
+          set -euo pipefail
+          echo "===TYPES-START==="
+          supabase gen types typescript --project-id "$SUPABASE_PROJECT_REF"
+          echo "===TYPES-END==="
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
