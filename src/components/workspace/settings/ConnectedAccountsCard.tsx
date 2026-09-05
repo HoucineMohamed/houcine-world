@@ -1,17 +1,24 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { CheckCircle2, Loader2, AlertTriangle, Unlink, Settings2 } from "lucide-react";
+import { CheckCircle2, Loader2, AlertTriangle, Unlink, Settings2, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { PLATFORMS } from "@/lib/platforms";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
 import {
-  disconnectPlatformAccount, fetchConnectedAccounts, startInstagramConnect, startPlatformConnect,
+  disconnectPlatformAccount, fetchConnectedAccounts, saveMetaBusinessToken, startInstagramConnect, startPlatformConnect,
   type ConnectedAccount, type OAuthPlatform,
 } from "@/services/connectedAccounts";
 import { fetchCredentialsStatus } from "@/services/platformCredentials";
+
+// Meta Business Suite has its own dedicated card below — it's a pasted
+// System User token, not an OAuth redirect, so it doesn't belong in the
+// generic Connect-button loop this list otherwise renders.
+const OAUTH_LOOP_PLATFORMS = PLATFORMS.filter((p) => p.id !== "meta_business");
+const META_BUSINESS_PLATFORM = PLATFORMS.find((p) => p.id === "meta_business")!;
 
 const reasonMessage = (platformLabel: string, reason: string): string => {
   switch (reason) {
@@ -41,6 +48,8 @@ const ConnectedAccountsCard = ({ brandId, canManage }: { brandId: string; canMan
   const [connecting, setConnecting] = useState<string | null>(null);
   const [disconnecting, setDisconnecting] = useState<string | null>(null);
   const [params, setParams] = useSearchParams();
+  const [metaToken, setMetaToken] = useState("");
+  const [savingMeta, setSavingMeta] = useState(false);
 
   const load = useCallback(() => {
     fetchConnectedAccounts(brandId).then(setAccounts).catch(() => setAccounts([])).finally(() => setLoading(false));
@@ -96,6 +105,30 @@ const ConnectedAccountsCard = ({ brandId, canManage }: { brandId: string; canMan
     }
   };
 
+  const saveMeta = async () => {
+    const token = metaToken.trim();
+    if (!token) return;
+    setSavingMeta(true);
+    try {
+      const result = await saveMetaBusinessToken(brandId, token);
+      if (!result.ok) {
+        // Validation error from the endpoint (bad token, no linked Page,
+        // missing permissions) — surfaced verbatim, it's already specific.
+        toast.error(result.error ?? "Couldn't validate that token");
+        return;
+      }
+      toast.success(`${META_BUSINESS_PLATFORM.label} connected`);
+      setMetaToken("");
+      load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Couldn't save the token");
+    } finally {
+      setSavingMeta(false);
+    }
+  };
+
+  const MetaIcon = META_BUSINESS_PLATFORM.icon;
+
   return (
     <Card>
       <CardHeader>
@@ -108,7 +141,7 @@ const ConnectedAccountsCard = ({ brandId, canManage }: { brandId: string; canMan
         {loading ? (
           <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-accent" /></div>
         ) : (
-          PLATFORMS.map((platform) => {
+          OAUTH_LOOP_PLATFORMS.map((platform) => {
             const account = accounts.find((a) => a.platform === platform.id);
             const isConnected = account?.status === "connected";
             const isExpired = account?.status === "expired";
@@ -181,6 +214,91 @@ const ConnectedAccountsCard = ({ brandId, canManage }: { brandId: string; canMan
             );
           })
         )}
+
+        {/*
+          Meta Business Suite: authenticated via a pasted System User token,
+          not an OAuth redirect, so it gets its own visually distinct card
+          (dashed border, tinted background, a paste field + Save button)
+          instead of a row in the Connect-button list above. Connected
+          status still uses the same badge/label/icon language as every
+          other platform.
+        */}
+        {!loading && (() => {
+          const metaAccount = accounts.find((a) => a.platform === "meta_business");
+          const isConnected = metaAccount?.status === "connected";
+          const isExpired = metaAccount?.status === "expired";
+          const isError = metaAccount?.status === "error";
+
+          return (
+            <div className="rounded-lg border border-dashed border-accent/50 bg-accent/5 px-4 py-3 space-y-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <MetaIcon className="w-5 h-5 text-muted-foreground shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-foreground">{META_BUSINESS_PLATFORM.label}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Facebook Page + Instagram Business insights via a pasted Meta System User token — no redirect.
+                  </p>
+                  {isConnected && (
+                    <p className="text-xs text-muted-foreground truncate mt-0.5">{metaAccount?.account_name}</p>
+                  )}
+                  {(isExpired || isError) && (
+                    <p className="text-xs text-destructive truncate mt-0.5">
+                      {metaAccount?.error_message ?? "Connection needs attention"}
+                    </p>
+                  )}
+                </div>
+
+                {isConnected && (
+                  <Badge variant="secondary" className="gap-1 text-emerald-600 dark:text-emerald-400">
+                    <CheckCircle2 className="w-3 h-3" /> Connected
+                  </Badge>
+                )}
+                {(isExpired || isError) && (
+                  <Badge variant="destructive" className="gap-1">
+                    <AlertTriangle className="w-3 h-3" /> {isExpired ? "Reconnect needed" : "Error"}
+                  </Badge>
+                )}
+                {(!metaAccount || metaAccount.status === "disconnected") && (
+                  <Badge variant="outline">Not Connected</Badge>
+                )}
+              </div>
+
+              {canManage && (
+                isConnected ? (
+                  <Button
+                    variant="ghost" size="sm"
+                    disabled={disconnecting === "meta_business"}
+                    onClick={() => disconnect("meta_business")}
+                  >
+                    {disconnecting === "meta_business"
+                      ? <Loader2 className="w-4 h-4 animate-spin" />
+                      : <><Unlink className="w-4 h-4 mr-1" /> Disconnect</>}
+                  </Button>
+                ) : (
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+                    <Textarea
+                      value={metaToken}
+                      onChange={(e) => setMetaToken(e.target.value)}
+                      placeholder="Paste the System User access token from Meta Business Suite…"
+                      rows={2}
+                      className="text-xs font-mono resize-none"
+                    />
+                    <Button
+                      size="sm" className="shrink-0"
+                      disabled={savingMeta || !metaToken.trim()}
+                      onClick={saveMeta}
+                    >
+                      {savingMeta
+                        ? <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                        : <KeyRound className="w-4 h-4 mr-1" />}
+                      {isExpired || isError ? "Reconnect" : "Save token"}
+                    </Button>
+                  </div>
+                )
+              )}
+            </div>
+          );
+        })()}
       </CardContent>
     </Card>
   );

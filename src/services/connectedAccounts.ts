@@ -140,3 +140,73 @@ export const fetchPlatformMetrics = async (brandId: string, platform: OAuthPlatf
   if (error) throw error;
   return data ?? { connected: false };
 };
+
+// ── Meta Business Suite (System User token, not OAuth) ─────────────────────
+// Same connected_accounts row / same normalized metrics shape as every other
+// platform, but the connect step is a pasted token instead of a redirect —
+// its own service functions instead of startPlatformConnect, and its edge
+// function route names use a hyphen ("meta-business-…") where the stored
+// `platform` value uses an underscore ("meta_business"), so it can't share
+// the generic `${platform}-metrics` string interpolation above.
+
+export interface SaveMetaBusinessTokenResult {
+  ok: boolean;
+  accountName?: string;
+  pageName?: string;
+  instagramUsername?: string | null;
+  tokenExpiresAt?: string | null;
+  error?: string;
+  reason?: "invalid_token" | "api_error" | "no_page" | "insufficient_permissions";
+}
+
+/** Validates the pasted token against Meta, resolves the Page/IG account, and stores it server-side. */
+export const saveMetaBusinessToken = async (
+  brandId: string,
+  accessToken: string,
+  pageId?: string,
+): Promise<SaveMetaBusinessTokenResult> => {
+  const { data, error } = await supabase.functions.invoke<SaveMetaBusinessTokenResult>("meta-business-token", {
+    body: { brand_id: brandId, access_token: accessToken, ...(pageId ? { page_id: pageId } : {}) },
+  });
+  if (error) {
+    // Validation failures (bad token, no linked Page, missing permissions)
+    // come back as a 4xx with a JSON body ({ ok: false, error, reason }) —
+    // supabase-js only exposes that via error.context (the raw Response),
+    // leaving `data` null, so pull it out here instead of surfacing the
+    // generic "Edge Function returned a non-2xx status code" message.
+    const context = (error as { context?: Response }).context;
+    if (context) {
+      try {
+        const body = await context.clone().json();
+        if (body && typeof body === "object" && "error" in body) return body as SaveMetaBusinessTokenResult;
+      } catch { /* fall through */ }
+    }
+    throw error;
+  }
+  return data ?? { ok: false, error: "No response from the server" };
+};
+
+/** Extra fields meta-business-metrics adds for the combined Analytics summary card. */
+export interface MetaBusinessBreakdown {
+  pageName: string;
+  pageFollowers: number;
+  instagramUsername: string | null;
+  instagramFollowers: number;
+  totalReach28d: number;
+}
+
+export interface MetaBusinessMetrics extends PlatformMetrics {
+  breakdown?: MetaBusinessBreakdown;
+}
+
+export interface MetaBusinessMetricsResponse extends Omit<PlatformMetricsResponse, "metrics"> {
+  metrics?: MetaBusinessMetrics | null;
+}
+
+export const fetchMetaBusinessMetrics = async (brandId: string): Promise<MetaBusinessMetricsResponse> => {
+  const { data, error } = await supabase.functions.invoke<MetaBusinessMetricsResponse>("meta-business-metrics", {
+    body: { brand_id: brandId },
+  });
+  if (error) throw error;
+  return data ?? { connected: false };
+};
