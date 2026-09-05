@@ -1,3 +1,10 @@
+# pcdkfpardswfwoiclvtm is the ONLY correct Supabase project for this app.
+# This value (and the matching one in .env) has been silently overwritten to
+# a different, inaccessible project (uxixfhthdgwxqfltvudt) TWICE by Lovable's
+# own auto-commit bot (gpt-engineer-app), breaking the live site both times.
+# If this ever shows anything other than pcdkfpardswfwoiclvtm, treat it as
+# that regression recurring, not an intentional change, and revert it.
+# CI (guard-supabase-project.yml) fails the build if this drifts.
 project_id = "pcdkfpardswfwoiclvtm"
 
 [functions.send-notification]

@@ -1,0 +1,26 @@
+name: Check Live Bundle
+
+# One-off, manually triggered only. Same content-based check used earlier
+# this session: confirms which Supabase project ref is actually baked into
+# the currently-live Netlify build.
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Which project ref is baked into the live bundle?
+        run: |
+          set -uo pipefail
+          base="https://houcineworld.netlify.app"
+          index=$(curl -sS --max-time 20 -L "$base")
+          js_path=$(echo "$index" | grep -o '/assets/index-[A-Za-z0-9_-]*\.js' | head -1)
+          echo "Live bundle: $js_path"
+          curl -sS --max-time 30 -L -o /tmp/live_bundle.js "${base}${js_path}"
+          echo "--- occurrences of each project ref in the live bundle ---"
+          echo "pcdkfpardswfwoiclvtm: $(grep -o 'pcdkfpardswfwoiclvtm' /tmp/live_bundle.js | wc -l)"
+          echo "uxixfhthdgwxqfltvudt: $(grep -o 'uxixfhthdgwxqfltvudt' /tmp/live_bundle.js | wc -l)"
+          echo "--- the actual supabase.co URL string(s) baked in ---"
+          grep -o '[a-z0-9]\{20\}\.supabase\.co' /tmp/live_bundle.js | sort -u

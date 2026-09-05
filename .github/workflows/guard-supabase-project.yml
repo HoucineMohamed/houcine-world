@@ -1,0 +1,82 @@
+name: Guard Supabase Project Ref
+
+# This project has had its .env / config silently overwritten to point at a
+# different, inaccessible Supabase project (uxixfhthdgwxqfltvudt) TWICE by
+# Lovable's own auto-commit bot (gpt-engineer-app[bot]) — each time it broke
+# the live site, because Vite bakes VITE_SUPABASE_* into the production
+# bundle at build time. This job's only purpose is to make a third
+# occurrence loud and immediate instead of silent: it fails the build the
+# moment .env or supabase/config.toml stop pointing at the real project.
+#
+# It does NOT auto-fix anything — a red, visible CI failure is the point.
+# It also can't reach into Lovable's own project settings to stop the bot
+# from committing in the first place; that's a Lovable-side setting, not
+# something fixable from inside this repo.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+env:
+  EXPECTED_PROJECT_REF: pcdkfpardswfwoiclvtm
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if any committed config points at a different Supabase project
+        run: |
+          set -uo pipefail
+          EXPECTED="$EXPECTED_PROJECT_REF"
+          FAIL=0
+
+          if [ -f .env ]; then
+            proj_id=$(grep -oP '(?<=VITE_SUPABASE_PROJECT_ID=")[^"]*' .env || true)
+            proj_url=$(grep -oP '(?<=VITE_SUPABASE_URL=")[^"]*' .env || true)
+
+            if [ -z "$proj_id" ]; then
+              echo "::error file=.env::VITE_SUPABASE_PROJECT_ID is missing from .env."
+              FAIL=1
+            elif [ "$proj_id" != "$EXPECTED" ]; then
+              echo "::error file=.env::VITE_SUPABASE_PROJECT_ID is '$proj_id', expected '$EXPECTED'. This exact regression (an automated tool swapping the Supabase project ref) has happened twice already and silently broken production both times — this is almost certainly that regression recurring, not an intentional change. Do not merge; revert .env to '$EXPECTED'."
+              FAIL=1
+            fi
+
+            if [ -z "$proj_url" ]; then
+              echo "::error file=.env::VITE_SUPABASE_URL is missing from .env."
+              FAIL=1
+            elif [[ "$proj_url" != *"$EXPECTED"* ]]; then
+              echo "::error file=.env::VITE_SUPABASE_URL is '$proj_url', which doesn't reference '$EXPECTED'. Treat this as the same recurring regression, not an intentional change. Revert .env."
+              FAIL=1
+            fi
+          else
+            echo "::error::.env is missing entirely."
+            FAIL=1
+          fi
+
+          if [ -f supabase/config.toml ]; then
+            cfg_id=$(grep -oP '(?<=^project_id = ")[^"]*' supabase/config.toml || true)
+            if [ -z "$cfg_id" ]; then
+              echo "::error file=supabase/config.toml::project_id is missing."
+              FAIL=1
+            elif [ "$cfg_id" != "$EXPECTED" ]; then
+              echo "::error file=supabase/config.toml::project_id is '$cfg_id', expected '$EXPECTED'. Treat this as the same recurring regression, not an intentional change. Revert supabase/config.toml."
+              FAIL=1
+            fi
+          else
+            echo "::error::supabase/config.toml is missing entirely."
+            FAIL=1
+          fi
+
+          if [ "$FAIL" -ne 0 ]; then
+            echo "::error::Supabase project ref guard failed — see the errors above. Do not proceed until every reference points at $EXPECTED again."
+            exit 1
+          fi
+
+          echo "OK — .env and supabase/config.toml both point at $EXPECTED."
