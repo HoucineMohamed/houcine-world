@@ -142,6 +142,7 @@ jobs:
             soundcloud-oauth soundcloud-metrics \
             youtube-oauth youtube-metrics \
             facebook-oauth facebook-metrics \
+            meta-business-token meta-business-metrics \
             platform-credentials; do
             echo "::group::Deploying $fn"
             supabase functions deploy "$fn" --project-ref "$SUPABASE_PROJECT_REF"

@@ -41,3 +41,13 @@ verify_jwt = true
 
 [functions.platform-credentials]
 verify_jwt = true
+
+# meta-business-token/metrics are plain authenticated POST endpoints — no
+# provider calls back to these directly (the token is pasted manually), so
+# unlike the *-oauth functions above there's no unauthenticated callback
+# route to accommodate.
+[functions.meta-business-token]
+verify_jwt = true
+
+[functions.meta-business-metrics]
+verify_jwt = true

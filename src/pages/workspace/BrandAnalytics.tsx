@@ -14,6 +14,8 @@ import { summarize, timeSeries, countBy, type Bucket } from "@/lib/brandMetrics"
 import { MetricCard, Panel, EmptyState } from "@/components/workspace/analytics/AnalyticsCards";
 import InstagramMetricsCard from "@/components/workspace/analytics/InstagramMetricsCard";
 import PlatformMetricsCard from "@/components/workspace/analytics/PlatformMetricsCard";
+import MetaBusinessMetricsCard from "@/components/workspace/analytics/MetaBusinessMetricsCard";
+import CombinedReachSummaryCard from "@/components/workspace/analytics/CombinedReachSummaryCard";
 
 const PIE_COLORS = [
   "hsl(var(--accent))", "hsl(var(--primary))", "hsl(var(--muted-foreground))", "hsl(var(--destructive))",
@@ -218,6 +220,14 @@ const BrandAnalytics = () => {
         </Panel>
       </div>
 
+      {/*
+        Combined summary sits above the per-platform breakdown below —
+        sums whatever's common (followers, engagement, and reach where
+        reported) across only the platforms this brand currently has
+        connected, and disappears entirely if nothing is connected yet.
+      */}
+      {brandId && <CombinedReachSummaryCard brandId={brandId} />}
+
       {/* Connected-platform data slots in here, alongside the website metrics above. */}
       {brandId && (
         <>
@@ -227,6 +237,7 @@ const BrandAnalytics = () => {
           <PlatformMetricsCard brandId={brandId} platform="soundcloud" label="SoundCloud" icon={Cloud} />
           <PlatformMetricsCard brandId={brandId} platform="youtube" label="YouTube" icon={Youtube} />
           <PlatformMetricsCard brandId={brandId} platform="facebook" label="Facebook" icon={Facebook} />
+          <MetaBusinessMetricsCard brandId={brandId} />
         </>
       )}
 
