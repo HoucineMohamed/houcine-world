@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import HeroSection from "@/components/hero/HeroSection";
+import OwnerServiceSlot from "@/components/owner/OwnerServiceSlot";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const Index = () => {
@@ -167,6 +168,9 @@ const Index = () => {
                   </CardContent>
                 </Card>
               </Link>
+
+              {/* Private card: renders only for the super admin (see docs/trades-integration.md) */}
+              <OwnerServiceSlot />
             </div>
           </div>
         </section>
