@@ -15,8 +15,8 @@ On the home page, in the Services grid ("The Ecosystem"), a fifth card appears:
 - It is **not** a bookable service: no price, no booking button, no form.
 - Today the address is empty, so the card is shown **greyed out** with the text
   **"Not deployed yet"** and no link.
-- Once the address is set (step 6 below), the card becomes a plain link that opens
-  Houcine.Trades **in a new tab**.
+- Once the address is set (step 6 of section 8 below), the card becomes a plain link that opens
+  Houcine.Trades **in the same tab** (use the browser's Back button to return).
 
 ## 2. Who sees it
 
@@ -67,10 +67,45 @@ So: never put anything secret in the card, its text or its address.
 | No API calls, no status card, no data read from or written to Supabase | Nothing about your trading reaches this site, and nothing from this site reaches Houcine.Trades. |
 | No analytics event on click | Your visits to Houcine.Trades are not tracked here. |
 
-The link uses `target="_blank"` and `rel="noopener noreferrer"`: the new tab cannot
-control this page, and it is not told which page you came from.
+The link opens in the **same tab** (no `target="_blank"`) and keeps
+`rel="noopener noreferrer"`: Houcine.Trades is not told which page you came from (no
+`Referer` header), and if the link were ever changed to open a new tab, that tab still could
+not control this page.
 
-## 5. The files
+## 5. Same brand, separate origins
+
+A web browser keeps sites apart by their **origin**: the scheme, the full host name and the
+port together. `https://houcine.world` and `https://trades.houcine.world` share your brand
+(both end in `houcine.world`), but they are **two different origins**. That gives you both
+things at once:
+
+- **One brand:** visitors and you see your own domain in the address bar, not a
+  `something.onrender.com` name.
+- **Separate locks:** the browser does not let one origin read the other's pages, storage or
+  scripts. This site's Supabase sign-in (kept in this site's browser storage) is invisible to
+  Houcine.Trades, and Houcine.Trades's sign-in cookie is invisible to this site.
+  Houcine.Trades uses a `__Host-` cookie: the browser only accepts it from that exact host,
+  so a sibling site on `houcine.world` cannot set or overwrite it.
+
+One honest caveat: subdomains share the same "site" for a few browser rules (for example a
+cookie that `houcine.world` sets for the whole domain would also be sent to
+`trades.houcine.world`). Houcine.Trades ignores cookies it does not know, and this site does
+not set such cookies. Never add one.
+
+### Deliberately NOT done: the trading app on the same origin as the public site
+
+Two ways to put Houcine.Trades **inside** `houcine.world` exist, and both are deliberately
+not done:
+
+| Not done | What it would be | Why not |
+| --- | --- | --- |
+| A path proxy | Netlify forwarding `houcine.world/trades/...` to the Render app | The two apps would share **one origin**. Every script that runs on the public site (the site's own code generated with Lovable, analytics, the chat widget, any future mistake) could then read the trading app's pages and send requests to it **with your trading login attached**, and its "Origin must match" check against forged requests would no longer tell the two apps apart. Netlify would also sit in the middle of every trading request and change the client address Houcine.Trades relies on for its login throttle. One weakness in the public site would become a weakness in the trading app. |
+| An iframe | The trading app shown inside a page of this site | Clickjacking risk and mixed security, as above. Houcine.Trades refuses to be framed anyway (`frame-ancestors 'none'` and `X-Frame-Options: DENY`). |
+
+Houcine.Trades's own rules also say its only supported way online is its container on the
+managed platform, served directly over HTTPS; a proxy in front of it is not that.
+
+## 6. The files
 
 | File | What it does |
 | --- | --- |
@@ -108,7 +143,7 @@ dependency). The validator was checked once by hand with 31 cases (good addresse
 the bare domain, look-alike domains, username, query, fragment, port, path, capitals,
 spaces, backslashes, IP address); all behaved as described above.
 
-## 6. The optional teaser
+## 7. The optional teaser
 
 `SHOW_PUBLIC_TEASER` in `src/config/publicTeaser.ts` is `false`. If you set it to `true`,
 everyone who is not the super admin (visitors, signed-out users, Brand Admins) sees a neutral
@@ -119,7 +154,7 @@ What turning it on exposes: the public learns that a private financial workspace
 Houcine.Trades exists. It still shows no address, no link and no content. The teaser's text then
 becomes part of the public site (search engines may see it). Leave it off unless you want that.
 
-## 7. Future steps (NOT done; do them yourself, in this order)
+## 8. Future steps (NOT done; do them yourself, in this order)
 
 Each step has a warning. Take them slowly.
 
@@ -139,8 +174,8 @@ Each step has a warning. Take them slowly.
    Render, who would then control `trades.houcine.world`.
 6. **Set the address**: in `src/config/trades.ts`, change `export const TRADES_URL = "";` to
    `export const TRADES_URL = "https://trades.houcine.world";` on a new branch, open a pull request,
-   look at the Netlify deploy preview (signed in as super admin: the card is a live link; signed out:
-   no card), then merge.
+   look at the Netlify deploy preview (signed in as super admin: the card is a link that opens
+   Houcine.Trades in the same tab; signed out: no card), then merge.
 
 Never put a token, a password or anything after a `?` or `#` in the address: the validator refuses
 it, and it must not be there anyway.

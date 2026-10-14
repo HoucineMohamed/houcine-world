@@ -7,8 +7,9 @@ import { TRADES_URL, validateTradesUrl } from "@/config/trades";
 // The private Houcine.Trades card. Loaded only after the super-admin check
 // (see ../OwnerServiceSlot.tsx and docs/trades-integration.md).
 // Not a bookable service: no price, no booking button, no form.
-// The link is a plain new-tab link: no iframe, no embed, no script, and it
-// carries no token, session, user data or query parameters.
+// The link is a plain same-tab link: no iframe, no embed, no script, and it
+// carries no token, session, user data or query parameters. rel="noreferrer"
+// also keeps the Referer header from telling Houcine.Trades where you came from.
 
 const cardClass =
   "h-full border-border/50 bg-card/50 backdrop-blur transition-all duration-300";
@@ -36,7 +37,7 @@ const CardBody = ({ disabled }: { disabled: boolean }) => (
             "border-accent/30 hover:bg-accent/10 group-hover:border-accent/50",
           )}
         >
-          Open in a new tab
+          Open
         </span>
       )}
     </CardContent>
@@ -57,7 +58,7 @@ const PrivateWorkspaceCard = () => {
   }
 
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="block h-full group">
+    <a href={href} rel="noopener noreferrer" className="block h-full group">
       <Card
         className={cn(
           cardClass,
