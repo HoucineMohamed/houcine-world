@@ -46,7 +46,9 @@ const AppRoutes = () => {
   // exactly the workspace routes, leaving the public site untouched.
   const location = useLocation();
   useEffect(() => {
-    document.body.classList.toggle("workspace-active", location.pathname.startsWith("/workspace"));
+    // /admin (and /admin/login) never mount <CustomCursor /> either, so they get the same reset.
+    const adminArea = location.pathname.startsWith("/workspace") || location.pathname.startsWith("/admin");
+    document.body.classList.toggle("workspace-active", adminArea);
     return () => { document.body.classList.remove("workspace-active"); };
   }, [location.pathname]);
 
