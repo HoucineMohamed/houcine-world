@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import RouteMeta from "./components/RouteMeta";
 import Index from "./pages/Index";
 import AboutMe from "./pages/AboutMe";
 import Dev from "./pages/Dev";
@@ -98,6 +99,7 @@ const AppRoutes = () => {
 const App = () => (
   <Router>
     <ScrollToTop />
+    <RouteMeta />
     <AppRoutes />
   </Router>
 );
