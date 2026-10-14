@@ -13,6 +13,7 @@ import AboutDJ from "./pages/AboutDJ";
 import Review from "./pages/Review";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import DataDeletion from "./pages/DataDeletion";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
@@ -63,6 +64,7 @@ const AppRoutes = () => {
       <Route path="/review" element={<Review />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy" element={<Privacy />} />
+      <Route path="/data-deletion" element={<DataDeletion />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/auth/callback" element={<AuthCallback />} />

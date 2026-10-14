@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import LegalPageLayout from "@/components/legal/LegalPageLayout";
 import {
   ECOSYSTEM_NAME, ECOSYSTEM_SERVICES, MANAGED_BRANDS, CONNECTED_PLATFORMS,
@@ -113,26 +114,55 @@ const Privacy = () => (
     </section>
 
     <section>
-      <h2>7. How long we keep data</h2>
+      <h2>7. Service providers we use</h2>
+      <p>These companies process data on our behalf to run the site and the workspace:</p>
+      <ul>
+        <li><strong className="text-foreground">Netlify</strong> — hosts and serves the website. Like any web host, it receives the technical details every request carries, such as your IP address and browser type.</li>
+        <li><strong className="text-foreground">Supabase</strong> — our database, sign-in for the brand workspace, and the server functions that store form submissions and talk to connected platforms.</li>
+        <li><strong className="text-foreground">Resend</strong> — sends the notification emails about booking requests, contact requests and new email-updates subscriptions to the relevant brand's inbox.</li>
+        <li><strong className="text-foreground">Google Fonts and Google Cloud Storage</strong> — the site loads its fonts and its site icon from Google's servers, so your browser connects to Google when a page loads.</li>
+        <li><strong className="text-foreground">PostHog</strong> — only if it is switched on for the workspace (see section 3); it then receives workspace usage events.</li>
+        <li><strong className="text-foreground">Connected platforms</strong> — when a brand admin connects an account, we exchange data with that platform as described in section 5.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>8. Cookies and similar browser storage</h2>
+      <p>The public site does not set advertising or tracking cookies. It uses your browser's local storage for:</p>
+      <ul>
+        <li>a random visitor identifier used only to count page views (section 3);</li>
+        <li>for brand workspace members only: your sign-in session, and a short list of the brands you opened recently so the workspace can return you to them.</li>
+      </ul>
+      <p>
+        If PostHog is switched on for the workspace, it may store its own identifier in a cookie or in local
+        storage for workspace users. You can clear all of this at any time in your browser's settings for this
+        site; signing out of the workspace also ends your session.
+      </p>
+    </section>
+
+    <section>
+      <h2>9. How long we keep data</h2>
       <p>
         Booking requests, contact submissions, subscriptions, and connected-platform data are kept until
-        deleted by a brand admin, disconnected, or removed at your request (see below). We don't currently
-        apply an automatic expiry to this data. The one exception is the short-lived, one-time security
+        deleted by a brand admin, disconnected, or removed at your request (see below). Page-view records
+        (section 3) are kept too. We don't currently apply an automatic expiry to this data. The one exception is the short-lived, one-time security
         token generated while you connect a third-party account (used only to prevent tampering with that
         one connection attempt) — that expires automatically within minutes and is purged.
       </p>
     </section>
 
     <section>
-      <h2>8. Your choices</h2>
+      <h2>10. Your choices</h2>
       <ul>
         <li><strong className="text-foreground">Disconnect a platform:</strong> A brand admin can disconnect any connected platform at any time from Settings → Connected Accounts. This immediately stops that platform's data from refreshing and revokes our stored access to it.</li>
-        <li><strong className="text-foreground">Request deletion or a copy of your data:</strong> If you submitted a booking, contact form, or subscribed for updates, you can ask us to delete or send you that information by contacting {LEGAL_CONTACT_EMAIL}.</li>
+        <li><strong className="text-foreground">Request deletion or a copy of your data:</strong> If you submitted a booking, contact form, or subscribed for updates, you can ask us to delete or send you that information by contacting {LEGAL_CONTACT_EMAIL}. See <Link to="/data-deletion">Data Deletion</Link> for the details.</li>
+        <li><strong className="text-foreground">Correct your data:</strong> If something we hold about you is wrong, contact {LEGAL_CONTACT_EMAIL} and we will correct it. Workspace members can also ask a brand admin or the super admin to update their name or role.</li>
+        <li><strong className="text-foreground">Revoke access from the platform's side:</strong> You can also remove our access to a connected account in that platform's own account or app-permission settings.</li>
       </ul>
     </section>
 
     <section>
-      <h2>9. Children's privacy</h2>
+      <h2>11. Children's privacy</h2>
       <p>
         Our services are not directed at children, and we do not knowingly collect personal data from
         children.
@@ -140,7 +170,7 @@ const Privacy = () => (
     </section>
 
     <section>
-      <h2>10. Changes to this policy</h2>
+      <h2>12. Changes to this policy</h2>
       <p>
         We may update this policy as the service changes. We'll update the "Last updated" date above when
         we do.
@@ -148,7 +178,7 @@ const Privacy = () => (
     </section>
 
     <section>
-      <h2>11. Contact</h2>
+      <h2>13. Contact</h2>
       <p>
         Questions about this policy, or requests about your data, can be sent to {LEGAL_CONTACT_EMAIL}.
       </p>

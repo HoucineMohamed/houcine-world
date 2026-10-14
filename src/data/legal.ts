@@ -87,5 +87,8 @@ export const GOVERNING_JURISDICTION = "[GOVERNING JURISDICTION]";
 /** PLACEHOLDER — a single contact address for privacy questions, data-access/deletion requests, and general legal/Terms questions. */
 export const LEGAL_CONTACT_EMAIL = "[CONTACT EMAIL FOR PRIVACY / LEGAL REQUESTS]";
 
-/** Shown on both pages. Update whenever the copy materially changes. */
-export const LEGAL_LAST_UPDATED = "September 5, 2026";
+/** PLACEHOLDER — a postal address where written privacy and deletion requests can be sent. */
+export const LEGAL_POSTAL_ADDRESS = "[POSTAL ADDRESS]";
+
+/** Shown on every legal page. Update whenever the copy materially changes. */
+export const LEGAL_LAST_UPDATED = "October 14, 2026";
