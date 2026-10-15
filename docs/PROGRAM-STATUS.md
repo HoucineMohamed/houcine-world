@@ -13,8 +13,8 @@ Updated after every item so an interrupted session can resume. One session branc
 | 4 | Designed 404 page | **Merged** (#10) |
 | 5 | Error boundaries and loading skeletons for public routes | **Merged** (#11) |
 | 6 | /contact page (mailto from CONTACT_EMAIL) | **Merged** (#12) |
-| 7 | Ecosystem about page, at /ecosystem because /about is the existing founder page | In review |
-| 8 | JSON-LD for Organization and WebSite via RouteMeta | Pending |
+| 7 | Ecosystem about page, at /ecosystem because /about is the existing founder page | **Merged** (#13) |
+| 8 | JSON-LD for Organization and WebSite via RouteMeta | In review |
 | 9 | Default share image public/og-default.png | Pending |
 | 10 | BASE_URL constant, sitemap, robots, per-page canonicals | Pending |
 | 11 | Workspace mobile navigation | Pending |
