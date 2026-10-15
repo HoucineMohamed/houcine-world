@@ -1,0 +1,69 @@
+# Critical paths: a pull request that changes (or renames away) any file matching one of these
+# patterns is NEVER auto-merged. It gets the "needs-owner" label and one comment instead.
+# The auto-merge workflow reads this file from the BASE branch, so a pull request cannot
+# loosen it for itself. Syntax: ** crosses folders, * and ? stay inside one folder, a pattern
+# without a slash matches that file name in any folder. Every pattern below is covered by
+# scripts/ci/critical-paths.test.mjs. See docs/automation.md.
+
+# Automation, CI and repository settings (including this file)
+.github/**
+scripts/ci/**
+
+# Secrets and environment files
+.env*
+
+# Supabase: client, generated types, config, migrations, RLS, edge functions
+src/integrations/**
+supabase/**
+src/lib/supabaseClient.ts
+
+# Login, magic links, sessions and roles
+src/pages/AdminLogin.tsx
+src/pages/Admin.tsx
+src/pages/AuthCallback.tsx
+src/pages/workspace/WorkspaceLogin.tsx
+src/hooks/useAuth*
+src/hooks/useSession*
+src/hooks/useMemberships*
+src/hooks/useActiveBrand*
+src/lib/roles.ts
+src/components/workspace/AuthGuard.tsx
+src/components/workspace/BrandGuard.tsx
+src/components/workspace/WorkspaceContext.ts
+src/services/memberships.ts
+src/services/brands.ts
+
+# Brand Admin management, Connected Accounts and platform credentials
+src/pages/workspace/BrandSettings.tsx
+src/pages/workspace/PlatformCredentials.tsx
+src/components/workspace/settings/**
+src/services/connectedAccounts.ts
+src/services/platformCredentials.ts
+
+# Bookings and form submissions
+src/pages/BookingForm.tsx
+src/pages/workspace/BrandBookings.tsx
+src/services/bookings.ts
+src/hooks/useFormSubmission*
+
+# Analytics logic
+src/hooks/useAnalytics*
+src/lib/analytics.ts
+src/services/analytics.ts
+
+# The private Houcine.Trades entries and their configuration
+src/components/owner/**
+src/config/trades.ts
+src/config/publicTeaser.ts
+
+# Dependencies, build and hosting configuration
+package.json
+package-lock.json
+bun.lock
+bun.lockb
+vite.config.ts
+tsconfig*.json
+netlify.toml
+public/_redirects
+public/_headers
+index.html

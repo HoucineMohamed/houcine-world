@@ -1,0 +1,7 @@
+# Content watch-list: a pull request whose diff text contains any of these identifiers
+# (on an added, removed or context line, in any file) is NEVER auto-merged; it gets the
+# "needs-owner" label and one comment. Read from the BASE branch. See docs/automation.md.
+platform_role
+super_admin
+supabase.auth
+service_role
