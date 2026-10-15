@@ -1,23 +1,34 @@
-# Houcine.world enhancement program: status
+# Houcine.world overnight program: status
 
-Updated after every item so an interrupted session can resume. Session branch:
-`claude/upbeat-hamilton-ymyymq`. Automation rules: `docs/automation.md`.
+Updated after every item so an interrupted session can resume. One session branch,
+`claude/upbeat-hamilton-ymyymq`, so items run strictly one at a time. Automation rules:
+`docs/automation.md`.
 
 | Item | What | Status |
 | --- | --- | --- |
-| 1 | Automation: CI, session-pr and auto-merge workflows, the tested decision script, critical-path list and watch-list, docs | **Done, waiting for the owner.** Pushed to the session branch. CI passed on GitHub. session-pr could not open the pull request yet: "GitHub Actions is not permitted to create or approve pull requests" (the one-time setting in `docs/automation.md`, section 6, is not ticked). It touches `.github/**`, so the owner must merge it by hand. |
-| 2 | Domain and search follow-up (houcine.world base address, canonical links, absolute share images) | Pending (blocked by item 1) |
-| 3 | Workspace mobile navigation | Pending (blocked by item 1) |
-| 4 | Accessibility and performance pass on public pages | Pending (blocked by item 1) |
-| 5 | Trivial lint fixes; lockfile fix prepared for owner approval | Pending (blocked by item 1) |
+| Automation | CI, session-pr, auto-merge, tested decision script (pull request #6) | **Merged** in `main` (#6) |
+| A | Automation amendment: time gate off, auto-merge every 15 minutes and on "Run workflow", tests, docs | **Waiting for the owner.** Critical (`.github/**`, `scripts/ci/**`): needs your manual merge. Pull request opened by session-pr from this branch. |
+| 2 | docs/security-review.md (read-only review) | Pending (waits for A) |
+| 3 | docs/architecture.md and docs/runbook.md | Pending |
+| 4 | Designed 404 page | Pending |
+| 5 | Error boundaries and loading skeletons for public routes | Pending |
+| 6 | /contact page (mailto from CONTACT_EMAIL) | Pending |
+| 7 | /about page for the ecosystem (from the brief only) | Pending |
+| 8 | JSON-LD for Organization and WebSite via RouteMeta | Pending |
+| 9 | Default share image public/og-default.png | Pending |
+| 10 | BASE_URL constant, sitemap, robots, per-page canonicals | Pending |
+| 11 | Workspace mobile navigation | Pending |
+| 12 | Accessibility pass with an offline checker | Pending |
+| 13 | Performance pass with measured bundle sizes | Pending |
+| 14 | Offline link checker | Pending |
+| 15 | French home, /about, /contact, /manages | Pending |
+| 16 | Trivial lint fixes | Pending |
+| 17 | public/_headers and a CSP proposal (critical) | Pending |
+| 18 | CLAUDE.md with every rule (critical) | Pending |
+| 19 | Lockfile fix (critical) | Pending |
+| 20 | index.html share tags (critical) | Pending |
 
-## Why items 2 to 5 wait
+## To resume after the owner merges A
 
-All items share the one session branch. Until item 1 is merged, any new commit would join item 1's
-pull request, and auto-merge (which must run from `main`) does not exist yet.
-
-## To resume after the owner merges item 1
-
-1. Sync the session branch with `main` as described in `docs/automation.md`, section 7.
-2. Start item 2. Split it: the safe part first (sitemap, robots, the base-address constant, per-page
-   canonical links), then a separate pull request for `index.html`, which is critical.
+1. Sync the session branch with `main` (`docs/automation.md`, section 7).
+2. Start item 2. One item, one push, then poll its pull request every 3 minutes until merged.

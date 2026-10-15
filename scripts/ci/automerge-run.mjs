@@ -1,7 +1,7 @@
 // I/O side of the auto-merge workflow: gathers facts from the GitHub API, asks the pure
 // decision module, then merges, labels or does nothing. Any thrown error means no merge.
 // Called from .github/workflows/auto-merge.yml through actions/github-script.
-import { decide, MAX_FILES, parsePatternList } from "./automerge-decision.mjs";
+import { decide, MAX_FILES, parsePatternList, REQUIRED_CHECK_RUNS } from "./automerge-decision.mjs";
 
 export const CRITICAL_PATHS_FILE = ".github/critical-paths.txt";
 export const WATCHLIST_FILE = ".github/content-watchlist.txt";
@@ -134,21 +134,75 @@ export const runAutoMerge = async ({ github, owner, repo, run, now, sleep, log =
       log(`#${prNumber}: waiting (${decision.reasons.join("; ")})`);
       await sleep(waitMs);
     }
-    try {
-      if (decision.action === "merge") {
-        await github.rest.pulls.merge({
-          owner, repo, pull_number: prNumber, merge_method: "squash", sha: facts.pr.headSha,
-        });
-        outcomes.push({ prNumber, action: "merged", reasons: [] });
-      } else if (decision.action === "needs-owner") {
-        const what = await flagNeedsOwner({ github, owner, repo, prNumber, decision, labels: facts.pr.labels });
-        outcomes.push({ prNumber, action: "needs-owner", reasons: [what, ...decision.criticalHits, ...decision.watchHits] });
-      } else {
-        outcomes.push({ prNumber, action: "skip", reasons: decision.reasons });
-      }
-    } catch (error) {
-      outcomes.push({ prNumber, action: "skip", reasons: [`action failed: ${error instanceof Error ? error.message : String(error)}`] });
-    }
+    outcomes.push(await actOn({ github, owner, repo, prNumber, decision, facts }));
   }
   return outcomes;
+};
+
+/**
+ * Scheduled / manual path (every 15 minutes, or "Run workflow"): re-evaluates EVERY open pull
+ * request labelled "auto" from a claude/ branch of this repository, so a pull request whose CI
+ * finished earlier, or whose Netlify preview reported late, is still judged. No waiting here:
+ * the next scheduled run looks again. The CI result is taken from the required check runs on
+ * the pull request's head commit. Any error means no merge.
+ */
+export const runScheduled = async ({ github, owner, repo, now }) => {
+  let candidates;
+  try {
+    const open = await allPages(
+      (page) => github.rest.pulls.list({ owner, repo, state: "open", per_page: 100, page }),
+      (data) => data,
+      10,
+    );
+    if (!open.complete) throw new Error("open pull request list incomplete");
+    candidates = open.items.filter(
+      (p) =>
+        (p.labels ?? []).some((l) => l.name === "auto") &&
+        typeof p.head?.ref === "string" && p.head.ref.startsWith("claude/") &&
+        p.head?.repo?.full_name === `${owner}/${repo}`,
+    );
+  } catch (error) {
+    return [{ prNumber: null, action: "skip", reasons: [`could not list pull requests: ${error instanceof Error ? error.message : String(error)}`] }];
+  }
+  if (candidates.length === 0) return [{ prNumber: null, action: "skip", reasons: ["no open auto pull request"] }];
+
+  const outcomes = [];
+  for (const candidate of candidates) {
+    const prNumber = candidate.number;
+    const facts = await gatherFacts({ github, owner, repo, prNumber, run: { head_sha: candidate.head.sha, conclusion: undefined }, now });
+    facts.runConclusion = conclusionFromChecks(facts.checkRuns);
+    outcomes.push(await actOn({ github, owner, repo, prNumber, decision: decide(facts), facts }));
+  }
+  return outcomes;
+};
+
+/** "success" only when every required check run's latest run completed with success. */
+export const conclusionFromChecks = (checkRuns) => {
+  if (!Array.isArray(checkRuns)) return "unknown";
+  for (const name of REQUIRED_CHECK_RUNS) {
+    const latest = checkRuns.filter((r) => r.name === name).sort((a, b) => Number(b.id) - Number(a.id))[0];
+    if (!latest) return "missing";
+    if (latest.status !== "completed") return "pending";
+    if (latest.conclusion !== "success") return latest.conclusion ?? "unknown";
+  }
+  return "success";
+};
+
+/** Carry out one decision. Only "merge" merges; any failure is reported as skip. */
+const actOn = async ({ github, owner, repo, prNumber, decision, facts }) => {
+  try {
+    if (decision.action === "merge") {
+      await github.rest.pulls.merge({
+        owner, repo, pull_number: prNumber, merge_method: "squash", sha: facts.pr.headSha,
+      });
+      return { prNumber, action: "merged", reasons: [] };
+    }
+    if (decision.action === "needs-owner") {
+      const what = await flagNeedsOwner({ github, owner, repo, prNumber, decision, labels: facts.pr.labels });
+      return { prNumber, action: "needs-owner", reasons: [what, ...decision.criticalHits, ...decision.watchHits] };
+    }
+    return { prNumber, action: "skip", reasons: decision.reasons };
+  } catch (error) {
+    return { prNumber, action: "skip", reasons: [`action failed: ${error instanceof Error ? error.message : String(error)}`] };
+  }
 };

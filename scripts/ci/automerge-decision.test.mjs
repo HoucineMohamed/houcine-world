@@ -208,6 +208,11 @@ test("the time gate: not before NO_MERGE_BEFORE, and not exactly at it", () => {
   assert.equal(decide(goodFacts({ now: new Date("invalid") })).action, "skip");
 });
 
-test("NO_MERGE_BEFORE is the agreed instant", () => {
-  assert.equal(Date.parse(NO_MERGE_BEFORE), Date.parse("2026-10-15T03:00:00Z"));
+test("NO_MERGE_BEFORE is in the past for this repository", () => {
+  assert.equal(Date.parse(NO_MERGE_BEFORE), Date.parse("2020-01-01T00:00:00Z"));
+});
+
+test("a past gate does not block a merge now", () => {
+  const d = decide(goodFacts({ now: new Date() }));
+  assert.equal(d.action, "merge", d.reasons.join("; "));
 });

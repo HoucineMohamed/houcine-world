@@ -10,10 +10,11 @@ do it, under strict rules, and anything sensitive waits for you.
 | --- | --- | --- |
 | **CI** | `.github/workflows/ci.yml` | On every push to `main` or a `claude/...` branch (and on pull requests): installs, **typechecks**, **builds** and runs the automation's own tests. Its job is called `typecheck-and-build`. It does not run lint, because the repository already has old lint errors. |
 | **session-pr** | `.github/workflows/session-pr.yml` | When a session pushes a `claude/...` branch: if no pull request is open for that branch and the branch is different from `main`, it opens one. Title: the first line of the newest commit message. Text: all commit messages. Label: `auto`. If there is no difference, it does nothing. |
-| **auto-merge** | `.github/workflows/auto-merge.yml` | Every time a CI run finishes: looks for the open pull request whose newest commit is the one CI just checked, and **squash-merges** it only if every rule in section 2 holds. Otherwise it does nothing, or asks for you (section 4). It never deletes a branch. |
+| **auto-merge** | `.github/workflows/auto-merge.yml` | Every time a CI run finishes: looks for the open pull request whose newest commit is the one CI just checked, and **squash-merges** it only if every rule in section 2 holds. Otherwise it does nothing, or asks for you (section 4). **Also every 15 minutes** (and when you click "Run workflow" in the Actions tab), it looks again at **every open pull request labelled `auto`**, so one whose CI finished earlier or whose Netlify preview reported late is still merged. It never deletes a branch. |
 
 The auto-merge workflow always runs **the copy on `main`**, and it reads its lists from `main` too.
-So a pull request can never change the rules that judge it.
+So a pull request can never change the rules that judge it. ("Run workflow" by hand is only
+accepted from `main`.)
 
 ## 2. The rules (all must hold, otherwise no merge)
 
@@ -23,15 +24,17 @@ access, tested by `scripts/ci/*.test.mjs`.
 1. **Required checks are green** on the newest commit:
    - `typecheck-and-build` (the CI job), and
    - `netlify/houcineworld/deploy-preview` (Netlify's deploy preview).
-   If one has not reported yet, auto-merge waits up to about 10 minutes, then gives up (no merge).
-   Vercel's statuses are ignored.
+   If one has not reported yet, auto-merge waits up to about 10 minutes after CI; if it still has not
+   reported, the 15-minute check picks the pull request up later. Vercel's statuses are ignored.
 2. The pull request is **open**, **not a draft**, and has **no `hold`** (or `needs-owner`) label.
 3. The commit CI checked is **still the newest** commit of the pull request (nothing was pushed
    meanwhile). The merge itself is also pinned to that commit.
 4. The **complete list of changed files** could be read (more than 300 files: never merged), and
    every changed file has its diff text available.
 5. **No critical file** is touched (section 3), and the diff contains **no watch-list word**.
-6. The time is **later than** `NO_MERGE_BEFORE` = 15 October 2026, 04:00 (UTC+1).
+6. The time is **later than** `NO_MERGE_BEFORE`. For this repository it is set in the past
+   (1 January 2020), so this rule never blocks: Netlify has no maintenance window to avoid. If you
+   ever want a quiet period, a session can set a future time there (a critical change you merge).
 7. **Any error or missing information means no merge.**
 
 ## 3. Critical files and watch-list words
@@ -95,7 +98,19 @@ must, on its own branch and without force-pushing, resetting or rewriting histor
 
 If `main` simply contains the branch already (an ordinary merge), a plain fast-forward is enough.
 
-## 8. What is NOT automated
+## 8. Known limits (honest list)
+
+- **Workflows on a branch run with the same token.** GitHub runs a workflow file from the pushed
+  branch for push events, with the repository's workflow permissions. A branch that changed a
+  workflow file could therefore, in theory, merge itself. The rules here make sessions never do
+  that, and every change to `.github/**` needs your merge, but that is a promise, not a lock. For a
+  real lock, add a branch rule in **Settings → Rules → Rulesets** (or **Branches**) for `main` that
+  requires the `typecheck-and-build` check and blocks force pushes; a session can tell you the exact
+  ticks when you want it.
+- GitHub may delay or skip scheduled runs when it is busy, and pauses schedules in repositories with
+  no activity for 60 days. "Run workflow" in the Actions tab always works.
+
+## 9. What is NOT automated
 
 - The **first** automation pull request touches `.github/**`, so **you merge it by hand**.
 - Anything on the critical list, and the lockfile fix, always wait for you.
