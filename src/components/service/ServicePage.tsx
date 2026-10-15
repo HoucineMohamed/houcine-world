@@ -193,7 +193,13 @@ export const ContactCta = ({ title, text, subject }: { title: string; text: stri
           Get in touch
         </a>
       ) : (
-        <p className="text-sm text-muted-foreground">Contact details coming soon.</p>
+        <p className="text-sm text-muted-foreground">
+          Contact details coming soon. See the{" "}
+          <Link to="/contact" className={cn("text-accent underline hover:text-accent/80 rounded", focusRing)}>
+            contact page
+          </Link>
+          .
+        </p>
       )}
     </section>
   );

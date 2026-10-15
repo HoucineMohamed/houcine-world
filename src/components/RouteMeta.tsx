@@ -40,6 +40,7 @@ const PUBLIC_PAGES: Record<string, PageMeta> = {
   "/terms": { title: `Terms of Service | ${SITE}`, description: "The terms for using Houcine.world and its services." },
   "/privacy": { title: `Privacy Policy | ${SITE}`, description: "What Houcine.world collects, why, and your choices." },
   "/data-deletion": { title: `Data Deletion | ${SITE}`, description: "How to ask Houcine.world to delete your data." },
+  "/contact": { title: `Contact | ${SITE}`, description: "How to get in touch with Houcine.world." },
 };
 
 const PRIVATE_PREFIXES = ["/workspace", "/admin", "/auth"];

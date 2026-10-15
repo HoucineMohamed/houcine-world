@@ -16,6 +16,7 @@ import Review from "./pages/Review";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import DataDeletion from "./pages/DataDeletion";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
@@ -71,6 +72,7 @@ const AppRoutes = () => {
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/data-deletion" element={<DataDeletion />} />
+        <Route path="/contact" element={<Contact />} />
       </Route>
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/login" element={<AdminLogin />} />
