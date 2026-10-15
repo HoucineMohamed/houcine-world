@@ -14,8 +14,8 @@ Updated after every item so an interrupted session can resume. One session branc
 | 5 | Error boundaries and loading skeletons for public routes | **Merged** (#11) |
 | 6 | /contact page (mailto from CONTACT_EMAIL) | **Merged** (#12) |
 | 7 | Ecosystem about page, at /ecosystem because /about is the existing founder page | **Merged** (#13) |
-| 8 | JSON-LD for Organization and WebSite via RouteMeta | In review |
-| 9 | Default share image public/og-default.png | Pending |
+| 8 | JSON-LD for Organization and WebSite via RouteMeta | **Merged** (#14) |
+| 9 | Default share image public/og-default.png | **BLOCKED** (#15): auto-merge skips it because GitHub shows no text diff for a PNG, and "missing information means no merge". Needs the owner's manual merge. |
 | 10 | BASE_URL constant, sitemap, robots, per-page canonicals | Pending |
 | 11 | Workspace mobile navigation | Pending |
 | 12 | Accessibility pass with an offline checker | Pending |
@@ -28,7 +28,12 @@ Updated after every item so an interrupted session can resume. One session branc
 | 19 | Lockfile fix (critical) | Pending |
 | 20 | index.html share tags (critical) | Pending |
 
-## To resume after the owner merges A
+## Stopped at item 9 (15 October 2026)
+
+Pull request #15 cannot merge itself (see item 9). With one branch, no further work is pushed on top of
+it. Items 10 to 20 were not started. See `docs/MORNING-REPORT.md`.
+
+## To resume after the owner merges #15
 
 1. Sync the session branch with `main` (`docs/automation.md`, section 7).
-2. Start item 2. One item, one push, then poll its pull request every 3 minutes until merged.
+2. Start item 10. One item, one push, then wait until its pull request is merged.

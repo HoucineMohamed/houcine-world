@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { structuredData } from "@/config/site";
+import { DEFAULT_SHARE_IMAGE, DEFAULT_SHARE_IMAGE_ALT, structuredData } from "@/config/site";
 
 // Per-page <title> and description without a new dependency. index.html keeps the defaults
 // that link-preview crawlers (which do not run JavaScript) will see; this updates the tab title
@@ -54,6 +54,17 @@ const setMeta = (selector: string, content: string) => {
   document.head.querySelector<HTMLMetaElement>(selector)?.setAttribute("content", content);
 };
 
+/** Like setMeta, but creates the tag when index.html does not have it. */
+const ensureMeta = (attribute: "name" | "property", key: string, content: string) => {
+  let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute(attribute, key);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute("content", content);
+};
+
 /** Structured data (JSON-LD) for search engines: public pages only, from src/config/site.ts. */
 const JSON_LD_ID = "site-structured-data";
 const setStructuredData = (enabled: boolean) => {
@@ -86,6 +97,10 @@ const RouteMeta = () => {
     setMeta('meta[name="twitter:title"]', meta.title);
     setMeta('meta[property="og:description"]', meta.description);
     setMeta('meta[name="twitter:description"]', meta.description);
+    ensureMeta("property", "og:image", DEFAULT_SHARE_IMAGE);
+    ensureMeta("name", "twitter:image", DEFAULT_SHARE_IMAGE);
+    ensureMeta("property", "og:image:alt", DEFAULT_SHARE_IMAGE_ALT);
+    ensureMeta("name", "twitter:image:alt", DEFAULT_SHARE_IMAGE_ALT);
 
     setStructuredData(!isPrivate);
 
