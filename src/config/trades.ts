@@ -10,7 +10,7 @@
  * or invalid, the card is shown disabled ("Not deployed yet") with no link.
  * Example once deployed: "https://trades.houcine.world"
  */
-export const TRADES_URL = "";
+export const TRADES_URL = "https://houcine-trades.onrender.com";
 
 /**
  * Hostnames the address may live under. Only SUBDOMAINS count
