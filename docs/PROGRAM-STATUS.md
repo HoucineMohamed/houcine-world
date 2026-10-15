@@ -14,8 +14,9 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | v3-1 | Netlify paths on the critical list (`netlify/functions/**` added; the other three were already there) | **Merged** (#17, by the owner) |
 | 0.1 | `docs/security-fixes-proposed.md` (proposals as text, nothing applied) | **Merged** (#18) |
 | 0.2 | One `BASE_URL` for sitemap, robots and per-page canonical links | **Merged** (#19) |
-| 0.3 | Workspace mobile navigation (menu sheet on phones, same links and role checks) | In review |
-| 0.4 | Offline accessibility checker, link checker and smoke script (`scripts/dev`) | Pending |
+| 0.3 | Workspace mobile navigation (menu sheet on phones, same links and role checks) | **Merged** (#20) |
+| 0.4 | Offline smoke, link and accessibility checks (`scripts/dev`); fixed 2 broken images and the missing main heading on /review | In review |
+| 0.4b | Fix the accessibility findings in non-critical files (labels, names, headings, destructive token) | Pending |
 | 0.5 | Performance pass with measured bundle sizes | Pending |
 | 0.6 | Trivial lint fixes | Pending |
 | 1 | Route manifest, typed content layer, validators, `docs/content-guide.md` | Pending |

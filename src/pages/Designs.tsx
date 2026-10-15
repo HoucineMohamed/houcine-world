@@ -195,7 +195,7 @@ const DesignsContent = () => {
         <div className="relative z-10 container mx-auto px-6 text-center">
           <div className="mb-8 flex items-center justify-center">
             <img
-              src="/src/assets/logo-h.png"
+              src={logoH}
               alt="H Logo"
               className="w-24 h-24 opacity-80 animate-pulse"
             />

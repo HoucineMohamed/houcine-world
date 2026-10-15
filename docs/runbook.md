@@ -42,6 +42,22 @@ automatically. `public/sitemap.xml` and `public/robots.txt` are written from the
 `scripts/dev/seo-files.mjs`: after changing either file, ask a session to run it (it also has a
 `--check` mode that only reports whether the two files are out of date).
 
+## Check the site before a release (scripts a session runs)
+
+Three offline checks live in `scripts/dev/`. They serve the built site on the session's own computer and
+open it in a local headless Chromium that cannot reach the internet. You do not run them yourself: ask
+a session to "run the smoke, link and accessibility checks" and to report the results.
+
+| Script | What it checks |
+| --- | --- |
+| `smoke.mjs` | Builds the site, then opens every public page at 1366px and 390px: the right title, exactly one main heading, no horizontal scroll, no console errors, no outside host beyond the known list, and no trace of the owner-only entries (pages, sitemap, robots.txt, main bundle). Problems in critical files are listed as "known" with the fix to approve. |
+| `link-check.mjs` | Links to pages that do not exist, `#anchors` with no target, images that do not load, and public pages that no other page links to. Outside links are listed by host, never visited. |
+| `a11y-check.mjs` | Heading order, form labels, image alt text, names of links and buttons, contrast of the design tokens, reduced motion; warnings for focus outlines and estimated text contrast. |
+
+Each is run as `node --experimental-strip-types scripts/dev/<script> ` (add `--build` to build first for the
+link and accessibility checks; `--no-build` skips the build of the smoke check). A non-zero exit means at
+least one problem was found.
+
 ## Preview a change before it goes live
 
 1. Open the pull request on GitHub.
