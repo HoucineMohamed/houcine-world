@@ -1,56 +1,73 @@
-import { useLocation, Link } from "react-router-dom";
-import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Home } from "lucide-react";
-import logoH from "@/assets/logo-h.png";
-import ScrollProgressBar from "@/components/ScrollProgressBar";
-import CustomCursor from "@/components/CustomCursor";
+import { Link, useLocation } from "react-router-dom";
+import { ArrowRight, Home } from "lucide-react";
+import { ServicePageLayout } from "@/components/service/ServicePage";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+// Shown for any address that does not exist. Same header and footer as the service pages.
+const HELPFUL_LINKS = [
+  { to: "/#services", label: "The Ecosystem", description: "All four Houcine.world domains" },
+  { to: "/dev", label: "Houcine.tech", description: "Web applications and development" },
+  { to: "/designs", label: "Houcine.studio", description: "Branding, UI/UX and visual design" },
+  { to: "/reads", label: "Houcine.education", description: "Digital books and learning resources" },
+  { to: "/manages", label: "Houcine.management", description: "Creative brands, artists and projects" },
+] as const;
+
+const focusRing =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
+  const { pathname } = useLocation();
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-      <ScrollProgressBar />
-      <CustomCursor />
-      
-      <div className="text-center px-6 max-w-2xl mx-auto">
-        <div className="mb-8 animate-fade-in">
-          <div className="text-9xl font-bold bg-gradient-to-r from-accent via-tech-blue to-accent bg-clip-text text-transparent mb-4">
-            404
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Page Not Found</h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            Oops! The page you're looking for doesn't exist or has been moved.
-          </p>
-        </div>
-        
-        <div className="flex flex-col items-center gap-6 animate-fade-in">
-          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
-            <img 
-              src={logoH} 
-              alt="Houcine.world home" 
-              className="h-12 w-auto opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
-              style={{
-                filter: "drop-shadow(0 0 8px rgba(103, 232, 249, 0))",
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0.5))"}
-              onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(103, 232, 249, 0))"}
-            />
-          </Link>
-          <Link to="/">
-            <Button className="gap-2 hover:scale-105 transition-all">
-              <Home className="w-4 h-4" />
-              Return Home
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </div>
+    <ServicePageLayout>
+      <section aria-labelledby="not-found-title" className="pt-6 text-center">
+        <p className="text-7xl md:text-9xl font-bold font-display text-accent/80 mb-4" aria-hidden="true">
+          404
+        </p>
+        <h1 id="not-found-title" className="text-3xl md:text-5xl font-bold font-display text-foreground mb-4">
+          Page not found
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-2">
+          There is no page at this address. It may have moved, or the link may be mistyped.
+        </p>
+        <p className="text-sm text-muted-foreground mb-8 break-all">
+          <span className="sr-only">Requested address: </span>
+          <code className="rounded bg-muted px-2 py-1">{pathname}</code>
+        </p>
+        <Link to="/" className={cn(buttonVariants({ size: "lg" }), "gap-2", focusRing)}>
+          <Home className="w-4 h-4" aria-hidden="true" />
+          Go to the home page
+        </Link>
+      </section>
+
+      <section aria-labelledby="helpful-links-title">
+        <h2 id="helpful-links-title" className="text-2xl font-bold font-display text-foreground mb-6 text-center">
+          You might be looking for
+        </h2>
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {HELPFUL_LINKS.map((link) => (
+            <li key={link.to}>
+              <Link
+                to={link.to}
+                className={cn(
+                  "group flex h-full items-center justify-between gap-4 rounded-lg border border-border/50 bg-card/50 p-5 transition-colors hover:border-accent/50",
+                  focusRing,
+                )}
+              >
+                <span>
+                  <span className="block font-semibold text-foreground group-hover:text-accent transition-colors">
+                    {link.label}
+                  </span>
+                  <span className="block text-sm text-muted-foreground">{link.description}</span>
+                </span>
+                <ArrowRight className="w-4 h-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </ServicePageLayout>
   );
 };
 
