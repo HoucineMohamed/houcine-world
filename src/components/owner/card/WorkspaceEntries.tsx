@@ -1,3 +1,4 @@
+import { lazy, Suspense, useState } from "react";
 import { Lock } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -56,9 +57,13 @@ export const WorkspaceNavEntry = () => {
   );
 };
 
+// The single sign-on setup screen is a separate file, downloaded only when the owner opens it.
+const SsoSetup = lazy(() => import("../sso-setup"));
+
 /** Section with one card on the ecosystem page: the card matches the brand cards above it. */
 export const WorkspaceEcosystemEntry = () => {
   const href = validateTradesUrl(TRADES_URL);
+  const [showSetup, setShowSetup] = useState(false);
   const card = (
     <Card className={cn("h-full transition-colors", href === null ? "opacity-60" : "hover:border-accent")}>
       <CardHeader className="pb-4">
@@ -89,6 +94,19 @@ export const WorkspaceEcosystemEntry = () => {
     <section aria-labelledby="private-apps-title" className="mt-10">
       <h2 id="private-apps-title" className="text-lg font-semibold text-foreground mb-4">Private apps</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{entry}</div>
+      <button
+        type="button"
+        onClick={() => setShowSetup((v) => !v)}
+        aria-expanded={showSetup}
+        className={cn("mt-4 text-sm text-muted-foreground underline hover:text-foreground rounded", focusRing)}
+      >
+        {showSetup ? "Close single sign-on setup" : "Single sign-on setup"}
+      </button>
+      {showSetup && (
+        <Suspense fallback={<p className="mt-4 text-sm text-muted-foreground">Loading…</p>}>
+          <SsoSetup />
+        </Suspense>
+      )}
     </section>
   );
 };
