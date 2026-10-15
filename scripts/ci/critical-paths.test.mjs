@@ -56,6 +56,7 @@ const EXAMPLES = {
   "vite.config.ts": "vite.config.ts",
   "tsconfig*.json": "tsconfig.app.json",
   "netlify.toml": "netlify.toml",
+  "netlify/functions/**": "netlify/functions/assert/core.mjs",
   "public/_redirects": "public/_redirects",
   "public/_headers": "public/_headers",
   "index.html": "index.html",
@@ -85,7 +86,7 @@ test("the owner's required entries are present", () => {
   for (const required of [
     ".github/**", ".env*", "src/integrations/**", "supabase/**", "src/hooks/useMemberships*",
     "src/components/owner/**", "src/config/trades.ts", "package.json", "package-lock.json",
-    "netlify.toml", "public/_redirects", "public/_headers", "index.html",
+    "netlify.toml", "netlify/functions/**", "public/_redirects", "public/_headers", "index.html",
   ]) {
     assert.ok(patterns.includes(required), `${required} must be a critical path`);
   }
