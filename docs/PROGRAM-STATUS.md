@@ -7,11 +7,21 @@ replaces version 3; finished version 3 items are kept below.
 
 ## Driver
 
-DRIVER: session_01YPgKc4KaGJPX6EDp5wNDGW, claimed 2026-10-15T17:39:24Z
+DRIVER: session_01YPgKc4KaGJPX6EDp5wNDGW, claimed 2026-10-15T17:39:24Z, updated 2026-10-15T19:05:00Z
 
 The branch was quiet for more than 60 minutes (no push, no open pull request) before this claim.
 Before starting any item, re-fetch and check for a newer DRIVER line; if one exists, stand down at
 once and discard any unpushed work.
+
+### Deploy verification gap
+
+GitHub's commit-status and deployments APIs show nothing for this repo's Netlify production
+deploys (checked on several already-merged commits, including #23) — only a pull request's
+deploy-preview gets a GitHub check (`netlify/houcineworld/deploy-preview`). A "Vercel" commit
+status was observed pending on at least one commit; it is a separate, parallel integration that
+auto-merge already ignores. This means production-deploy success cannot be confirmed through
+GitHub tools alone after a merge to `main` — this is pre-existing and not caused by any item in
+this program. No diagnostic workflow was added for this, since `.github/**` is a critical path.
 
 Earlier programs: automation (#6, #7), security review (#8), architecture and runbook (#9), 404 page
 (#10), error boundaries (#11), /contact (#12), /ecosystem (#13), JSON-LD (#14), share image (#15,
@@ -25,7 +35,7 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | 0.3 | Workspace mobile navigation (menu sheet on phones, same links and role checks) | **Merged** (#20) |
 | 0.4 | Offline smoke, link and accessibility checks (`scripts/dev`); fixed 2 broken images and the missing main heading on /review | **Merged** (#21) |
 | 0.4b | Accessibility fixes in non-critical files: checker errors 60 before, 0 after (7 known on /booking, a critical file) | **Merged** (#22) |
-| 0.5 | Performance pass with measured bundle sizes | Pending |
+| 0.5 | Performance pass with measured bundle sizes | In review |
 | 0.6 | Trivial lint fixes | Pending |
 | 1 | Route manifest, typed content layer, validators, `docs/content-guide.md` | Pending |
 | 2 | `/work` hub and case-study template | Pending |
