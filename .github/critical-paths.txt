@@ -64,6 +64,7 @@ bun.lockb
 vite.config.ts
 tsconfig*.json
 netlify.toml
+netlify/functions/**
 public/_redirects
 public/_headers
 index.html
