@@ -69,6 +69,8 @@ export const ReviewModal = ({ isOpen, onClose, onSubmit }: ReviewModalProps) => 
                   onClick={() => setRating(star)}
                   onMouseEnter={() => setHoveredRating(star)}
                   onMouseLeave={() => setHoveredRating(0)}
+                  aria-label={`${star} star${star === 1 ? "" : "s"}`}
+                  aria-pressed={star === rating}
                   className="transition-transform hover:scale-110"
                 >
                   <Star

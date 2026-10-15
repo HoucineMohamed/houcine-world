@@ -480,6 +480,7 @@ const LaRosaView = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <Input
+                      aria-label="Your name"
                       placeholder="Your Name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -489,6 +490,7 @@ const LaRosaView = () => {
                   <div>
                     <Input
                       type="email"
+                      aria-label="Your email"
                       placeholder="Your Email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -497,6 +499,7 @@ const LaRosaView = () => {
                   </div>
                   <div>
                     <Textarea
+                      aria-label="Your message"
                       placeholder="Your Message"
                       rows={5}
                       value={formData.message}
@@ -702,6 +705,7 @@ const LaRosaView = () => {
           <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto px-4">
             <Input 
               type="email"
+              aria-label="Your email address"
               placeholder="Enter your email" 
               className="bg-background/50 text-sm sm:text-base"
               value={newsletterEmail}

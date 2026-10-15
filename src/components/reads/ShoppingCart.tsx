@@ -31,8 +31,9 @@ const ShoppingCart = ({ items, onRemoveItem, onClearCart }: ShoppingCartProps) =
           variant="outline" 
           size="icon" 
           className="relative"
+          aria-label={`Shopping cart, ${items.length} item${items.length === 1 ? "" : "s"}`}
         >
-          <CartIcon className="w-5 h-5" />
+          <CartIcon className="w-5 h-5" aria-hidden="true" />
           {items.length > 0 && (
             <Badge className="absolute -top-2 -right-2 w-5 h-5 p-0 flex items-center justify-center text-xs bg-primary">
               {items.length}
@@ -79,8 +80,9 @@ const ShoppingCart = ({ items, onRemoveItem, onClearCart }: ShoppingCartProps) =
                       size="icon"
                       className="flex-shrink-0 h-8 w-8"
                       onClick={() => onRemoveItem(book.id)}
+                      aria-label={`Remove ${book.title} from cart`}
                     >
-                      <Trash2 className="w-4 h-4 text-destructive" />
+                      <Trash2 className="w-4 h-4 text-destructive" aria-hidden="true" />
                     </Button>
                   </div>
                 ))}

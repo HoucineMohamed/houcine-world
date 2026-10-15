@@ -264,6 +264,7 @@ const ReadsContent = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input 
+                aria-label="Search books by title, author or topic"
                 placeholder="Search by title, author, or topic..."
                 className="pl-10"
                 value={searchQuery}
@@ -469,6 +470,7 @@ const ReadsContent = () => {
             <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <Input 
                 type="email"
+                aria-label="Your email address"
                 placeholder="Enter your email"
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}

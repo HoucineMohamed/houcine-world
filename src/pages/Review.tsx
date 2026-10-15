@@ -134,6 +134,8 @@ const Review = () => {
                           onClick={() => setFormData({ ...formData, rating: star })}
                           onMouseEnter={() => setHoveredStar(star)}
                           onMouseLeave={() => setHoveredStar(0)}
+                          aria-label={`${star} star${star === 1 ? "" : "s"}`}
+                          aria-pressed={star === formData.rating}
                           className="transition-transform hover:scale-125 focus:outline-none focus:ring-2 focus:ring-rose-500 rounded"
                         >
                           <Star
