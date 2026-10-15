@@ -2,8 +2,12 @@
 // No network, no clock, no environment: the workflow gathers the facts, this module decides.
 // FAIL CLOSED: any error, missing or unexpected fact means "skip" (no merge).
 
-/** No pull request is merged at or before this instant. */
-export const NO_MERGE_BEFORE = "2026-10-15T04:00:00+01:00";
+/**
+ * No pull request is merged at or before this instant. Set in the past for this repository
+ * (Netlify has no maintenance window to avoid), so the gate is effectively off; the check stays
+ * so a future window can be set here, and an invalid clock still means no merge.
+ */
+export const NO_MERGE_BEFORE = "2020-01-01T00:00:00Z";
 
 /** Check runs that must exist on the head commit and conclude "success" (the latest run of each counts). */
 export const REQUIRED_CHECK_RUNS = Object.freeze(["typecheck-and-build"]);
