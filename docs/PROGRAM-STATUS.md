@@ -7,8 +7,8 @@ Updated after every item so an interrupted session can resume. One session branc
 | Item | What | Status |
 | --- | --- | --- |
 | Automation | CI, session-pr, auto-merge, tested decision script (pull request #6) | **Merged** in `main` (#6) |
-| A | Automation amendment: time gate off, auto-merge every 15 minutes and on "Run workflow", tests, docs | **Waiting for the owner.** Critical (`.github/**`, `scripts/ci/**`): needs your manual merge. Pull request opened by session-pr from this branch. |
-| 2 | docs/security-review.md (read-only review) | Pending (waits for A) |
+| A | Automation amendment: time gate off, auto-merge every 15 minutes and on "Run workflow", tests, docs | **Merged** (#7, by the owner) |
+| 2 | docs/security-review.md (read-only review) | In review: pull request opened by session-pr |
 | 3 | docs/architecture.md and docs/runbook.md | Pending |
 | 4 | Designed 404 page | Pending |
 | 5 | Error boundaries and loading skeletons for public routes | Pending |
