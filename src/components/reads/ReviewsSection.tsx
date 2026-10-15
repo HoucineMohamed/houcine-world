@@ -108,8 +108,9 @@ const ReviewsSection = () => {
         <CardContent>
           <form onSubmit={handleSubmitReview} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Your Name</label>
+              <label htmlFor="reads-review-name" className="text-sm font-medium">Your Name</label>
               <Input 
+                id="reads-review-name"
                 value={newReview.name}
                 onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
                 placeholder="Enter your name"
@@ -118,13 +119,15 @@ const ReviewsSection = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Rating</label>
-              <div className="flex gap-2">
+              <span id="reads-review-rating" className="text-sm font-medium">Rating</span>
+              <div className="flex gap-2" role="group" aria-labelledby="reads-review-rating">
                 {[1, 2, 3, 4, 5].map((rating) => (
                   <button
                     key={rating}
                     type="button"
                     onClick={() => setNewReview({ ...newReview, rating })}
+                    aria-label={`${rating} star${rating === 1 ? "" : "s"}`}
+                    aria-pressed={rating === newReview.rating}
                     className="transition-transform hover:scale-110"
                   >
                     <Star 
@@ -140,8 +143,9 @@ const ReviewsSection = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Your Review</label>
+              <label htmlFor="reads-review-text" className="text-sm font-medium">Your Review</label>
               <Textarea 
+                id="reads-review-text"
                 value={newReview.comment}
                 onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
                 placeholder="Share your thoughts about the book..."

@@ -81,8 +81,9 @@ const BookCard = ({ book, onBuyNow, onAddToCart }: BookCardProps) => {
                 size="icon"
                 className="flex-shrink-0"
                 onClick={() => onAddToCart(book)}
+                aria-label={`Add ${book.title} to cart`}
               >
-                <ShoppingCart className="w-4 h-4" />
+                <ShoppingCart className="w-4 h-4" aria-hidden="true" />
               </Button>
             )}
           </div>

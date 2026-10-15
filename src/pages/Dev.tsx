@@ -398,8 +398,9 @@ const DevContent = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Name *</label>
+                    <label htmlFor="dev-contact-name" className="text-sm font-medium">Name *</label>
                     <Input 
+                      id="dev-contact-name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Your name"
@@ -407,8 +408,9 @@ const DevContent = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Email *</label>
+                    <label htmlFor="dev-contact-email" className="text-sm font-medium">Email *</label>
                     <Input 
+                      id="dev-contact-email"
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -420,9 +422,9 @@ const DevContent = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Service Interest *</label>
+                    <label htmlFor="dev-contact-service" className="text-sm font-medium">Service Interest *</label>
                     <Select value={formData.service} onValueChange={(value) => setFormData({ ...formData, service: value })}>
-                      <SelectTrigger>
+                      <SelectTrigger id="dev-contact-service">
                         <SelectValue placeholder="Select a service" />
                       </SelectTrigger>
                       <SelectContent>
@@ -435,12 +437,12 @@ const DevContent = () => {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Budget Range</label>
+                    <label htmlFor="dev-contact-budget" className="text-sm font-medium">Budget Range</label>
                     <Select 
                       value={formData.budget} 
                       onValueChange={(value) => setFormData({ ...formData, budget: value })}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger id="dev-contact-budget">
                         <SelectValue placeholder="Select currency first in pricing section" />
                       </SelectTrigger>
                       <SelectContent>
@@ -455,8 +457,9 @@ const DevContent = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Message *</label>
+                  <label htmlFor="dev-contact-message" className="text-sm font-medium">Message *</label>
                   <Textarea 
+                    id="dev-contact-message"
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Tell me about your project..."

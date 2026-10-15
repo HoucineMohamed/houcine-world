@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   MapPin, 
@@ -179,10 +179,10 @@ const AboutMe = () => {
           >
             <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all duration-300">
               <CardHeader className="pb-2 sm:pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <h2 className="flex items-center gap-2 text-lg sm:text-xl font-semibold leading-none tracking-tight">
                   <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   About
-                </CardTitle>
+                </h2>
               </CardHeader>
               <CardContent>
                 <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-line leading-relaxed">
@@ -202,10 +202,10 @@ const AboutMe = () => {
             >
               <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all duration-300">
                 <CardHeader className="pb-2 sm:pb-4">
-                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                  <h2 className="flex items-center gap-2 text-lg sm:text-xl font-semibold leading-none tracking-tight">
                     <Star className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     Featured
-                  </CardTitle>
+                  </h2>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
@@ -215,9 +215,9 @@ const AboutMe = () => {
                         to={link.url}
                         className="group p-3 sm:p-4 rounded-lg border border-border/50 bg-background/50 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300"
                       >
-                        <h4 className="font-semibold text-sm sm:text-base group-hover:text-primary transition-colors mb-1">
+                        <h3 className="font-semibold text-sm sm:text-base group-hover:text-primary transition-colors mb-1">
                           {link.title}
-                        </h4>
+                        </h3>
                         <p className="text-xs sm:text-sm text-muted-foreground">
                           {link.description}
                         </p>
@@ -239,10 +239,10 @@ const AboutMe = () => {
           >
             <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all duration-300">
               <CardHeader className="pb-2 sm:pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <h2 className="flex items-center gap-2 text-lg sm:text-xl font-semibold leading-none tracking-tight">
                   <Award className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   Certifications
-                </CardTitle>
+                </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                   Professional certifications across my four main fields of expertise
                 </p>
@@ -315,10 +315,10 @@ const AboutMe = () => {
               >
                 <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all duration-300">
                   <CardHeader className="pb-2 sm:pb-4">
-                    <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                    <h2 className="flex items-center gap-2 text-lg sm:text-xl font-semibold leading-none tracking-tight">
                       <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                       Experience
-                    </CardTitle>
+                    </h2>
                     <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                       Development • Design • FinTech • Leadership
                     </p>
@@ -343,9 +343,9 @@ const AboutMe = () => {
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <h4 className="font-semibold text-sm sm:text-lg group-hover:text-primary transition-colors">
+                                  <h3 className="font-semibold text-sm sm:text-lg group-hover:text-primary transition-colors">
                                     {exp.title}
-                                  </h4>
+                                  </h3>
                                   <Badge variant="outline" className="text-xs gap-1">
                                     <CategoryIcon className="w-3 h-3" />
                                     {categoryLabels[exp.category]}
@@ -364,7 +364,13 @@ const AboutMe = () => {
                                   )}
                                 </div>
                               </div>
-                              <Button variant="ghost" size="icon" className="shrink-0 h-8 w-8">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="shrink-0 h-8 w-8"
+                                aria-label={expandedExperience === exp.id ? `Hide details: ${exp.title}` : `Show details: ${exp.title}`}
+                                aria-expanded={expandedExperience === exp.id}
+                              >
                                 {expandedExperience === exp.id ? (
                                   <ChevronUp className="w-4 h-4" />
                                 ) : (
@@ -414,15 +420,15 @@ const AboutMe = () => {
               >
                 <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all duration-300 sticky top-24">
                   <CardHeader className="pb-2 sm:pb-4">
-                    <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                    <h2 className="flex items-center gap-2 text-lg sm:text-xl font-semibold leading-none tracking-tight">
                       <Star className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                       Skills
-                    </CardTitle>
+                    </h2>
                   </CardHeader>
                   <CardContent className="space-y-4 sm:space-y-6">
                     {/* Technical Skills */}
                     <div>
-                      <h5 className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 sm:mb-3">Technical</h5>
+                      <h3 className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 sm:mb-3">Technical</h3>
                       <div className="flex flex-wrap gap-1 sm:gap-2">
                         {(showAllSkills ? technicalSkills : technicalSkills.slice(0, 6)).map((skill) => (
                           <Badge 
@@ -443,7 +449,7 @@ const AboutMe = () => {
 
                     {/* Creative Skills */}
                     <div>
-                      <h5 className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 sm:mb-3">Creative</h5>
+                      <h3 className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 sm:mb-3">Creative</h3>
                       <div className="flex flex-wrap gap-1 sm:gap-2">
                         {(showAllSkills ? creativeSkills : creativeSkills.slice(0, 4)).map((skill) => (
                           <Badge 
@@ -459,7 +465,7 @@ const AboutMe = () => {
 
                     {/* Business Skills */}
                     <div>
-                      <h5 className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 sm:mb-3">Business</h5>
+                      <h3 className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 sm:mb-3">Business</h3>
                       <div className="flex flex-wrap gap-1 sm:gap-2">
                         {businessSkills.map((skill) => (
                           <Badge 
@@ -475,7 +481,7 @@ const AboutMe = () => {
 
                     {/* Languages */}
                     <div>
-                      <h5 className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 sm:mb-3">Languages</h5>
+                      <h3 className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 sm:mb-3">Languages</h3>
                       <div className="flex flex-wrap gap-1 sm:gap-2">
                         {languageSkills.map((skill) => (
                           <Badge 

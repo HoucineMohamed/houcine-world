@@ -35,7 +35,7 @@ All colors MUST be HSL.
     --metallic: 0 0% 85%;
     --metallic-foreground: 0 0% 0%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 84% 45%; /* 5.2:1 with the foreground below (was 60%, 3.6:1) */
     --destructive-foreground: 0 0% 98%;
 
     --border: 0 0% 14%;
