@@ -1,43 +1,49 @@
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import RouteMeta from "./components/RouteMeta";
 import PublicShell from "./components/PublicShell";
-import Index from "./pages/Index";
-import AboutMe from "./pages/AboutMe";
-import Dev from "./pages/Dev";
-import Designs from "./pages/Designs";
-import Reads from "./pages/Reads";
-import Manages from "./pages/Manages";
-import LaRosaView from "./pages/LaRosaView";
-import BookingForm from "./pages/BookingForm";
-import AboutDJ from "./pages/AboutDJ";
-import Review from "./pages/Review";
-import Terms from "./pages/Terms";
-import Privacy from "./pages/Privacy";
-import DataDeletion from "./pages/DataDeletion";
-import Contact from "./pages/Contact";
-import Ecosystem from "./pages/Ecosystem";
-import NotFound from "./pages/NotFound";
-import Admin from "./pages/Admin";
-import AdminLogin from "./pages/AdminLogin";
-import AuthCallback from "./pages/AuthCallback";
 import { usePageTracking } from "./hooks/useAnalytics";
 import AuthGuard from "./components/workspace/AuthGuard";
 import BrandGuard from "./components/workspace/BrandGuard";
-import WorkspaceLogin from "./pages/workspace/WorkspaceLogin";
-import WorkspaceResolver from "./pages/workspace/WorkspaceResolver";
-import BrandSelect from "./pages/workspace/BrandSelect";
-import BrandDashboard from "./pages/workspace/BrandDashboard";
-import BrandBookings from "./pages/workspace/BrandBookings";
-import BrandNotifications from "./pages/workspace/BrandNotifications";
-import BrandAnalytics from "./pages/workspace/BrandAnalytics";
-import BrandMessages from "./pages/workspace/BrandMessages";
-import BrandSettings from "./pages/workspace/BrandSettings";
-import EcosystemView from "./pages/workspace/EcosystemView";
-import PlatformCredentials from "./pages/workspace/PlatformCredentials";
-import WorkspaceDenied from "./pages/workspace/WorkspaceDenied";
-import WorkspaceNotFound from "./pages/workspace/WorkspaceNotFound";
+
+// Every page is its own chunk (program item 0.5: a performance pass with measured bundle sizes).
+// Before this change the whole site -- every public page and every workspace page -- was one
+// ~2.9MB/730KB-gzip JS file; a visitor only ever needs the one page they're on. React.lazy keeps
+// each <Route>'s element as a plain reference, so nothing here changes which guard, role check or
+// path renders which page -- only when its code is fetched.
+const Index = React.lazy(() => import("./pages/Index"));
+const AboutMe = React.lazy(() => import("./pages/AboutMe"));
+const Dev = React.lazy(() => import("./pages/Dev"));
+const Designs = React.lazy(() => import("./pages/Designs"));
+const Reads = React.lazy(() => import("./pages/Reads"));
+const Manages = React.lazy(() => import("./pages/Manages"));
+const LaRosaView = React.lazy(() => import("./pages/LaRosaView"));
+const BookingForm = React.lazy(() => import("./pages/BookingForm"));
+const AboutDJ = React.lazy(() => import("./pages/AboutDJ"));
+const Review = React.lazy(() => import("./pages/Review"));
+const Terms = React.lazy(() => import("./pages/Terms"));
+const Privacy = React.lazy(() => import("./pages/Privacy"));
+const DataDeletion = React.lazy(() => import("./pages/DataDeletion"));
+const Contact = React.lazy(() => import("./pages/Contact"));
+const Ecosystem = React.lazy(() => import("./pages/Ecosystem"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
+const Admin = React.lazy(() => import("./pages/Admin"));
+const AdminLogin = React.lazy(() => import("./pages/AdminLogin"));
+const AuthCallback = React.lazy(() => import("./pages/AuthCallback"));
+const WorkspaceLogin = React.lazy(() => import("./pages/workspace/WorkspaceLogin"));
+const WorkspaceResolver = React.lazy(() => import("./pages/workspace/WorkspaceResolver"));
+const BrandSelect = React.lazy(() => import("./pages/workspace/BrandSelect"));
+const BrandDashboard = React.lazy(() => import("./pages/workspace/BrandDashboard"));
+const BrandBookings = React.lazy(() => import("./pages/workspace/BrandBookings"));
+const BrandNotifications = React.lazy(() => import("./pages/workspace/BrandNotifications"));
+const BrandAnalytics = React.lazy(() => import("./pages/workspace/BrandAnalytics"));
+const BrandMessages = React.lazy(() => import("./pages/workspace/BrandMessages"));
+const BrandSettings = React.lazy(() => import("./pages/workspace/BrandSettings"));
+const EcosystemView = React.lazy(() => import("./pages/workspace/EcosystemView"));
+const PlatformCredentials = React.lazy(() => import("./pages/workspace/PlatformCredentials"));
+const WorkspaceDenied = React.lazy(() => import("./pages/workspace/WorkspaceDenied"));
+const WorkspaceNotFound = React.lazy(() => import("./pages/workspace/WorkspaceNotFound"));
 
 // Wrapper component to enable page tracking
 const AppRoutes = () => {
@@ -110,7 +116,12 @@ const App = () => (
   <Router>
     <ScrollToTop />
     <RouteMeta />
-    <AppRoutes />
+    {/* Each page is its own chunk now (above); this is the one fallback shown while any of them
+        loads. Plain text, no new dependency, and intentionally unstyled -- it's rarely visible on a
+        fast connection and the goal here is smaller bundles, not a loading-screen design. */}
+    <Suspense fallback={<div style={{ padding: "2rem", textAlign: "center" }}>Loading…</div>}>
+      <AppRoutes />
+    </Suspense>
   </Router>
 );
 
