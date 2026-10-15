@@ -1,43 +1,57 @@
-import React, { useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import RouteMeta from "./components/RouteMeta";
 import PublicShell from "./components/PublicShell";
 import Index from "./pages/Index";
-import AboutMe from "./pages/AboutMe";
-import Dev from "./pages/Dev";
-import Designs from "./pages/Designs";
-import Reads from "./pages/Reads";
-import Manages from "./pages/Manages";
-import LaRosaView from "./pages/LaRosaView";
-import BookingForm from "./pages/BookingForm";
-import AboutDJ from "./pages/AboutDJ";
-import Review from "./pages/Review";
-import Terms from "./pages/Terms";
-import Privacy from "./pages/Privacy";
-import DataDeletion from "./pages/DataDeletion";
-import Contact from "./pages/Contact";
-import Ecosystem from "./pages/Ecosystem";
-import NotFound from "./pages/NotFound";
-import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import AuthCallback from "./pages/AuthCallback";
 import { usePageTracking } from "./hooks/useAnalytics";
 import AuthGuard from "./components/workspace/AuthGuard";
 import BrandGuard from "./components/workspace/BrandGuard";
 import WorkspaceLogin from "./pages/workspace/WorkspaceLogin";
-import WorkspaceResolver from "./pages/workspace/WorkspaceResolver";
-import BrandSelect from "./pages/workspace/BrandSelect";
-import BrandDashboard from "./pages/workspace/BrandDashboard";
-import BrandBookings from "./pages/workspace/BrandBookings";
-import BrandNotifications from "./pages/workspace/BrandNotifications";
-import BrandAnalytics from "./pages/workspace/BrandAnalytics";
-import BrandMessages from "./pages/workspace/BrandMessages";
-import BrandSettings from "./pages/workspace/BrandSettings";
-import EcosystemView from "./pages/workspace/EcosystemView";
-import PlatformCredentials from "./pages/workspace/PlatformCredentials";
-import WorkspaceDenied from "./pages/workspace/WorkspaceDenied";
-import WorkspaceNotFound from "./pages/workspace/WorkspaceNotFound";
+
+// Route-level code splitting: each page below is downloaded when it is first visited. The home page,
+// the sign-in pages, the auth callback and the guards stay in the main bundle, so signing in works
+// exactly as before. Public pages load inside PublicShell's Suspense (its skeleton); workspace pages
+// inside <WorkspacePage> below.
+const AboutMe = lazy(() => import("./pages/AboutMe"));
+const Dev = lazy(() => import("./pages/Dev"));
+const Designs = lazy(() => import("./pages/Designs"));
+const Reads = lazy(() => import("./pages/Reads"));
+const Manages = lazy(() => import("./pages/Manages"));
+const LaRosaView = lazy(() => import("./pages/LaRosaView"));
+const BookingForm = lazy(() => import("./pages/BookingForm"));
+const AboutDJ = lazy(() => import("./pages/AboutDJ"));
+const Review = lazy(() => import("./pages/Review"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const DataDeletion = lazy(() => import("./pages/DataDeletion"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Ecosystem = lazy(() => import("./pages/Ecosystem"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Admin = lazy(() => import("./pages/Admin"));
+const WorkspaceResolver = lazy(() => import("./pages/workspace/WorkspaceResolver"));
+const BrandSelect = lazy(() => import("./pages/workspace/BrandSelect"));
+const BrandDashboard = lazy(() => import("./pages/workspace/BrandDashboard"));
+const BrandBookings = lazy(() => import("./pages/workspace/BrandBookings"));
+const BrandNotifications = lazy(() => import("./pages/workspace/BrandNotifications"));
+const BrandAnalytics = lazy(() => import("./pages/workspace/BrandAnalytics"));
+const BrandMessages = lazy(() => import("./pages/workspace/BrandMessages"));
+const BrandSettings = lazy(() => import("./pages/workspace/BrandSettings"));
+const EcosystemView = lazy(() => import("./pages/workspace/EcosystemView"));
+const PlatformCredentials = lazy(() => import("./pages/workspace/PlatformCredentials"));
+const WorkspaceDenied = lazy(() => import("./pages/workspace/WorkspaceDenied"));
+const WorkspaceNotFound = lazy(() => import("./pages/workspace/WorkspaceNotFound"));
+
+const WorkspaceLoading = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center" role="status" aria-live="polite">
+    <span className="text-sm text-muted-foreground">Loading…</span>
+  </div>
+);
+const WorkspacePage = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<WorkspaceLoading />}>{children}</Suspense>
+);
 
 // Wrapper component to enable page tracking
 const AppRoutes = () => {
@@ -76,28 +90,28 @@ const AppRoutes = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/ecosystem" element={<Ecosystem />} />
       </Route>
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin" element={<WorkspacePage><Admin /></WorkspacePage>} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
 
       {/* Workspace: login is public, everything else is auth + membership guarded */}
       <Route path="/workspace/login" element={<WorkspaceLogin />} />
       <Route element={<AuthGuard />}>
-        <Route path="/workspace" element={<WorkspaceResolver />} />
-        <Route path="/workspace/select" element={<BrandSelect />} />
-        <Route path="/workspace/ecosystem" element={<EcosystemView />} />
-        <Route path="/workspace/platform-credentials" element={<PlatformCredentials />} />
-        <Route path="/workspace/denied" element={<WorkspaceDenied />} />
+        <Route path="/workspace" element={<WorkspacePage><WorkspaceResolver /></WorkspacePage>} />
+        <Route path="/workspace/select" element={<WorkspacePage><BrandSelect /></WorkspacePage>} />
+        <Route path="/workspace/ecosystem" element={<WorkspacePage><EcosystemView /></WorkspacePage>} />
+        <Route path="/workspace/platform-credentials" element={<WorkspacePage><PlatformCredentials /></WorkspacePage>} />
+        <Route path="/workspace/denied" element={<WorkspacePage><WorkspaceDenied /></WorkspacePage>} />
         <Route path="/workspace/:brandId" element={<BrandGuard />}>
-          <Route path="dashboard" element={<BrandDashboard />} />
-          <Route path="bookings" element={<BrandBookings />} />
-          <Route path="notifications" element={<BrandNotifications />} />
-          <Route path="analytics" element={<BrandAnalytics />} />
-          <Route path="messages" element={<BrandMessages />} />
-          <Route path="settings" element={<BrandSettings />} />
+          <Route path="dashboard" element={<WorkspacePage><BrandDashboard /></WorkspacePage>} />
+          <Route path="bookings" element={<WorkspacePage><BrandBookings /></WorkspacePage>} />
+          <Route path="notifications" element={<WorkspacePage><BrandNotifications /></WorkspacePage>} />
+          <Route path="analytics" element={<WorkspacePage><BrandAnalytics /></WorkspacePage>} />
+          <Route path="messages" element={<WorkspacePage><BrandMessages /></WorkspacePage>} />
+          <Route path="settings" element={<WorkspacePage><BrandSettings /></WorkspacePage>} />
         </Route>
       </Route>
-      <Route path="/workspace/*" element={<WorkspaceNotFound />} />
+      <Route path="/workspace/*" element={<WorkspacePage><WorkspaceNotFound /></WorkspacePage>} />
 
       <Route element={<PublicShell />}>
         <Route path="*" element={<NotFound />} />

@@ -408,7 +408,7 @@ const ReadsContent = () => {
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-xl" />
-                  <img 
+                  <img loading="lazy" decoding="async" 
                     src={profileImage}
                     alt="Houcine Mohamed"
                     className="relative rounded-xl w-full aspect-square object-cover"

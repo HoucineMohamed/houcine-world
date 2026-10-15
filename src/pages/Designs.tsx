@@ -241,7 +241,7 @@ const DesignsContent = () => {
           </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
             <div className="flex justify-center">
-              <img
+              <img loading="lazy" decoding="async"
                 src={profilePhoto}
                 alt="Houcine"
                 className="w-80 h-80 object-cover rounded-2xl shadow-xl shadow-accent/20 hover:shadow-accent/40 transition-all"

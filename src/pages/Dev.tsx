@@ -292,7 +292,7 @@ const DevContent = () => {
 
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-card/90 to-transparent p-4">
                       <div className="flex items-center justify-center gap-2">
-                        <img 
+                        <img loading="lazy" decoding="async" 
                           src={pytunisiaLogo}
                           alt="PyTunisia Logo"
                           className="w-12 h-12 object-contain"
