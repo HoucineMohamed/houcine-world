@@ -5,6 +5,14 @@ Updated after every item so an interrupted session can resume. One session branc
 wait for its merge and sync the branch (`docs/automation.md`, section 7) before the next. Version 4
 replaces version 3; finished version 3 items are kept below.
 
+## Driver
+
+DRIVER: session_01YPgKc4KaGJPX6EDp5wNDGW, claimed 2026-10-15T17:39:24Z
+
+The branch was quiet for more than 60 minutes (no push, no open pull request) before this claim.
+Before starting any item, re-fetch and check for a newer DRIVER line; if one exists, stand down at
+once and discard any unpushed work.
+
 Earlier programs: automation (#6, #7), security review (#8), architecture and runbook (#9), 404 page
 (#10), error boundaries (#11), /contact (#12), /ecosystem (#13), JSON-LD (#14), share image (#15,
 merged by the owner), signed hand-off for the owner entries (#16, merged by the owner).
@@ -16,7 +24,7 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | 0.2 | One `BASE_URL` for sitemap, robots and per-page canonical links | **Merged** (#19) |
 | 0.3 | Workspace mobile navigation (menu sheet on phones, same links and role checks) | **Merged** (#20) |
 | 0.4 | Offline smoke, link and accessibility checks (`scripts/dev`); fixed 2 broken images and the missing main heading on /review | **Merged** (#21) |
-| 0.4b | Accessibility fixes in non-critical files: checker errors 60 before, 0 after (7 known on /booking, a critical file) | In review |
+| 0.4b | Accessibility fixes in non-critical files: checker errors 60 before, 0 after (7 known on /booking, a critical file) | **Merged** (#22) |
 | 0.5 | Performance pass with measured bundle sizes | Pending |
 | 0.6 | Trivial lint fixes | Pending |
 | 1 | Route manifest, typed content layer, validators, `docs/content-guide.md` | Pending |
