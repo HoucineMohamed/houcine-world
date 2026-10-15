@@ -1,39 +1,31 @@
-# Houcine.world overnight program: status
+# Houcine.world program, version 3: status
 
 Updated after every item so an interrupted session can resume. One session branch,
-`claude/upbeat-hamilton-ymyymq`, so items run strictly one at a time. Automation rules:
-`docs/automation.md`.
+`claude/upbeat-hamilton-ymyymq`, so items run strictly one at a time: one item per pull request, then
+wait for its merge and sync the branch (`docs/automation.md`, section 7) before the next.
+
+Earlier programs: automation (#6, #7), security review (#8), architecture and runbook (#9), 404 page
+(#10), error boundaries (#11), /contact (#12), /ecosystem (#13), JSON-LD (#14), share image (#15,
+merged by the owner), signed hand-off to Houcine.Trades (#16, merged by the owner).
 
 | Item | What | Status |
 | --- | --- | --- |
-| Automation | CI, session-pr, auto-merge, tested decision script (pull request #6) | **Merged** in `main` (#6) |
-| A | Automation amendment: time gate off, auto-merge every 15 minutes and on "Run workflow", tests, docs | **Merged** (#7, by the owner) |
-| 2 | docs/security-review.md (read-only review) | **Merged** (#8, by auto-merge) |
-| 3 | docs/architecture.md and docs/runbook.md | **Merged** (#9) |
-| 4 | Designed 404 page | **Merged** (#10) |
-| 5 | Error boundaries and loading skeletons for public routes | **Merged** (#11) |
-| 6 | /contact page (mailto from CONTACT_EMAIL) | **Merged** (#12) |
-| 7 | Ecosystem about page, at /ecosystem because /about is the existing founder page | **Merged** (#13) |
-| 8 | JSON-LD for Organization and WebSite via RouteMeta | **Merged** (#14) |
-| 9 | Default share image public/og-default.png | **BLOCKED** (#15): auto-merge skips it because GitHub shows no text diff for a PNG, and "missing information means no merge". Needs the owner's manual merge. |
-| 10 | BASE_URL constant, sitemap, robots, per-page canonicals | Pending |
-| 11 | Workspace mobile navigation | Pending |
-| 12 | Accessibility pass with an offline checker | Pending |
-| 13 | Performance pass with measured bundle sizes | Pending |
-| 14 | Offline link checker | Pending |
-| 15 | French home, /about, /contact, /manages | Pending |
-| 16 | Trivial lint fixes | Pending |
-| 17 | public/_headers and a CSP proposal (critical) | Pending |
-| 18 | CLAUDE.md with every rule (critical) | Pending |
-| 19 | Lockfile fix (critical) | Pending |
-| 20 | index.html share tags (critical) | Pending |
+| 1 | Netlify paths on the critical list (`netlify/functions/**` added; `netlify.toml`, `public/_headers`, `public/_redirects` were already there) and the test | **Merged** (#17, by the owner) |
+| 2 | `docs/security-fixes-proposed.md` (proposals as text, nothing applied) | In review |
+| 3 | One BASE_URL for sitemap, robots and canonical links | Pending |
+| 4 | Workspace mobile navigation | Pending |
+| 5 | Workspace polish (empty, loading and error states, active page) | Pending |
+| 6 | Accessibility pass on public pages with an offline checker | Pending |
+| 7 | Performance pass with measured bundle sizes | Pending |
+| 8 | Offline link checker and smoke check, in the runbook | Pending |
+| 9 | Trivial lint fixes | Pending |
+| French pages | Skipped, as asked | Skipped |
+| Critical (a) | `public/_headers` and a CSP proposal | Pending |
+| Critical (b) | `CLAUDE.md` with every rule | Pending |
+| Critical (c) | Lockfile fix | Pending |
+| Critical (d) | `index.html` share tags | Pending |
 
-## Stopped at item 9 (15 October 2026)
+## To resume
 
-Pull request #15 cannot merge itself (see item 9). With one branch, no further work is pushed on top of
-it. Items 10 to 20 were not started. See `docs/MORNING-REPORT.md`.
-
-## To resume after the owner merges #15
-
-1. Sync the session branch with `main` (`docs/automation.md`, section 7).
-2. Start item 10. One item, one push, then wait until its pull request is merged.
+1. Check the newest pull request from the session branch: if open, wait; if merged, sync the branch.
+2. Start the first item marked Pending.
