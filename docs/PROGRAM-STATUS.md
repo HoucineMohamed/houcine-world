@@ -1,29 +1,36 @@
-# Houcine.world program, version 3: status
+# Houcine.world program, version 4 (build the site): status
 
 Updated after every item so an interrupted session can resume. One session branch,
 `claude/upbeat-hamilton-ymyymq`, so items run strictly one at a time: one item per pull request, then
-wait for its merge and sync the branch (`docs/automation.md`, section 7) before the next.
+wait for its merge and sync the branch (`docs/automation.md`, section 7) before the next. Version 4
+replaces version 3; finished version 3 items are kept below.
 
 Earlier programs: automation (#6, #7), security review (#8), architecture and runbook (#9), 404 page
 (#10), error boundaries (#11), /contact (#12), /ecosystem (#13), JSON-LD (#14), share image (#15,
-merged by the owner), signed hand-off to Houcine.Trades (#16, merged by the owner).
+merged by the owner), signed hand-off for the owner entries (#16, merged by the owner).
 
 | Item | What | Status |
 | --- | --- | --- |
-| 1 | Netlify paths on the critical list (`netlify/functions/**` added; `netlify.toml`, `public/_headers`, `public/_redirects` were already there) and the test | **Merged** (#17, by the owner) |
-| 2 | `docs/security-fixes-proposed.md` (proposals as text, nothing applied) | In review |
-| 3 | One BASE_URL for sitemap, robots and canonical links | Pending |
-| 4 | Workspace mobile navigation | Pending |
-| 5 | Workspace polish (empty, loading and error states, active page) | Pending |
-| 6 | Accessibility pass on public pages with an offline checker | Pending |
-| 7 | Performance pass with measured bundle sizes | Pending |
-| 8 | Offline link checker and smoke check, in the runbook | Pending |
-| 9 | Trivial lint fixes | Pending |
-| French pages | Skipped, as asked | Skipped |
-| Critical (a) | `public/_headers` and a CSP proposal | Pending |
-| Critical (b) | `CLAUDE.md` with every rule | Pending |
-| Critical (c) | Lockfile fix | Pending |
-| Critical (d) | `index.html` share tags | Pending |
+| v3-1 | Netlify paths on the critical list (`netlify/functions/**` added; the other three were already there) | **Merged** (#17, by the owner) |
+| 0.1 | `docs/security-fixes-proposed.md` (proposals as text, nothing applied) | **Merged** (#18) |
+| 0.2 | One `BASE_URL` for sitemap, robots and per-page canonical links | In review |
+| 0.3 | Workspace mobile navigation | Pending |
+| 0.4 | Offline accessibility checker, link checker and smoke script (`scripts/dev`) | Pending |
+| 0.5 | Performance pass with measured bundle sizes | Pending |
+| 0.6 | Trivial lint fixes | Pending |
+| 1 | Route manifest, typed content layer, validators, `docs/content-guide.md` | Pending |
+| 2 | `/work` hub and case-study template | Pending |
+| 3 | `/journal` with one draft post | Pending |
+| 4 | Ecosystem map and "How the ecosystem works" | Pending |
+| 5 | Command palette search | Pending |
+| 6 | `/brand` living style guide | Pending |
+| 7 | Workspace launch checklist (owner only, presentational) | Pending |
+| 8 | Documentation: architecture, runbook, roadmap | Pending |
+| Critical (a) | Phase 0 and 1 scripts in CI | Pending |
+| Critical (b) | `public/_headers` and a CSP proposal | Pending |
+| Critical (c) | `CLAUDE.md` with every rule | Pending |
+| Critical (d) | Lockfile fix | Pending |
+| Critical (e) | `index.html` share tags | Pending |
 
 ## To resume
 

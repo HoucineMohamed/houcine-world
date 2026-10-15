@@ -34,6 +34,14 @@ commit and start a pull request"**, then merge that pull request yourself.
 3. Update `LEGAL_LAST_UPDATED` to today's date.
 4. Have the Terms, Privacy and Data Deletion pages reviewed by a professional before relying on them.
 
+## Change the site address or add a public page
+
+The address `https://houcine.world` is written once, as `BASE_URL` in `src/config/site.ts`. The list of
+public pages (title, description) is `src/config/routes.ts`. Canonical links follow both
+automatically. `public/sitemap.xml` and `public/robots.txt` are written from them by
+`scripts/dev/seo-files.mjs`: after changing either file, ask a session to run it (it also has a
+`--check` mode that only reports whether the two files are out of date).
+
 ## Preview a change before it goes live
 
 1. Open the pull request on GitHub.
