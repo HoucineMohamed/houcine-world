@@ -10,8 +10,8 @@ Updated after every item so an interrupted session can resume. One session branc
 | A | Automation amendment: time gate off, auto-merge every 15 minutes and on "Run workflow", tests, docs | **Merged** (#7, by the owner) |
 | 2 | docs/security-review.md (read-only review) | **Merged** (#8, by auto-merge) |
 | 3 | docs/architecture.md and docs/runbook.md | **Merged** (#9) |
-| 4 | Designed 404 page | In review |
-| 5 | Error boundaries and loading skeletons for public routes | Pending |
+| 4 | Designed 404 page | **Merged** (#10) |
+| 5 | Error boundaries and loading skeletons for public routes | In review |
 | 6 | /contact page (mailto from CONTACT_EMAIL) | Pending |
 | 7 | /about page for the ecosystem (from the brief only) | Pending |
 | 8 | JSON-LD for Organization and WebSite via RouteMeta | Pending |

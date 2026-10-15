@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import RouteMeta from "./components/RouteMeta";
+import PublicShell from "./components/PublicShell";
 import Index from "./pages/Index";
 import AboutMe from "./pages/AboutMe";
 import Dev from "./pages/Dev";
@@ -55,19 +56,22 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/about" element={<AboutMe />} />
-      <Route path="/dev" element={<Dev />} />
-      <Route path="/designs" element={<Designs />} />
-      <Route path="/reads" element={<Reads />} />
-      <Route path="/manages" element={<Manages />} />
-      <Route path="/larosaview" element={<LaRosaView />} />
-      <Route path="/booking" element={<BookingForm />} />
-      <Route path="/about-dj" element={<AboutDJ />} />
-      <Route path="/review" element={<Review />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/data-deletion" element={<DataDeletion />} />
+      {/* Public pages: an error boundary and a loading skeleton (src/components/PublicShell.tsx) */}
+      <Route element={<PublicShell />}>
+        <Route path="/" element={<Index />} />
+        <Route path="/about" element={<AboutMe />} />
+        <Route path="/dev" element={<Dev />} />
+        <Route path="/designs" element={<Designs />} />
+        <Route path="/reads" element={<Reads />} />
+        <Route path="/manages" element={<Manages />} />
+        <Route path="/larosaview" element={<LaRosaView />} />
+        <Route path="/booking" element={<BookingForm />} />
+        <Route path="/about-dj" element={<AboutDJ />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/data-deletion" element={<DataDeletion />} />
+      </Route>
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
@@ -91,7 +95,9 @@ const AppRoutes = () => {
       </Route>
       <Route path="/workspace/*" element={<WorkspaceNotFound />} />
 
-      <Route path="*" element={<NotFound />} />
+      <Route element={<PublicShell />}>
+        <Route path="*" element={<NotFound />} />
+      </Route>
     </Routes>
   );
 };
