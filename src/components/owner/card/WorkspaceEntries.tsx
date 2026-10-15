@@ -53,7 +53,7 @@ export const WorkspaceNavEntry = () => {
   );
 };
 
-/** Card on the ecosystem page: matches the brand cards next to it. */
+/** Section with one card on the ecosystem page: the card matches the brand cards above it. */
 export const WorkspaceEcosystemEntry = () => {
   const href = validateTradesUrl(TRADES_URL);
   const card = (
@@ -70,17 +70,22 @@ export const WorkspaceEcosystemEntry = () => {
     </Card>
   );
 
-  if (href === null) {
-    return (
+  const entry =
+    href === null ? (
       <div aria-disabled="true" className="block h-full">
         {card}
       </div>
+    ) : (
+      <a href={href} rel="noopener noreferrer" className={cn("block h-full rounded-lg", focusRing)}>
+        {card}
+      </a>
     );
-  }
 
+  // The section heading lives here, not in the ecosystem page, so the main bundle holds no text about it.
   return (
-    <a href={href} rel="noopener noreferrer" className={cn("block h-full rounded-lg", focusRing)}>
-      {card}
-    </a>
+    <section aria-labelledby="private-apps-title" className="mt-10">
+      <h2 id="private-apps-title" className="text-lg font-semibold text-foreground mb-4">Private apps</h2>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{entry}</div>
+    </section>
   );
 };

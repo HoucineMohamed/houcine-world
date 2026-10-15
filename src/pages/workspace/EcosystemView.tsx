@@ -77,13 +77,7 @@ const EcosystemView = () => {
           ))}
         </div>
         {!brands.length && <p className="text-sm text-muted-foreground mt-6">No brands yet.</p>}
-
-        <section aria-labelledby="private-apps-title" className="mt-10">
-          <h2 id="private-apps-title" className="text-lg font-semibold text-foreground mb-4">Private apps</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <PrivateWorkspaceEntry variant="ecosystem" />
-          </div>
-        </section>
+        <PrivateWorkspaceEntry variant="ecosystem" />
       </div>
     </div>
   );
