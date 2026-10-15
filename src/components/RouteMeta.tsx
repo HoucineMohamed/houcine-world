@@ -41,6 +41,10 @@ const PUBLIC_PAGES: Record<string, PageMeta> = {
   "/privacy": { title: `Privacy Policy | ${SITE}`, description: "What Houcine.world collects, why, and your choices." },
   "/data-deletion": { title: `Data Deletion | ${SITE}`, description: "How to ask Houcine.world to delete your data." },
   "/contact": { title: `Contact | ${SITE}`, description: "How to get in touch with Houcine.world." },
+  "/ecosystem": {
+    title: `About the ecosystem | ${SITE}`,
+    description: "Houcine.world is a modular digital ecosystem with four verticals: tech, studio, education and management.",
+  },
 };
 
 const PRIVATE_PREFIXES = ["/workspace", "/admin", "/auth"];

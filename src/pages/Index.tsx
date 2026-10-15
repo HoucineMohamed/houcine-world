@@ -76,8 +76,13 @@ const Index = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 font-display">
               The Ecosystem
             </h2>
-            <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-center mb-4 max-w-2xl mx-auto">
               Four interconnected domains representing technology, creativity, knowledge, and leadership.
+            </p>
+            <p className="text-center mb-12">
+              <Link to="/ecosystem" className="text-sm text-accent underline hover:text-accent/80 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+                About the ecosystem
+              </Link>
             </p>
             
             <div className="grid md:grid-cols-2 gap-6">
