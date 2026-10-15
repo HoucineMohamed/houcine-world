@@ -30,22 +30,33 @@ export const BREAKS = [
   { name: "empty critical list accepted", find: "facts.criticalPatterns.length === 0", replace: "false" },
 ];
 
+/** Run the decision tests against `moduleSource` in a temporary folder; returns the exit status. */
+const runTestsAgainst = (moduleSource) => {
+  const dir = mkdtempSync(join(tmpdir(), "automerge-break-"));
+  try {
+    const copy = join(dir, "automerge-decision.mjs");
+    writeFileSync(copy, moduleSource);
+    // NODE_TEST_CONTEXT is set by the outer test runner; a child that inherits it always exits 0.
+    const { NODE_TEST_CONTEXT: _ignored, ...env } = process.env;
+    const result = spawnSync(process.execPath, ["--test", testFile], {
+      env: { ...env, AUTOMERGE_DECISION_PATH: copy },
+      encoding: "utf8",
+    });
+    return result.status;
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+};
+
+test("control: an unbroken copy passes the tests", () => {
+  assert.equal(runTestsAgainst(source), 0);
+});
+
 for (const brk of BREAKS) {
   test(`break fails the tests: ${brk.name}`, () => {
     const count = source.split(brk.find).length - 1;
     assert.equal(count, 1, `the break's target text must appear exactly once in the module (found ${count})`);
-    const dir = mkdtempSync(join(tmpdir(), "automerge-break-"));
-    try {
-      const broken = join(dir, "automerge-decision.mjs");
-      writeFileSync(broken, source.replace(brk.find, brk.replace));
-      const result = spawnSync(process.execPath, ["--test", testFile], {
-        env: { ...process.env, AUTOMERGE_DECISION_PATH: broken },
-        encoding: "utf8",
-      });
-      assert.notEqual(result.status, 0, `tests still pass with the break "${brk.name}"`);
-    } finally {
-      rmSync(dir, { recursive: true, force: true });
-    }
+    assert.notEqual(runTestsAgainst(source.replace(brk.find, brk.replace)), 0, `tests still pass with the break "${brk.name}"`);
   });
 }
 

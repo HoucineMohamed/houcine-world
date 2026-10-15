@@ -40,6 +40,9 @@ test("glob: ** crosses directories", () => {
   assert.equal(matchesGlob(".github/workflows/ci.yml", ".github/**"), true);
   assert.equal(matchesGlob("supabase/functions/a/index.ts", "supabase/**"), true);
   assert.equal(matchesGlob("src/supabase/x.ts", "supabase/**"), false);
+  assert.equal(matchesGlob("src/a/b/c/secret.ts", "src/**/secret.ts"), true);
+  assert.equal(matchesGlob("src/secret.ts", "src/**/secret.ts"), true);
+  assert.equal(matchesGlob("lib/a/secret.ts", "src/**/secret.ts"), false);
 });
 
 test("glob: * stays inside one directory", () => {
