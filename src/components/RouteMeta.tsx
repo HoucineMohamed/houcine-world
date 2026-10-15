@@ -1,54 +1,11 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { DEFAULT_SHARE_IMAGE, DEFAULT_SHARE_IMAGE_ALT, structuredData } from "@/config/site";
+import { DEFAULT_SHARE_IMAGE, DEFAULT_SHARE_IMAGE_ALT, SITE_NAME, structuredData } from "@/config/site";
+import { DEFAULT_DESCRIPTION, PRIVATE_PREFIXES, PUBLIC_PAGES, canonicalUrl, type PageMeta } from "@/config/routes";
 
 // Per-page <title> and description without a new dependency. index.html keeps the defaults
 // that link-preview crawlers (which do not run JavaScript) will see; this updates the tab title
 // and the description tags once the app has loaded.
-
-const SITE = "Houcine.world";
-const DEFAULT_DESCRIPTION = "The creative ecosystem of Mohamed Houcine";
-
-interface PageMeta {
-  title: string;
-  description: string;
-}
-
-/** Public pages. Keep in sync with public/sitemap.xml. */
-const PUBLIC_PAGES: Record<string, PageMeta> = {
-  "/": { title: SITE, description: DEFAULT_DESCRIPTION },
-  "/about": { title: `About Mohamed Houcine | ${SITE}`, description: "About Mohamed Houcine and the Houcine.world ecosystem." },
-  "/dev": {
-    title: `Houcine.tech | ${SITE}`,
-    description: "Building scalable, modern applications with React, TypeScript, and cutting-edge web technologies.",
-  },
-  "/designs": {
-    title: `Houcine.studio | ${SITE}`,
-    description: "Crafting bold visual experiences through branding, UI/UX, and creative direction.",
-  },
-  "/reads": {
-    title: `Houcine.education | ${SITE}`,
-    description: "A curated digital bookstore for learners exploring tech, design, and innovation.",
-  },
-  "/manages": {
-    title: `Houcine.management | ${SITE}`,
-    description: "Building and managing creative brands, artists, and strategic projects.",
-  },
-  "/larosaview": { title: `La Rosa View | ${SITE}`, description: "La Rosa View: where sound meets vision." },
-  "/about-dj": { title: `About the DJ | La Rosa View`, description: "About the DJ and music producer behind La Rosa View." },
-  "/booking": { title: `Book La Rosa View | ${SITE}`, description: "Send a booking request to La Rosa View." },
-  "/review": { title: `Leave a review | La Rosa View`, description: "Leave a review for La Rosa View." },
-  "/terms": { title: `Terms of Service | ${SITE}`, description: "The terms for using Houcine.world and its services." },
-  "/privacy": { title: `Privacy Policy | ${SITE}`, description: "What Houcine.world collects, why, and your choices." },
-  "/data-deletion": { title: `Data Deletion | ${SITE}`, description: "How to ask Houcine.world to delete your data." },
-  "/contact": { title: `Contact | ${SITE}`, description: "How to get in touch with Houcine.world." },
-  "/ecosystem": {
-    title: `About the ecosystem | ${SITE}`,
-    description: "Houcine.world is a modular digital ecosystem with four verticals: tech, studio, education and management.",
-  },
-};
-
-const PRIVATE_PREFIXES = ["/workspace", "/admin", "/auth"];
 
 const setMeta = (selector: string, content: string) => {
   document.head.querySelector<HTMLMetaElement>(selector)?.setAttribute("content", content);
@@ -63,6 +20,21 @@ const ensureMeta = (attribute: "name" | "property", key: string, content: string
     document.head.appendChild(tag);
   }
   tag.setAttribute("content", content);
+};
+
+/** One <link rel="canonical"> on known public pages, none elsewhere. */
+const setCanonical = (href: string | null) => {
+  let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (href === null) {
+    link?.remove();
+    return;
+  }
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", "canonical");
+    document.head.appendChild(link);
+  }
+  link.setAttribute("href", href);
 };
 
 /** Structured data (JSON-LD) for search engines: public pages only, from src/config/site.ts. */
@@ -88,8 +60,8 @@ const RouteMeta = () => {
   useEffect(() => {
     const isPrivate = PRIVATE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
     const meta: PageMeta = isPrivate
-      ? { title: `Workspace | ${SITE}`, description: DEFAULT_DESCRIPTION }
-      : PUBLIC_PAGES[pathname] ?? { title: `Page not found | ${SITE}`, description: DEFAULT_DESCRIPTION };
+      ? { title: `Workspace | ${SITE_NAME}`, description: DEFAULT_DESCRIPTION }
+      : PUBLIC_PAGES[pathname] ?? { title: `Page not found | ${SITE_NAME}`, description: DEFAULT_DESCRIPTION };
 
     document.title = meta.title;
     setMeta('meta[name="description"]', meta.description);
@@ -103,6 +75,7 @@ const RouteMeta = () => {
     ensureMeta("name", "twitter:image:alt", DEFAULT_SHARE_IMAGE_ALT);
 
     setStructuredData(!isPrivate);
+    setCanonical(isPrivate ? null : canonicalUrl(pathname));
 
     // Ask search engines not to index app routes. (Not a security control: those routes are guarded.)
     let robots = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]');

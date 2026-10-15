@@ -28,4 +28,4 @@ Disallow: /workspace
 Disallow: /admin
 Disallow: /auth/
 
-Sitemap: https://houcineworld.netlify.app/sitemap.xml
+Sitemap: https://houcine.world/sitemap.xml
