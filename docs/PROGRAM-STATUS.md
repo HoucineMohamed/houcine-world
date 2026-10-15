@@ -5,7 +5,7 @@ Updated after every item so an interrupted session can resume. Session branch:
 
 | Item | What | Status |
 | --- | --- | --- |
-| 1 | Automation: CI, session-pr and auto-merge workflows, the tested decision script, critical-path list and watch-list, docs | **Done, waiting for the owner.** Pushed to the session branch. It touches `.github/**`, so the owner must merge it by hand (it will be labelled `needs-owner` only once auto-merge exists on `main`). |
+| 1 | Automation: CI, session-pr and auto-merge workflows, the tested decision script, critical-path list and watch-list, docs | **Done, waiting for the owner.** Pushed to the session branch. CI passed on GitHub. session-pr could not open the pull request yet: "GitHub Actions is not permitted to create or approve pull requests" (the one-time setting in `docs/automation.md`, section 6, is not ticked). It touches `.github/**`, so the owner must merge it by hand. |
 | 2 | Domain and search follow-up (houcine.world base address, canonical links, absolute share images) | Pending (blocked by item 1) |
 | 3 | Workspace mobile navigation | Pending (blocked by item 1) |
 | 4 | Accessibility and performance pass on public pages | Pending (blocked by item 1) |
