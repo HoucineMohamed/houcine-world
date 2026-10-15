@@ -62,6 +62,25 @@ commit and start a pull request"**, then merge that pull request yourself.
 2. Read **Files changed**, and open the Netlify deploy preview (see above).
 3. If you agree: **Squash and merge**, then **Confirm**. If not: leave a comment, or **Close pull request**.
 
+## Set up, rotate or stop the Houcine.Trades signed hand-off
+
+The full explanation is in `docs/trades-integration.md`, section 9. In short:
+
+1. **Only after Houcine.Trades has its `/sso` page:** sign in to the workspace as super admin, open
+   `/workspace/ecosystem`, and under "Private apps" click **Single sign-on setup → Create a new key pair**.
+2. On Netlify (Site configuration → Environment variables), add:
+   - `SSO_PRIVATE_KEY`: the private key (mark it secret);
+   - `OWNER_USER_ID`: your user id from Supabase (Authentication → Users);
+   - `TRADES_AUDIENCE`: the Houcine.Trades host, for example `houcine-trades.onrender.com`;
+   - check that `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` exist there too.
+3. Paste the public key into the Houcine.Trades settings page.
+4. Redeploy: Netlify → Deploys → **Trigger deploy**.
+5. Test: click the Houcine.Trades card. It should open Houcine.Trades signed in (or at its authenticator
+   step). If it opens the normal sign-in page, one setting is missing or wrong.
+
+**Rotate:** repeat steps 1 to 4 with a new key pair. **Stop:** disable `/sso` in Houcine.Trades, or delete
+`SSO_PRIVATE_KEY` on Netlify and redeploy; the entries then open the normal sign-in page.
+
 ## If something looks wrong with sign-in
 
 Do not change anything in Supabase or the code in a hurry. Note what you see (the page, the message,
