@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { structuredData } from "@/config/site";
 
 // Per-page <title> and description without a new dependency. index.html keeps the defaults
 // that link-preview crawlers (which do not run JavaScript) will see; this updates the tab title
@@ -53,6 +54,23 @@ const setMeta = (selector: string, content: string) => {
   document.head.querySelector<HTMLMetaElement>(selector)?.setAttribute("content", content);
 };
 
+/** Structured data (JSON-LD) for search engines: public pages only, from src/config/site.ts. */
+const JSON_LD_ID = "site-structured-data";
+const setStructuredData = (enabled: boolean) => {
+  let script = document.getElementById(JSON_LD_ID);
+  if (!enabled) {
+    script?.remove();
+    return;
+  }
+  if (!script) {
+    script = document.createElement("script");
+    script.id = JSON_LD_ID;
+    script.setAttribute("type", "application/ld+json");
+    document.head.appendChild(script);
+  }
+  script.textContent = JSON.stringify(structuredData());
+};
+
 const RouteMeta = () => {
   const { pathname } = useLocation();
 
@@ -68,6 +86,8 @@ const RouteMeta = () => {
     setMeta('meta[name="twitter:title"]', meta.title);
     setMeta('meta[property="og:description"]', meta.description);
     setMeta('meta[name="twitter:description"]', meta.description);
+
+    setStructuredData(!isPrivate);
 
     // Ask search engines not to index app routes. (Not a security control: those routes are guarded.)
     let robots = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]');
