@@ -18,6 +18,21 @@ On the home page, in the Services grid ("The Ecosystem"), a fifth card appears:
 - Once the address is set (step 6 of section 8 below), the card becomes a plain link that opens
   Houcine.Trades **in the same tab** (use the browser's Back button to return).
 
+### Inside the workspace (owner only)
+
+The same shortcut also appears in two places of the brand workspace, so the trading app feels
+like part of your tools:
+
+- **The workspace sidebar**, under "Ecosystem" and "Platform Credentials": a lock icon, the name
+  **Houcine.Trades** and, under it, **Private financial workspace**.
+- **The Ecosystem page** (`/workspace/ecosystem`), in a small "Private apps" section below the
+  brand cards: a card with the same lock icon, name and text.
+
+Both follow the same rules as the card: greyed out with **"Not deployed yet"** and no link while
+the address is empty or invalid; otherwise a plain link that opens Houcine.Trades **in the same
+tab**. Only the super admin sees them; anyone else, including a Brand Admin, sees nothing there.
+The Ecosystem page itself is already super-admin only.
+
 ## 2. Who sees it
 
 | Who | What they see |
@@ -115,9 +130,29 @@ managed platform, served directly over HTTPS; a proxy in front of it is not that
 | `src/components/owner/card/index.tsx` | The card itself (loaded only for the super admin) |
 | `src/components/owner/teaser/index.tsx` | The optional teaser (not even built while the flag is false) |
 | `src/pages/Index.tsx` | Two added lines: the import and `<OwnerServiceSlot />` in the grid |
+| `src/components/owner/PrivateWorkspaceEntry.tsx` | The workspace slot: runs the existing super-admin check, then loads the entry |
+| `src/components/owner/card/WorkspaceEntries.tsx` | The sidebar row and the Ecosystem card (in the same hidden file as the private card) |
+| `src/components/workspace/WorkspaceShell.tsx`, `src/pages/workspace/EcosystemView.tsx` | One line each that places the slot |
 
 The card files are named `index.tsx` on purpose, so the built JavaScript files get
 generic names (`index-<code>.js`) that say nothing about what they hold.
+The workspace entries are part of that same hidden file and are exported under one-letter
+names (`N`, `E`), because the main public file keeps those names in the code that loads it.
+Nothing about the entry is in the main public file, the HTML, the sitemap, `robots.txt`, the
+header menu or the footer.
+
+### What the workspace entry does NOT share
+
+The workspace entry is only a link, exactly like the card:
+
+- **No shared login.** Signing in to the Houcine.world workspace does not sign you in to
+  Houcine.Trades. It has its own login (password plus authenticator code).
+- **No shared cookies or storage.** The link carries nothing: no token, no session, no user data,
+  no `?` or `#` part. Houcine.Trades lives on its own address (its own origin), so the browser
+  keeps the two apps' cookies and storage apart.
+- **No shared data.** No API call, no status check, nothing read from or written to Supabase, no
+  analytics event when you click.
+- **No iframe or embed.** It is never shown inside the workspace page.
 
 ### The address rules
 
@@ -179,3 +214,17 @@ Each step has a warning. Take them slowly.
 
 Never put a token, a password or anything after a `?` or `#` in the address: the validator refuses
 it, and it must not be there anyway.
+
+### The short version, for the workspace entry
+
+When Houcine.Trades is running on Render, these four steps make the card **and** both workspace
+entries live at once (nothing else to change):
+
+1. In the Render service's settings, add the **custom domain** `trades.houcine.world`.
+2. At your DNS provider, add **one CNAME record**: name `trades`, value the `something.onrender.com`
+   address Render shows. Wait until Render says the certificate is issued.
+3. Open `https://trades.houcine.world` yourself and check that the Houcine.Trades login page appears.
+4. In `src/config/trades.ts`, set `TRADES_URL` to `"https://trades.houcine.world"` on a new branch,
+   open a pull request, check the Netlify deploy preview (signed in as super admin: the sidebar
+   row, the Ecosystem card and the home card are links; signed out or as a Brand Admin: nothing),
+   then merge.
