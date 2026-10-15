@@ -72,3 +72,8 @@ const PrivateWorkspaceCard = () => {
 };
 
 export default PrivateWorkspaceCard;
+
+// Workspace entries share this chunk so they load only after the super-admin check.
+// Exported under one-letter names because the main bundle keeps export names in its
+// lazy-import code; descriptive names would hint at what this chunk holds.
+export { WorkspaceNavEntry as N, WorkspaceEcosystemEntry as E } from "./WorkspaceEntries";
