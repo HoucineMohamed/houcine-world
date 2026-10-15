@@ -20,6 +20,16 @@ export const TRADES_URL = "https://houcine-trades.onrender.com";
 export const TRADES_HOST_ALLOWLIST: readonly string[] = ["houcine.world", "onrender.com"];
 
 /**
+ * Signed hand-off to Houcine.Trades (docs/trades-integration.md). On click, the owner's browser asks
+ * this site's own Netlify Function for a 60-second signed assertion and opens
+ * TRADES_URL + TRADES_SSO_PATH + "#" + assertion. The Supabase token never leaves this site.
+ * Set to false to stop trying: the entries then open the plain sign-in page.
+ */
+export const TRADES_SSO_ENABLED = true;
+export const TRADES_SSO_PATH = "sso";
+export const TRADES_ASSERT_ENDPOINT = "/api/assert";
+
+/**
  * Pure validator. Returns the address to link to ("https://host/"), or null
  * when the value is not acceptable. Accepted only if ALL of these hold:
  * - it parses as an https URL;

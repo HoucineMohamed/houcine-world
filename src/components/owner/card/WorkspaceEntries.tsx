@@ -1,14 +1,16 @@
+import { lazy, Suspense, useState } from "react";
 import { Lock } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { TRADES_URL, validateTradesUrl } from "@/config/trades";
+import { openTrades } from "./openTrades";
 
 // The Houcine.Trades entries inside the workspace (sidebar and /workspace/ecosystem).
 // They live in this chunk (re-exported from ./index.tsx) so they are loaded only after the
 // super-admin check, together with the private card, and never in the main bundle.
-// Same rules as the card: the validated TRADES_URL or nothing; a plain same-tab link with
-// rel="noopener noreferrer"; no iframe, no embed, no token, user data or query string,
-// and no analytics event on click.
+// Same rules as the card: the validated TRADES_URL or nothing; a same-tab link with
+// rel="noopener noreferrer" and no Referer; no iframe, no embed, no query string, no analytics
+// event. A plain click adds a 60-second signed assertion after "#" (./openTrades.ts).
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -43,6 +45,8 @@ export const WorkspaceNavEntry = () => {
     <a
       href={href}
       rel="noopener noreferrer"
+      referrerPolicy="no-referrer"
+      onClick={openTrades(href)}
       className={cn(
         "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors text-muted-foreground hover:text-foreground hover:bg-muted/50",
         focusRing,
@@ -53,9 +57,13 @@ export const WorkspaceNavEntry = () => {
   );
 };
 
+// The single sign-on setup screen is a separate file, downloaded only when the owner opens it.
+const SsoSetup = lazy(() => import("../sso-setup"));
+
 /** Section with one card on the ecosystem page: the card matches the brand cards above it. */
 export const WorkspaceEcosystemEntry = () => {
   const href = validateTradesUrl(TRADES_URL);
+  const [showSetup, setShowSetup] = useState(false);
   const card = (
     <Card className={cn("h-full transition-colors", href === null ? "opacity-60" : "hover:border-accent")}>
       <CardHeader className="pb-4">
@@ -76,7 +84,7 @@ export const WorkspaceEcosystemEntry = () => {
         {card}
       </div>
     ) : (
-      <a href={href} rel="noopener noreferrer" className={cn("block h-full rounded-lg", focusRing)}>
+      <a href={href} rel="noopener noreferrer" referrerPolicy="no-referrer" onClick={openTrades(href)} className={cn("block h-full rounded-lg", focusRing)}>
         {card}
       </a>
     );
@@ -86,6 +94,19 @@ export const WorkspaceEcosystemEntry = () => {
     <section aria-labelledby="private-apps-title" className="mt-10">
       <h2 id="private-apps-title" className="text-lg font-semibold text-foreground mb-4">Private apps</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{entry}</div>
+      <button
+        type="button"
+        onClick={() => setShowSetup((v) => !v)}
+        aria-expanded={showSetup}
+        className={cn("mt-4 text-sm text-muted-foreground underline hover:text-foreground rounded", focusRing)}
+      >
+        {showSetup ? "Close single sign-on setup" : "Single sign-on setup"}
+      </button>
+      {showSetup && (
+        <Suspense fallback={<p className="mt-4 text-sm text-muted-foreground">Loading…</p>}>
+          <SsoSetup />
+        </Suspense>
+      )}
     </section>
   );
 };

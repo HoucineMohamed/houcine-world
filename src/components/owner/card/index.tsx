@@ -3,13 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TRADES_URL, validateTradesUrl } from "@/config/trades";
+import { openTrades } from "./openTrades";
 
 // The private Houcine.Trades card. Loaded only after the super-admin check
 // (see ../OwnerServiceSlot.tsx and docs/trades-integration.md).
 // Not a bookable service: no price, no booking button, no form.
-// The link is a plain same-tab link: no iframe, no embed, no script, and it
-// carries no token, session, user data or query parameters. rel="noreferrer"
-// also keeps the Referer header from telling Houcine.Trades where you came from.
+// The link opens Houcine.Trades in the same tab: no iframe, no embed, no query parameters.
+// A plain click first asks this site's own function for a 60-second signed assertion and adds it
+// after "#" (./openTrades.ts); the Supabase token itself never leaves this site. rel="noreferrer"
+// and referrerPolicy="no-referrer" keep the Referer header from being sent.
 
 const cardClass =
   "h-full border-border/50 bg-card/50 backdrop-blur transition-all duration-300";
@@ -58,7 +60,7 @@ const PrivateWorkspaceCard = () => {
   }
 
   return (
-    <a href={href} rel="noopener noreferrer" className="block h-full group">
+    <a href={href} rel="noopener noreferrer" referrerPolicy="no-referrer" onClick={openTrades(href)} className="block h-full group">
       <Card
         className={cn(
           cardClass,

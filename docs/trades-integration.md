@@ -76,10 +76,10 @@ So: never put anything secret in the card, its text or its address.
 | Not done | Why |
 | --- | --- |
 | No iframe or embed | An embedded app can be tricked into clicks it did not intend (clickjacking), and it would mix the two sites' security. Houcine.Trades refuses to be framed anyway. |
-| No shared login, no single sign-on | If one site's login were ever broken, the other would fall with it. Two separate logins mean two separate locks. |
+| No shared login | The two apps keep separate accounts. The optional signed hand-off (section 9) is a 60-second, one-purpose note, not a shared login: Houcine.Trades decides itself whether to accept it. |
 | No shared cookies | Cookies shared between sites can leak a session from one to the other. |
-| No token, session, user data or query parameter in the link | A link can end up in browser history, logs or a screenshot. The link is just the address. |
-| No API calls, no status card, no data read from or written to Supabase | Nothing about your trading reaches this site, and nothing from this site reaches Houcine.Trades. |
+| No Supabase token, session, user data or query parameter in the link | A link can end up in browser history, logs or a screenshot. The only extra is the 60-second signed note after `#` (section 9). |
+| No status card, no data read from or written to Supabase for Houcine.Trades | Nothing about your trading reaches this site. The only thing that reaches Houcine.Trades is the signed note: who you are (your user id) and for how long (60 seconds). |
 | No analytics event on click | Your visits to Houcine.Trades are not tracked here. |
 
 The link opens in the **same tab** (no `target="_blank"`) and keeps
@@ -145,13 +145,14 @@ header menu or the footer.
 
 The workspace entry is only a link, exactly like the card:
 
-- **No shared login.** Signing in to the Houcine.world workspace does not sign you in to
-  Houcine.Trades. It has its own login (password plus authenticator code).
-- **No shared cookies or storage.** The link carries nothing: no token, no session, no user data,
-  no `?` or `#` part. Houcine.Trades lives on its own address (its own origin), so the browser
-  keeps the two apps' cookies and storage apart.
-- **No shared data.** No API call, no status check, nothing read from or written to Supabase, no
-  analytics event when you click.
+- **No shared login.** The two apps keep separate accounts. With the signed hand-off (section 9)
+  switched on, a click can carry a 60-second signed note; Houcine.Trades decides whether to accept it
+  and can still ask for its own authenticator code.
+- **No shared cookies or storage.** The link never carries the Supabase token, a session or user
+  data, and never a `?` part. Houcine.Trades lives on its own address (its own origin), so the
+  browser keeps the two apps' cookies and storage apart.
+- **No shared data.** No status check and nothing read from or written to Supabase for
+  Houcine.Trades, and no analytics event when you click.
 - **No iframe or embed.** It is never shown inside the workspace page.
 
 ### The address rules
@@ -228,3 +229,86 @@ entries live at once (nothing else to change):
    open a pull request, check the Netlify deploy preview (signed in as super admin: the sidebar
    row, the Ecosystem card and the home card are links; signed out or as a Brand Admin: nothing),
    then merge.
+
+## 9. Signed hand-off to Houcine.Trades (single sign-on)
+
+### What happens when you click
+
+1. You click one of the three owner-only entries (home card, sidebar row, Ecosystem card).
+2. Your browser takes your **Supabase sign-in token** (the one this site already uses) and sends it to
+   **this site's own server function**, `/api/assert` (a Netlify Function on houcine.world itself).
+3. The function asks Supabase "whose token is this?", then reads **your own** profile row with **your own**
+   token (never a powerful server key). It continues only if you are the super admin **and** your user id
+   equals the `OWNER_USER_ID` setting. Anything else, or any error, gets a plain "forbidden".
+4. The function signs a tiny note with its private key: issuer `houcine.world`, audience (the exact
+   Houcine.Trades address), your user id, the time, an expiry **60 seconds later**, and a random id.
+5. Your browser opens `https://<Houcine.Trades>/sso#<the note>` in the same tab.
+6. If anything fails (no setting, Supabase down, slow network), the entry simply opens the normal
+   Houcine.Trades sign-in page.
+
+Ctrl-click or a middle click (new tab) opens the plain sign-in page, without any note.
+
+### Why your Supabase token never travels
+
+Your Supabase token is a powerful key to Houcine.world: whoever holds it can act as you here. It is used
+only in your browser and in this site's own function, and **never** sent to Houcine.Trades. What travels is
+the signed note, which proves only "the owner clicked, just now" and is useless after 60 seconds and on any
+other site (the audience is fixed).
+
+### Why after `#`
+
+The part of an address after `#` (the "fragment") is **never sent to any server** by the browser: not to
+Netlify, not to Render, not in logs. Only the Houcine.Trades page itself can read it. The site also sends no
+`Referer` header with the click.
+
+### What Houcine.Trades must do (its own repository, not done here)
+
+- Keep the **public key** from the setup screen in its settings and check the note's signature with it.
+- Check `iss` is `houcine.world`, `aud` is its own exact address, `exp` is in the future (60 seconds), and
+  `sub` is the owner's id.
+- Accept each note **once**: remember its random `jti` until it expires and refuse a second use. (This
+  site cannot make the note single-use; Houcine.Trades does.)
+- Remove the note from the address bar straight away, so it does not stay in the browser history.
+- Decide whether to still ask for its authenticator code (recommended: the note proves your Houcine.world
+  sign-in, which is a magic-link email; the authenticator code is a second, separate lock).
+
+**Do not set `SSO_PRIVATE_KEY` on Netlify until Houcine.Trades has an `/sso` page that does this.**
+Without that setting the function refuses, and the entries open the normal sign-in page; with it but
+without the `/sso` page, the note would sit unused in the address bar.
+
+### The Netlify settings (Site configuration → Environment variables)
+
+| Name | What to put | Secret? |
+| --- | --- | --- |
+| `SSO_PRIVATE_KEY` | The private key from the setup screen | **Yes**: mark it as secret |
+| `OWNER_USER_ID` | Your Supabase user id (Supabase dashboard → Authentication → Users → your row → copy the UID) | No |
+| `TRADES_AUDIENCE` | The exact Houcine.Trades host, for example `houcine-trades.onrender.com` (no `https://`, no `/`) | No |
+| `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` | Already the site's public values; make sure they exist in Netlify too (same values as in the repository's `.env`) | No |
+
+If any of them is missing or wrong, the function refuses and the entries open the normal sign-in page.
+
+### Making the keys
+
+Open `/workspace/ecosystem` as the super admin, click **Single sign-on setup** under "Private apps", then
+**Create a new key pair**. The keys are made in your browser and sent nowhere. Copy the private key into
+`SSO_PRIVATE_KEY` on Netlify and the public key into the Houcine.Trades settings page, then click "hide".
+
+### How to rotate the keys
+
+Make a new pair on the setup screen, replace `SSO_PRIVATE_KEY` on Netlify (then redeploy: Deploys →
+Trigger deploy) and the public key in Houcine.Trades. Old notes stop working within 60 seconds anyway.
+
+### How to switch it off
+
+- **On the Houcine.Trades side** (preferred): disable its `/sso` page. The entries still open Houcine.Trades;
+  you sign in normally.
+- **On this site:** set `TRADES_SSO_ENABLED = false` in `src/config/trades.ts` (a pull request you merge),
+  or delete `SSO_PRIVATE_KEY` on Netlify. Either way the entries open the plain sign-in page.
+
+### Known limits
+
+- The rate limit (5 notes per minute) is kept in the function's memory, so it resets when Netlify starts a
+  new copy of the function. It is a brake, not a lock.
+- The function's address `/api/assert` relies on Netlify's function routing taking priority over the site's
+  "send everything to index.html" rule; check it on the deploy preview (section "Next steps" in the pull
+  request).
