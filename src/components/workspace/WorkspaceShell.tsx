@@ -15,6 +15,7 @@ import { useActiveBrand, clearBrandMemory } from "@/hooks/useActiveBrand";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
 import { brandRoleLabel } from "@/lib/roles";
 import logoH from "@/assets/logo-h.png";
+import PrivateWorkspaceEntry from "@/components/owner/PrivateWorkspaceEntry";
 
 const NAV = [
   { to: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -103,6 +104,7 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
               <KeyRound className="w-4 h-4" /> Platform Credentials
             </NavLink>
           )}
+          <PrivateWorkspaceEntry variant="sidebar" />
         </nav>
         <div className="p-3 border-t border-border">
           <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={signOut}>

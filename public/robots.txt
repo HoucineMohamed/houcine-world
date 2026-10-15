@@ -1,14 +1,31 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /workspace
+Disallow: /admin
+Disallow: /auth/
 
 User-agent: Bingbot
 Allow: /
+Disallow: /workspace
+Disallow: /admin
+Disallow: /auth/
 
 User-agent: Twitterbot
 Allow: /
+Disallow: /workspace
+Disallow: /admin
+Disallow: /auth/
 
 User-agent: facebookexternalhit
 Allow: /
+Disallow: /workspace
+Disallow: /admin
+Disallow: /auth/
 
 User-agent: *
 Allow: /
+Disallow: /workspace
+Disallow: /admin
+Disallow: /auth/
+
+Sitemap: https://houcineworld.netlify.app/sitemap.xml

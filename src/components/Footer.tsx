@@ -9,10 +9,12 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-4 text-muted-foreground">
           <div className="flex flex-col items-center md:items-start gap-1">
             <p>© 2025 Houcine.world — All Rights Reserved</p>
-            <div className="flex items-center gap-3 text-sm">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-sm">
               <Link to="/terms" className="hover:text-accent transition-colors">Terms of Service</Link>
               <span aria-hidden="true">·</span>
               <Link to="/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link>
+              <span aria-hidden="true">·</span>
+              <Link to="/data-deletion" className="hover:text-accent transition-colors">Data Deletion</Link>
             </div>
           </div>
           <div className="flex items-center gap-4">

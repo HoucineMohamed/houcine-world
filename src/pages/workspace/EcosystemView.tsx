@@ -10,6 +10,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useWorkspace } from "@/components/workspace/WorkspaceContext";
 import { fetchAllBrands } from "@/services/brands";
 import { fetchAnalyticsEvents } from "@/services/analytics";
+import PrivateWorkspaceEntry from "@/components/owner/PrivateWorkspaceEntry";
 
 interface BrandRow { id: string; name: string; status: string; service?: { name?: string } | null }
 
@@ -76,6 +77,7 @@ const EcosystemView = () => {
           ))}
         </div>
         {!brands.length && <p className="text-sm text-muted-foreground mt-6">No brands yet.</p>}
+        <PrivateWorkspaceEntry variant="ecosystem" />
       </div>
     </div>
   );

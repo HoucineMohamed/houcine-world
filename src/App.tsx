@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import RouteMeta from "./components/RouteMeta";
 import Index from "./pages/Index";
 import AboutMe from "./pages/AboutMe";
 import Dev from "./pages/Dev";
@@ -13,6 +14,7 @@ import AboutDJ from "./pages/AboutDJ";
 import Review from "./pages/Review";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import DataDeletion from "./pages/DataDeletion";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
@@ -45,7 +47,9 @@ const AppRoutes = () => {
   // exactly the workspace routes, leaving the public site untouched.
   const location = useLocation();
   useEffect(() => {
-    document.body.classList.toggle("workspace-active", location.pathname.startsWith("/workspace"));
+    // /admin (and /admin/login) never mount <CustomCursor /> either, so they get the same reset.
+    const adminArea = location.pathname.startsWith("/workspace") || location.pathname.startsWith("/admin");
+    document.body.classList.toggle("workspace-active", adminArea);
     return () => { document.body.classList.remove("workspace-active"); };
   }, [location.pathname]);
 
@@ -63,6 +67,7 @@ const AppRoutes = () => {
       <Route path="/review" element={<Review />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy" element={<Privacy />} />
+      <Route path="/data-deletion" element={<DataDeletion />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
@@ -94,6 +99,7 @@ const AppRoutes = () => {
 const App = () => (
   <Router>
     <ScrollToTop />
+    <RouteMeta />
     <AppRoutes />
   </Router>
 );
