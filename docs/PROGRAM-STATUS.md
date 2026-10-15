@@ -7,7 +7,7 @@ replaces version 3; finished version 3 items are kept below.
 
 ## Driver
 
-DRIVER: session_01YPgKc4KaGJPX6EDp5wNDGW, claimed 2026-10-15T17:39:24Z, updated 2026-10-15T18:05:00Z
+DRIVER: session_01YPgKc4KaGJPX6EDp5wNDGW, claimed 2026-10-15T17:39:24Z, updated 2026-10-15T18:30:00Z
 
 The branch was quiet for more than 60 minutes (no push, no open pull request) before this claim.
 Before starting any item, re-fetch and check for a newer DRIVER line; if one exists, stand down at
@@ -36,7 +36,7 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | 0.4 | Offline smoke, link and accessibility checks (`scripts/dev`); fixed 2 broken images and the missing main heading on /review | **Merged** (#21) |
 | 0.4b | Accessibility fixes in non-critical files: checker errors 60 before, 0 after (7 known on /booking, a critical file) | **Merged** (#22) |
 | 0.5 | Performance pass with measured bundle sizes (route-level `React.lazy`/`Suspense`; main bundle 2,917 kB/gzip 731 kB before, now a shared 593 kB/gzip 177 kB chunk plus a per-page chunk) | **Merged** (#24) |
-| 0.6 | Trivial lint fixes | Pending |
+| 0.6 | Trivial lint fixes (`npm run lint`: 6 errors/13 warnings before; fixed the 5 type/style-only errors with no behavior change, left the 1 error in a critical file (`src/integrations/supabase/previewAuthStorage.ts`) and all 13 warnings alone — fixing those would mean a behavior or structural change, not "trivial") | In review |
 | 1 | Route manifest, typed content layer, validators, `docs/content-guide.md` | Pending |
 | 2 | `/work` hub and case-study template | Pending |
 | 3 | `/journal` with one draft post | Pending |

@@ -15,7 +15,7 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { CurrencyProvider, useCurrency, Currency } from "@/contexts/CurrencyContext";
-import { devServicePackages } from "@/data/devServicePackages";
+import { devServicePackages, DevServicePackage } from "@/data/devServicePackages";
 import DevServiceCard from "@/components/dev/DevServiceCard";
 import { useFormSubmission } from "@/hooks/useFormSubmission";
 import { toast } from "sonner";
@@ -45,7 +45,7 @@ const DevContent = () => {
     }
   };
 
-  const handleRequestQuote = (service: any) => {
+  const handleRequestQuote = (service: DevServicePackage) => {
     setFormData({ ...formData, service: service.name });
     scrollToSection('contact');
   };
