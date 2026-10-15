@@ -1,0 +1,43 @@
+# CI: typecheck, build and the automation's own tests. The job name "typecheck-and-build" is a
+# REQUIRED check for auto-merge (scripts/ci/automerge-decision.mjs). Lint is deliberately not run
+# here: the repository has pre-existing lint errors. See docs/automation.md.
+name: CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck-and-build:
+    name: typecheck-and-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # package-lock.json is out of sync with package.json today (fixing it is a separate,
+      # owner-approved change), so `npm ci` would fail. Install the versions package.json
+      # allows, without writing a lockfile, and without running install scripts.
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund --ignore-scripts
+
+      - name: Typecheck
+        run: npx tsc --noEmit -p tsconfig.app.json
+
+      - name: Build
+        run: npm run build
+
+      - name: Automation tests
+        run: node --test "scripts/ci/*.test.mjs"

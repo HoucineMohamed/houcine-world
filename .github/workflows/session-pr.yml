@@ -1,0 +1,56 @@
+# session-pr: when a session pushes a claude/** branch, open ONE pull request for it if none is
+# open and the branch differs from the default branch. Never merges. See docs/automation.md.
+name: session-pr
+
+on:
+  push:
+    branches: ["claude/**"]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: session-pr-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  open-pull-request:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const branch = context.ref.replace(/^refs\/heads\//, "");
+            const { data: repository } = await github.rest.repos.get({ owner, repo });
+            const base = repository.default_branch;
+
+            const { data: open } = await github.rest.pulls.list({ owner, repo, state: "open", head: `${owner}:${branch}`, per_page: 100 });
+            if (open.length > 0) {
+              core.info(`Pull request #${open[0].number} is already open for ${branch}; nothing to do.`);
+              return;
+            }
+
+            const { data: compare } = await github.rest.repos.compareCommitsWithBasehead({
+              owner, repo, basehead: `${base}...${branch}`, per_page: 100,
+            });
+            if (compare.ahead_by === 0 || !Array.isArray(compare.files) || compare.files.length === 0) {
+              core.info(`No difference between ${branch} and ${base}; skipping.`);
+              return;
+            }
+
+            const headMessage = context.payload.head_commit?.message ?? compare.commits.at(-1)?.commit?.message ?? branch;
+            const title = headMessage.split("\n")[0].slice(0, 250);
+            const body = [
+              "Opened automatically by the session-pr workflow (docs/automation.md).",
+              "",
+              "Commits:",
+              "",
+              ...compare.commits.map((c) => `### ${c.sha.slice(0, 7)}\n\n${c.commit.message}`),
+            ].join("\n").slice(0, 60000);
+
+            const { data: pr } = await github.rest.pulls.create({ owner, repo, head: branch, base, title, body });
+            await github.rest.issues.addLabels({ owner, repo, issue_number: pr.number, labels: ["auto"] });
+            core.info(`Opened pull request #${pr.number}.`);

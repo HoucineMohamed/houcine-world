@@ -1,0 +1,61 @@
+# auto-merge: after a CI run completes, squash-merge the open pull request for that commit only if
+# EVERY rule in scripts/ci/automerge-decision.mjs holds; otherwise do nothing, or add the
+# "needs-owner" label and one comment for critical changes. A workflow_run workflow always runs
+# from the DEFAULT branch's copy of this file and of the scripts it checks out, so a pull request
+# cannot change the rules that judge it. Never deletes branches. See docs/automation.md.
+name: auto-merge
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+concurrency:
+  group: auto-merge-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  decide-and-merge:
+    # Only runs for pushes to session branches in this repository (never for forks).
+    if: >-
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      startsWith(github.event.workflow_run.head_branch, 'claude/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # The default branch's scripts (workflow_run checks out the default branch).
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const { runAutoMerge } = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ci/automerge-run.mjs`);
+            const run = context.payload.workflow_run;
+            const outcomes = await runAutoMerge({
+              github,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run: { head_sha: run.head_sha, conclusion: run.conclusion },
+              now: () => new Date(),
+              sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+              log: (line) => core.info(line),
+            });
+            for (const o of outcomes) {
+              core.info(`#${o.prNumber ?? "-"}: ${o.action}${o.reasons.length ? ` (${o.reasons.join("; ")})` : ""}`);
+            }
+            await core.summary
+              .addHeading("auto-merge")
+              .addTable([
+                [{ data: "Pull request", header: true }, { data: "Outcome", header: true }, { data: "Reasons", header: true }],
+                ...outcomes.map((o) => [String(o.prNumber ?? "-"), o.action, o.reasons.join("; ") || "-"]),
+              ])
+              .write();
