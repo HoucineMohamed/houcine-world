@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Linkedin, Github, DollarSign, User, Instagram, Send, Loader2 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
+import pytunisiaLogo from "@/assets/pytunisia-logo.png";
 import houcineTechProfile from "@/assets/images/houcine-tech-profile.jpg";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
@@ -292,7 +293,7 @@ const DevContent = () => {
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-card/90 to-transparent p-4">
                       <div className="flex items-center justify-center gap-2">
                         <img 
-                          src="/src/assets/pytunisia-logo.png"
+                          src={pytunisiaLogo}
                           alt="PyTunisia Logo"
                           className="w-12 h-12 object-contain"
                         />

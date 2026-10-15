@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Star } from "lucide-react";
@@ -79,11 +79,11 @@ const Review = () => {
           {!submitted ? (
             <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:shadow-xl hover:shadow-rose-600/20">
               <CardHeader className="text-center space-y-4 pb-6">
-                <CardTitle className="text-3xl md:text-4xl font-bold">
+                <h1 className="text-3xl md:text-4xl font-bold leading-none tracking-tight">
                   <span className="bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
                     Leave a Review
                   </span>
-                </CardTitle>
+                </h1>
                 <p className="text-muted-foreground">
                   Share your experience with La Rosa View — your feedback means the world to us
                 </p>
@@ -184,9 +184,9 @@ const Review = () => {
                 <div className="w-20 h-20 mx-auto rounded-full bg-rose-500/20 flex items-center justify-center">
                   <Star className="w-10 h-10 fill-rose-500 text-rose-500" />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-rose-400">
+                <h1 className="text-2xl md:text-3xl font-bold text-rose-400">
                   Thank You!
-                </h2>
+                </h1>
                 <p className="text-muted-foreground max-w-md mx-auto">
                   Your review has been submitted successfully — thank you for supporting La Rosa View!
                 </p>
