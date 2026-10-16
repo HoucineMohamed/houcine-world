@@ -52,6 +52,10 @@ a session to "run the smoke, link and accessibility checks" and to report the re
 | --- | --- |
 | `smoke.mjs` | Builds the site, then opens every public page at 1366px and 390px: the right title, exactly one main heading, no horizontal scroll, no console errors, no outside host beyond the known list, and no trace of the owner-only entries (pages, sitemap, robots.txt, main bundle). Problems in critical files are listed as "known" with the fix to approve. |
 | `link-check.mjs` | Links to pages that do not exist, `#anchors` with no target, images that do not load, and public pages that no other page links to. Outside links are listed by host, never visited. |
+| `content-gate.mjs` | The visible text of every public page has no "not written yet" words (lorem ipsum, TODO, TBD, placeholder, [CAPITALS]) and no page logs a console error; the legal placeholders you fill in are listed, not counted. |
+| `responsive-check.mjs` | No sideways scroll at 360, 390, 768, 1024 and 1366 px, and tap targets of at least 44 px on touch screens; `--shots=<folder>` saves screenshots (outside the repository). |
+| `perf-check.mjs` | Lab numbers (LCP, FCP, CLS, blocking time, bytes) on five routes at phone and desktop sizes, to compare before and after a change. |
+| `*.test.mjs` | `node --experimental-strip-types --test scripts/dev/*.test.mjs`: tokens, route manifest, content layer, search, structured data, image size budget. |
 | `keyboard-check.mjs` | The skip link, the phone menu (opens with Enter, keeps focus inside, closes with Escape), search (Ctrl+K and "/", results announced, Enter and Escape) and the ecosystem map (every node reached with Tab, with a visible focus). |
 | `a11y-check.mjs` | One main landmark, page language and title, no duplicate ids, the skip link first, heading order, form labels, image alt text, names of links and buttons, contrast of the design tokens, reduced motion; warnings for focus outlines and estimated text contrast. |
 
