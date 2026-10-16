@@ -57,6 +57,7 @@ const AboutDJ = () => {
           </Link>
         </div>
       </header>
+      <main id="main">
 
       {/* Hero Section */}
       <section 
@@ -237,6 +238,7 @@ const AboutDJ = () => {
         </div>
       </section>
 
+      </main>
       <Footer />
 
       <style>{`

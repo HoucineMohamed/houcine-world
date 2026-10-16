@@ -37,7 +37,7 @@ const LegalPageLayout = ({
       </div>
     </header>
 
-    <main className="pt-32 pb-20 px-6">
+    <main id="main" className="pt-32 pb-20 px-6">
       <div className="container mx-auto max-w-3xl">
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">{title}</h1>
         <p className="text-sm text-muted-foreground mb-12">Last updated: {LEGAL_LAST_UPDATED}</p>

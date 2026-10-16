@@ -109,6 +109,16 @@ All colors MUST be HSL.
     scroll-behavior: smooth;
   }
 
+  /* A visible keyboard focus everywhere, in the ring colour of the tokens. Components that draw their
+     own ring (focus-visible:ring-*) remove this outline with focus-visible:outline-none. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  main:focus {
+    outline: none;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

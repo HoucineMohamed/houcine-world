@@ -69,7 +69,7 @@ const Review = () => {
       </header>
 
       {/* Main Content */}
-      <main className="pt-32 pb-16 px-6">
+      <main id="main" className="pt-32 pb-16 px-6">
         <div 
           ref={formAnimation.ref}
           className={`container mx-auto max-w-2xl transition-all duration-700 ${
