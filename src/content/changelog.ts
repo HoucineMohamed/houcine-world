@@ -18,6 +18,10 @@ export const changelog: ChangelogEntry[] = [
   },
   {
     date: "2026-10-16",
+    text: "Work and Journal pages, with an RSS feed."
+  },
+  {
+    date: "2026-10-16",
     text: "The ecosystem map, and questions and answers about the ecosystem."
   },
   {
@@ -27,6 +31,14 @@ export const changelog: ChangelogEntry[] = [
   {
     date: "2026-10-16",
     text: "A Skip to content link and clearer keyboard focus on every page."
+  },
+  {
+    date: "2026-10-16",
+    text: "Lighter pages: images load as you scroll, and less code is downloaded."
+  },
+  {
+    date: "2026-10-16",
+    text: "Every page fits phone screens, with larger tap targets on touch screens."
   },
   {
     date: "2026-10-15",
