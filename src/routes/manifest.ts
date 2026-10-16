@@ -54,6 +54,7 @@ export const MANIFEST = [
   { path: "/journal/:slug", title: `Journal | ${SITE}`, description: "A post from the Houcine.world journal.", indexable: false, sitemapPriority: null, ownerOnly: false },
   { path: "/services", title: `Services | ${SITE}`, description: "The four verticals of Houcine.world: what each does and who it is for.", indexable: true, sitemapPriority: 0.7, ownerOnly: false },
   { path: "/brand-kit", title: `Brand kit | ${SITE}`, description: "Download the Houcine.world logo and share image.", indexable: true, sitemapPriority: 0.4, ownerOnly: false },
+  { path: "/status", title: `Status | ${SITE}`, description: "Which version of Houcine.world is being served, and when it was published.", indexable: true, sitemapPriority: 0.1, ownerOnly: false },
   { path: "/team", title: `Team | ${SITE}`, description: "The people behind the Houcine.world ecosystem.", indexable: true, sitemapPriority: 0.5, ownerOnly: false },
   { path: "/brand", title: `Brand | ${SITE}`, description: "The Houcine.world design language: logo, colours, type, spacing and components, with copy-ready values.", indexable: true, sitemapPriority: 0.5, ownerOnly: false },
 
