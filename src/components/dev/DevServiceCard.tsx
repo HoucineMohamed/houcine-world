@@ -3,8 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { DevServicePackage } from "@/data/devServicePackages";
-import * as Icons from "lucide-react";
-import { LucideIcon } from "lucide-react";
+import { Briefcase, Building, GraduationCap, LineChart, Package, Rocket, type LucideIcon } from "lucide-react";
+
+// The icons the packages name (src/data/devServicePackages.ts). Importing the whole icon library to look
+// them up by name put every icon into this page's download; add a name here when a package uses a new one.
+const ICONS: Record<string, LucideIcon> = { Briefcase, Building, GraduationCap, LineChart, Rocket };
 
 interface DevServiceCardProps {
   service: DevServicePackage;
@@ -13,7 +16,7 @@ interface DevServiceCardProps {
 
 const DevServiceCard = ({ service, onRequestQuote }: DevServiceCardProps) => {
   const { currency, convertPrice } = useCurrency();
-  const IconComponent = (Icons[service.icon as keyof typeof Icons] as LucideIcon) || Icons.Package;
+  const IconComponent = ICONS[service.icon] ?? Package;
 
   return (
     <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 hover:shadow-lg hover:shadow-white/5 transition-all duration-300 group hover:scale-[1.02] h-full flex flex-col">
