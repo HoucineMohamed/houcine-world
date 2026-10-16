@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowUpRight, Briefcase } from "lucide-react";
 import { ServicePageLayout, ServiceHero, ServiceSection } from "@/components/service/ServicePage";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { isInternalHref } from "@/content/format";
 import { work } from "@/content/work";
 import { services } from "@/content/services";
 import { assetUrl } from "@/content/assets";
@@ -18,8 +19,6 @@ import { BASE_URL, SITE_NAME } from "@/config/site";
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 const JSON_LD_ID = "work-structured-data";
-
-const isInternal = (href: string) => href.startsWith("/") && !href.startsWith("//");
 
 const WorkEntry = () => {
   const { slug } = useParams();
@@ -96,7 +95,7 @@ const WorkEntry = () => {
         <ServiceSection id="links" title="Links">
           <ul className="space-y-3">
             {entry.links.map((l) =>
-              isInternal(l.href) ? (
+              isInternalHref(l.href) ? (
                 <li key={l.href}>
                   <Link to={l.href} className={cn("text-accent underline hover:text-accent/80 rounded", focusRing)}>{l.label}</Link>
                 </li>
