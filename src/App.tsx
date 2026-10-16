@@ -2,7 +2,6 @@ import React, { Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import RouteMeta from "./components/RouteMeta";
-import SiteSearch from "./components/search/SiteSearch";
 import { route } from "./routes/manifest";
 import PublicShell from "./components/PublicShell";
 import { usePageTracking } from "./hooks/useAnalytics";
@@ -128,7 +127,6 @@ const App = () => (
   <Router>
     <ScrollToTop />
     <RouteMeta />
-    <SiteSearch />
     {/* Each page is its own chunk now (above); this is the one fallback shown while any of them
         loads. Plain text, no new dependency, and intentionally unstyled -- it's rarely visible on a
         fast connection and the goal here is smaller bundles, not a loading-screen design. */}

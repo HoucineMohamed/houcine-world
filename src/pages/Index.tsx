@@ -5,7 +5,6 @@ import { Terminal, Palette, BookOpen, Briefcase, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
-import { SearchButton } from "@/components/search/SiteSearch";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import HeroSection from "@/components/hero/HeroSection";
@@ -42,8 +41,6 @@ const Index = () => {
             <Link to="/manages" className="hover:text-accent transition-all hover:scale-105 duration-200">Management</Link>
           </nav>
 
-          <div className="flex items-center gap-3">
-          <SearchButton />
           {/* Mobile Navigation */}
           <Sheet>
             <SheetTrigger asChild className="md:hidden">
@@ -60,7 +57,6 @@ const Index = () => {
               </nav>
             </SheetContent>
           </Sheet>
-          </div>
         </div>
       </header>
 
