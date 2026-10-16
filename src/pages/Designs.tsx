@@ -495,6 +495,7 @@ const DesignsContent = () => {
                 <Label htmlFor="name">Name *</Label>
                 <Input
                   id="name"
+                  maxLength={100}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
@@ -505,6 +506,7 @@ const DesignsContent = () => {
                 <Input
                   id="email"
                   type="email"
+                  maxLength={254}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
@@ -524,6 +526,7 @@ const DesignsContent = () => {
                 <Label htmlFor="message">Message *</Label>
                 <Textarea
                   id="message"
+                  maxLength={5000}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   rows={5}
