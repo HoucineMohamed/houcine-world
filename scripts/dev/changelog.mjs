@@ -34,6 +34,7 @@ export const PUBLIC = {
   C5: "The Status page: which version of the site you are seeing.",
   C6: "This changelog.",
   C7: "The legal pages print as plain, readable text.",
+  C8: "Pages open faster: their code starts loading when you point at a link.",
 };
 
 const status = readFileSync(join(root, "docs/PROGRAM-STATUS.md"), "utf8");
