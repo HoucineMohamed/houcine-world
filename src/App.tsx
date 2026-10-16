@@ -2,6 +2,7 @@ import React, { Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import RouteMeta from "./components/RouteMeta";
+import { route } from "./routes/manifest";
 import PublicShell from "./components/PublicShell";
 import { usePageTracking } from "./hooks/useAnalytics";
 import AuthGuard from "./components/workspace/AuthGuard";
@@ -67,36 +68,36 @@ const AppRoutes = () => {
     <Routes>
       {/* Public pages: an error boundary and a loading skeleton (src/components/PublicShell.tsx) */}
       <Route element={<PublicShell />}>
-        <Route path="/" element={<Index />} />
-        <Route path="/about" element={<AboutMe />} />
-        <Route path="/dev" element={<Dev />} />
-        <Route path="/designs" element={<Designs />} />
-        <Route path="/reads" element={<Reads />} />
-        <Route path="/manages" element={<Manages />} />
-        <Route path="/larosaview" element={<LaRosaView />} />
-        <Route path="/booking" element={<BookingForm />} />
-        <Route path="/about-dj" element={<AboutDJ />} />
-        <Route path="/review" element={<Review />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/data-deletion" element={<DataDeletion />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/ecosystem" element={<Ecosystem />} />
-        <Route path="/brand" element={<Brand />} />
+        <Route path={route("/")} element={<Index />} />
+        <Route path={route("/about")} element={<AboutMe />} />
+        <Route path={route("/dev")} element={<Dev />} />
+        <Route path={route("/designs")} element={<Designs />} />
+        <Route path={route("/reads")} element={<Reads />} />
+        <Route path={route("/manages")} element={<Manages />} />
+        <Route path={route("/larosaview")} element={<LaRosaView />} />
+        <Route path={route("/booking")} element={<BookingForm />} />
+        <Route path={route("/about-dj")} element={<AboutDJ />} />
+        <Route path={route("/review")} element={<Review />} />
+        <Route path={route("/terms")} element={<Terms />} />
+        <Route path={route("/privacy")} element={<Privacy />} />
+        <Route path={route("/data-deletion")} element={<DataDeletion />} />
+        <Route path={route("/contact")} element={<Contact />} />
+        <Route path={route("/ecosystem")} element={<Ecosystem />} />
+        <Route path={route("/brand")} element={<Brand />} />
       </Route>
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path={route("/admin")} element={<Admin />} />
+      <Route path={route("/admin/login")} element={<AdminLogin />} />
+      <Route path={route("/auth/callback")} element={<AuthCallback />} />
 
       {/* Workspace: login is public, everything else is auth + membership guarded */}
-      <Route path="/workspace/login" element={<WorkspaceLogin />} />
+      <Route path={route("/workspace/login")} element={<WorkspaceLogin />} />
       <Route element={<AuthGuard />}>
-        <Route path="/workspace" element={<WorkspaceResolver />} />
-        <Route path="/workspace/select" element={<BrandSelect />} />
-        <Route path="/workspace/ecosystem" element={<EcosystemView />} />
-        <Route path="/workspace/platform-credentials" element={<PlatformCredentials />} />
-        <Route path="/workspace/denied" element={<WorkspaceDenied />} />
-        <Route path="/workspace/:brandId" element={<BrandGuard />}>
+        <Route path={route("/workspace")} element={<WorkspaceResolver />} />
+        <Route path={route("/workspace/select")} element={<BrandSelect />} />
+        <Route path={route("/workspace/ecosystem")} element={<EcosystemView />} />
+        <Route path={route("/workspace/platform-credentials")} element={<PlatformCredentials />} />
+        <Route path={route("/workspace/denied")} element={<WorkspaceDenied />} />
+        <Route path={route("/workspace/:brandId")} element={<BrandGuard />}>
           <Route path="dashboard" element={<BrandDashboard />} />
           <Route path="bookings" element={<BrandBookings />} />
           <Route path="notifications" element={<BrandNotifications />} />
@@ -105,10 +106,10 @@ const AppRoutes = () => {
           <Route path="settings" element={<BrandSettings />} />
         </Route>
       </Route>
-      <Route path="/workspace/*" element={<WorkspaceNotFound />} />
+      <Route path={route("/workspace/*")} element={<WorkspaceNotFound />} />
 
       <Route element={<PublicShell />}>
-        <Route path="*" element={<NotFound />} />
+        <Route path={route("*")} element={<NotFound />} />
       </Route>
     </Routes>
   );
