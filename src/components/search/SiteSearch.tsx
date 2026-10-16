@@ -19,7 +19,7 @@ export const SearchButton = ({ className }: { className?: string }) => (
   <button
     type="button"
     onClick={() => window.dispatchEvent(new Event(OPEN_EVENT))}
-    aria-label="Search the site (Ctrl+K or /)"
+    aria-label="Search the site"
     aria-keyshortcuts="Control+K Meta+K /"
     className={cn(
       "inline-flex items-center gap-2 rounded-md border border-border/60 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:border-accent/50 transition-colors",
@@ -49,6 +49,9 @@ const SiteSearch = () => {
     const typing = (t: EventTarget | null) =>
       t instanceof HTMLElement && (t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName));
     const onKey = (e: KeyboardEvent) => {
+      if (e.isComposing || e.defaultPrevented || e.repeat) return;
+      // Never open over another dialog or menu (each Radix modal traps focus and locks scrolling).
+      if (document.querySelector('[role="dialog"][data-state="open"]')) return;
       const ctrlK = (e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === "k";
       // "/" opens search too, except while the visitor is typing in a field.
       const slash = e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey && !typing(e.target);

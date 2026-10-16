@@ -25,14 +25,17 @@ const SearchDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange: (op
   const navigate = useNavigate();
   const results = searchItems(index, query);
 
+  const setOpen = (next: boolean) => {
+    if (!next) setQuery("");
+    onOpenChange(next);
+  };
   const go = (href: string) => {
-    onOpenChange(false);
-    setQuery("");
+    setOpen(false);
     navigate(href);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="overflow-hidden p-0 shadow-lg sm:max-w-xl">
         <DialogTitle className="sr-only">Search the site</DialogTitle>
         <DialogDescription className="sr-only">Type to search the pages, services, work, journal and questions.</DialogDescription>
