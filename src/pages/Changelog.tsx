@@ -1,7 +1,7 @@
 import { History } from "lucide-react";
 import { ServicePageLayout, ServiceHero, ServiceSection } from "@/components/service/ServicePage";
 import { changelog } from "@/content/changelog";
-import { formatDate } from "./journalShared";
+import { formatDate } from "@/content/format";
 
 // /changelog: what changed on the public site, newest first. Generated from the merged items of the
 // program (scripts/dev/changelog.mjs), with public wording only.
