@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, Mail } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
@@ -161,21 +161,36 @@ const WorkCard = ({ item }: { item: WorkItem }) => {
   );
 };
 
+const AllWorkLink = () => (
+  <Link
+    to="/work"
+    className={cn("inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground rounded mt-6", focusRing)}
+  >
+    See all work across the ecosystem <ArrowRight className="w-4 h-4" aria-hidden="true" />
+  </Link>
+);
+
 /** The "Selected work" gallery: real entries from src/content, or a calm "Coming soon" state. */
 export const SelectedWork = ({ items }: { items: readonly WorkItem[] }) =>
   items.length === 0 ? (
-    <div className="rounded-lg border border-dashed border-border p-10 text-center">
-      <p className="text-lg font-semibold text-foreground mb-1">Coming soon</p>
-      <p className="text-muted-foreground">Selected work will be shown here.</p>
-    </div>
+    <>
+      <div className="rounded-lg border border-dashed border-border p-10 text-center">
+        <p className="text-lg font-semibold text-foreground mb-1">Coming soon</p>
+        <p className="text-muted-foreground">Selected work will be shown here.</p>
+      </div>
+      <AllWorkLink />
+    </>
   ) : (
-    <ul className="grid gap-6 md:grid-cols-2">
-      {items.map((item) => (
-        <li key={item.title}>
-          <WorkCard item={item} />
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className="grid gap-6 md:grid-cols-2">
+        {items.map((item) => (
+          <li key={item.title}>
+            <WorkCard item={item} />
+          </li>
+        ))}
+      </ul>
+      <AllWorkLink />
+    </>
   );
 
 /** Call to action: a plain mailto from src/config/contact.ts, or a disabled note while it is not set. */
