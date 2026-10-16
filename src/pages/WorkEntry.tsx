@@ -70,6 +70,11 @@ const WorkEntry = () => {
 
   return (
     <ServicePageLayout>
+      <div>
+        <Link to="/work" className={cn("inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground rounded", focusRing)}>
+          <ArrowLeft className="w-4 h-4" aria-hidden="true" /> All work
+        </Link>
+      </div>
       <ServiceHero icon={Briefcase} name={vertical?.name ?? SITE_NAME} promise={entry.title} intro={entry.summary} />
       {entry.tags.length > 0 && (
         <ul className="flex flex-wrap gap-2 -mt-12" aria-label="Tags">

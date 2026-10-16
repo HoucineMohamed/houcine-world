@@ -41,6 +41,7 @@ const JournalPost = () => {
   return (
     <ServicePageLayout>
       <article aria-labelledby="post-title" className="max-w-3xl">
+        <div className="mb-8">{back}</div>
         <p className="text-sm text-muted-foreground mb-4">
           <time dateTime={post.date}>{formatDate(post.date)}</time> · {readingMinutes(post)} min read
         </p>
