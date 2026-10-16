@@ -16,7 +16,7 @@ const focusRing =
 
 const chip = (active: boolean) =>
   cn(
-    "inline-flex items-center rounded-full border px-3 py-1 text-sm transition-colors",
+    "inline-flex items-center rounded-full border px-3 py-1 text-sm transition-colors [@media(pointer:coarse)]:min-h-11",
     active ? "border-accent bg-accent text-accent-foreground" : "border-border/60 text-muted-foreground hover:text-foreground hover:border-accent/50",
     focusRing,
   );
@@ -74,7 +74,7 @@ const Journal = () => {
       )}
 
       <p>
-        <a href="/rss.xml" className={cn("inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground rounded", focusRing)}>
+        <a href="/rss.xml" className={cn("inline-flex items-center gap-2 [@media(pointer:coarse)]:min-h-11 text-sm text-muted-foreground hover:text-foreground rounded", focusRing)}>
           <Rss className="w-4 h-4" aria-hidden="true" /> Follow the journal with RSS
         </a>
       </p>
