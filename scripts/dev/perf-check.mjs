@@ -1,8 +1,8 @@
 // Offline performance check of the built site (serve dist/, headless Chromium, no network) on key routes at
 // phone (390px, 4x slower CPU) and desktop (1366px) sizes. Reports, per route:
-//   LCP   largest contentful paint (ms)          CLS   cumulative layout shift
-//   FCP   first contentful paint (ms)            TBT   total blocking time, from long tasks (ms)
-//   JS    JavaScript bytes loaded before the page settled, and image bytes
+//   LCP   largest contentful paint (ms)          CLS   sum of layout shifts (not session windows: an upper bound)
+//   FCP   first contentful paint (ms)            TBT   blocking time of every long task in the window (an upper bound)
+//   JS    JavaScript bytes loaded in a fixed 5 s window, and image bytes (the CPU is slowed, the network is not)
 // These are lab numbers on this computer, with outside hosts (fonts) blocked: use them to compare before and
 // after a change, not as the numbers real visitors see. Budgets: CLS < 0.1 is an error above it.
 //
