@@ -132,6 +132,7 @@ const ReadsContent = () => {
           />
         </div>
       </header>
+      <main id="main">
 
       {/* Hero Section */}
       <section 
@@ -489,6 +490,7 @@ const ReadsContent = () => {
         </div>
       </section>
 
+      </main>
       <Footer />
 
       <UnderConstructionModal 
