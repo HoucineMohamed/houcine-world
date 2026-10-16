@@ -112,6 +112,10 @@ const Ecosystem = () => {
         <Link to="/about" className={cn("text-accent underline hover:text-accent/80 rounded", focusRing)}>
           About me
         </Link>
+        {" "}and{" "}
+        <Link to="/team" className={cn("text-accent underline hover:text-accent/80 rounded", focusRing)}>
+          the team
+        </Link>
         .
       </p>
     </ServiceSection>

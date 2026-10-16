@@ -19,6 +19,7 @@ const Index = React.lazy(() => import("./pages/Index"));
 const AboutMe = React.lazy(() => import("./pages/AboutMe"));
 const Dev = React.lazy(() => import("./pages/Dev"));
 const Brand = React.lazy(() => import("./pages/Brand"));
+const Team = React.lazy(() => import("./pages/Team"));
 const Work = React.lazy(() => import("./pages/Work"));
 const WorkEntry = React.lazy(() => import("./pages/WorkEntry"));
 const Journal = React.lazy(() => import("./pages/Journal"));
@@ -94,6 +95,7 @@ const AppRoutes = () => {
         <Route path={route("/journal")} element={<Journal />} />
         <Route path={route("/journal/:slug")} element={<JournalPost />} />
         <Route path={route("/brand")} element={<Brand />} />
+        <Route path={route("/team")} element={<Team />} />
       </Route>
       <Route path={route("/admin")} element={<Admin />} />
       <Route path={route("/admin/login")} element={<AdminLogin />} />
