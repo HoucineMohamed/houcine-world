@@ -20,6 +20,7 @@ const AboutMe = React.lazy(() => import("./pages/AboutMe"));
 const Dev = React.lazy(() => import("./pages/Dev"));
 const Brand = React.lazy(() => import("./pages/Brand"));
 const Team = React.lazy(() => import("./pages/Team"));
+const Changelog = React.lazy(() => import("./pages/Changelog"));
 const Status = React.lazy(() => import("./pages/Status"));
 const BrandKit = React.lazy(() => import("./pages/BrandKit"));
 const Services = React.lazy(() => import("./pages/Services"));
@@ -99,6 +100,7 @@ const AppRoutes = () => {
         <Route path={route("/journal/:slug")} element={<JournalPost />} />
         <Route path={route("/brand")} element={<Brand />} />
         <Route path={route("/team")} element={<Team />} />
+        <Route path={route("/changelog")} element={<Changelog />} />
         <Route path={route("/status")} element={<Status />} />
         <Route path={route("/brand-kit")} element={<BrandKit />} />
         <Route path={route("/services")} element={<Services />} />

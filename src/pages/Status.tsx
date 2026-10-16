@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Activity } from "lucide-react";
 import { ServicePageLayout, ServiceHero, ServiceSection } from "@/components/service/ServicePage";
 
@@ -32,6 +33,11 @@ const Status = () => (
           <dd className="text-foreground">{published()}</dd>
         </div>
       </dl>
+      <p className="mt-8">
+        <Link to="/changelog" className="inline-flex items-center min-h-11 text-accent underline hover:text-accent/80 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+          What changed: the changelog
+        </Link>
+      </p>
     </ServiceSection>
   </ServicePageLayout>
 );
