@@ -21,7 +21,7 @@ These are placeholders on purpose; no session invents them.
 
 ## Driver
 
-DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T16:58:00Z
+DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T17:40:00Z
 
 The previous claim (session_01YPgKc4KaGJPX6EDp5wNDGW, updated 2026-10-15T18:36:00Z) was about 22 hours
 old, no pull request was open, and the owner named this session the only driver. Before starting any
@@ -72,8 +72,8 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | 0.5 | Performance pass with measured bundle sizes (route-level `React.lazy`/`Suspense`; main bundle 2,917 kB/gzip 731 kB before, now a shared 593 kB/gzip 177 kB chunk plus a per-page chunk) | **Merged** (#24) |
 | 0.6 | Trivial lint fixes (`npm run lint`: 6 errors/13 warnings before; fixed the 5 type/style-only errors with no behavior change, left the 1 error in a critical file (`src/integrations/supabase/previewAuthStorage.ts`) and all 13 warnings alone — fixing those would mean a behavior or structural change, not "trivial") | **Merged** (#26) |
 | — | **Brief of 16 October (current)** | |
-| B0 | Driver claim, branch sync, this status update | In review |
-| B1 | Design tokens: `docs/ecosystem-design-tokens.md`, `src/design/tokens.json` with a check against `src/index.css`, public `/brand` page | Pending |
+| B0 | Driver claim, branch sync, this status update | **Merged** (#28) |
+| B1 | Design tokens: `docs/ecosystem-design-tokens.md`, `src/design/tokens.json` with a check against `src/index.css` (`scripts/dev/tokens.test.mjs`), public `/brand` page | In review |
 | B2 | Signed hand-off: setup screen steps, branded "Opening…" state, errors and fallback, tests; "return to Houcine.world" convention | Pending |
 | B3a | Route manifest `src/routes/manifest.ts` and its check (version 4 item 1a) | Pending |
 | B3b | Typed content layer and its validator (item 1b) | Pending |
