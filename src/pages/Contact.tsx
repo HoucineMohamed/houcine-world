@@ -7,12 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { CONTACT_EMAIL, contactMailto } from "@/config/contact";
+import { CONTACT_EMAIL, CONTACT_FORM_ENABLED, contactMailto } from "@/config/contact";
 import { useFormSubmission } from "@/hooks/useFormSubmission";
 
-// The contact page: a message form sent through the site's existing form function (useFormSubmission,
-// unchanged: it stores the message and emails the owner), and a mailto link built from CONTACT_EMAIL
-// (src/config/contact.ts) once the owner sets it.
+// The contact page: a mailto link built from CONTACT_EMAIL (src/config/contact.ts) once the owner sets
+// it, and a message form sent through the site's existing form function (useFormSubmission, unchanged),
+// shown only when CONTACT_FORM_ENABLED is true (it stays off until the form function is hardened).
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -75,15 +75,17 @@ const Contact = () => {
         icon={Mail}
         name="Contact"
         promise="Get in touch."
-        intro="For a project with Houcine.tech, Houcine.studio, Houcine.education or Houcine.management, send a message."
+        intro="For a project with Houcine.tech, Houcine.studio, Houcine.education or Houcine.management, write to us."
       />
 
-      <section aria-labelledby="message-title" className="rounded-lg border border-border/50 bg-card/50 p-8 md:p-12">
-        <h2 id="message-title" className="text-2xl md:text-3xl font-bold font-display text-foreground mb-6">
-          Send a message
-        </h2>
-        <ContactForm />
-      </section>
+      {CONTACT_FORM_ENABLED && (
+        <section aria-labelledby="message-title" className="rounded-lg border border-border/50 bg-card/50 p-8 md:p-12">
+          <h2 id="message-title" className="text-2xl md:text-3xl font-bold font-display text-foreground mb-6">
+            Send a message
+          </h2>
+          <ContactForm />
+        </section>
+      )}
 
       <section aria-labelledby="email-title" className="rounded-lg border border-border/50 bg-card/50 p-8 md:p-12">
         <h2 id="email-title" className="text-2xl md:text-3xl font-bold font-display text-foreground mb-4">
