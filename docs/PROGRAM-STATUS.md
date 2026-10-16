@@ -40,6 +40,10 @@ Decisions taken without asking (the owner asked for no questions; the safest rea
   pull requests, tests first.
 - **Order:** Phase 1 (design tokens and /brand) first, as the brief says; then version 4 item 1 (the
   three pull requests above); then Phase 3; the critical part of Phase 2 last (see the next point).
+- **Second message of 16 October (current order):** finish B4 to B6, then quality passes Q1 to Q6, then
+  backlog C, and only then every critical change in ONE pull request (D, the critical bundle). Until D is
+  merged, /contact shows the email fallback: the form is behind `CONTACT_FORM_ENABLED = false`
+  (`src/config/contact.ts`).
 - **Where Phase 2 goes:** almost all of it is in critical files (`src/components/owner/**`,
   `netlify/functions/**`, `src/config/trades.ts`). With one branch, an open needs-owner pull request blocks
   every later push, so the non-critical Phase 2 part (the "return to Houcine.world" convention, docs) goes
@@ -85,12 +89,17 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | B3b | Typed content layer `src/content/` (services, work, journal, team, testimonials, faq) with zod schemas and `validateContent` (`src/content/schema.ts`); `scripts/dev/content.test.mjs`. Work, journal and testimonials ship empty; /manages reads its "Selected work" from `work.ts` | **Merged** (#31) |
 | B3c | `docs/content-guide.md`: add a project, a journal post, a testimonial, in plain words, all in the browser (the examples were run through the validator) | **Merged** (#32) |
 | B4 | `/work` (filters, search, tag chips; "Coming soon" while empty) and `/work/:slug` (context, role, approach, outcome, gallery, links; JSON-LD only for real entries); `/journal` and `/journal/:slug` (tags, reading time, related posts) with `public/rss.xml`; one draft post (hidden); a message form on `/contact` through the existing form function (hook unchanged), **switched off** by `CONTACT_FORM_ENABLED = false` until the critical bundle hardens the function (the page shows the email fallback); "See all work" under each Selected work; unknown slugs and the 404 page get `noindex`. `/about` already exists and is unchanged | In review |
-| B5 | Ecosystem map; Services structured data from the manifest | Pending |
-| B6 | Site search (client-side dialog, keyboard shortcut) | Pending |
-| B7 | Performance and accessibility pass (skip link, landmarks, Core Web Vitals run, 390 px) | Pending |
-| B8 | SEO: Open Graph per page from the manifest, sitemap; `index.html` share tags as a needs-owner pull request | Pending |
-| B9 | Docs: runbook, security review refresh, content guide, glossary | Pending |
-| — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into B1 to B9 above | |
+| B5 | Ecosystem map (SVG, keyboard, plain list, reduced motion), questions and answers with anchors, Services structured data from the manifest; the existing owner-only slot (renders nothing for anyone else) | In review |
+| B6 | Site search: dialog (lazy chunk), Ctrl+K and "/", header button, index from the manifest and content | Pending |
+| Q1 | Accessibility pass (skip link, landmarks, focus, headings, labels, reduced motion, keyboard) | Pending |
+| Q2 | Performance pass (images, lazy loading, fonts, code splitting check, bundle report, Core Web Vitals headless) | Pending |
+| Q3 | 390 px pass on every non-critical page | Pending |
+| Q4 | SEO, non-critical part (canonical, sitemap and robots from the manifest, Open Graph per page, Organization and WebSite JSON-LD) | Pending |
+| Q5 | 404 page and error boundary in the world style | Pending |
+| Q6 | Content quality tests (no placeholder words, no dead links, every manifest route renders without console error) | Pending |
+| C | Backlog: /about and /team from the content layer, /services overview, /press and /brand-kit from existing assets, FR/EN types and keys, /status, changelog, prefetch, print styles for legal pages, docs refresh | Pending |
+| D | **Critical bundle** (one pull request, needs-owner): form function hardening, contact form on, other safe security fixes, headers and CSP, index.html share tags, CLAUDE.md and lockfile, BookingForm, the signed hand-off, setup screen, end-to-end checklist, `docs/owner-review-guide.md` | Pending (last; the run stops after opening it) |
+| — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into the rows above | |
 
 ## To resume
 
