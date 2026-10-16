@@ -21,7 +21,7 @@ These are placeholders on purpose; no session invents them.
 
 ## Driver
 
-DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T17:40:00Z
+DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T17:15:00Z
 
 The previous claim (session_01YPgKc4KaGJPX6EDp5wNDGW, updated 2026-10-15T18:36:00Z) was about 22 hours
 old, no pull request was open, and the owner named this session the only driver. Before starting any
@@ -37,9 +37,15 @@ Decisions taken without asking (the owner asked for no questions; the safest rea
   are checked against by a test; (b) a typed content layer `src/content/*.ts` (services, work, journal,
   team, testimonials, faq) with schemas and a validating test; (c) `docs/content-guide.md`. Three small
   pull requests, tests first.
-- **Order:** Phase 1 (design tokens and /brand) first, as the brief says; then Phase 2 (the signed
-  hand-off: its critical files go in their own needs-owner pull request, and non-critical work continues);
-  then version 4 item 1 (the three pull requests above); then Phase 3.
+- **Order:** Phase 1 (design tokens and /brand) first, as the brief says; then version 4 item 1 (the
+  three pull requests above); then Phase 3; the critical part of Phase 2 last (see the next point).
+- **Where Phase 2 goes:** almost all of it is in critical files (`src/components/owner/**`,
+  `netlify/functions/**`, `src/config/trades.ts`). With one branch, an open needs-owner pull request blocks
+  every later push, so the non-critical Phase 2 part (the "return to Houcine.world" convention, docs) goes
+  in the normal order, and the critical part is opened **last**, as the one needs-owner pull request of
+  this run; the run stops there.
+- **"20 minutes after each merge" (Phase 3):** a pause of 20 minutes after each Phase 3 merge before the
+  next push, so the deploy of the previous item settles.
 - **Schema library:** the brief asks for zod schemas. zod must already be a dependency to be used (no new
   dependency); it is checked before item 1(b) and recorded here.
 - **Tests:** the repository's only test runner is `node --test` (`scripts/ci/*.test.mjs`, run by CI). New
@@ -73,9 +79,9 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | 0.6 | Trivial lint fixes (`npm run lint`: 6 errors/13 warnings before; fixed the 5 type/style-only errors with no behavior change, left the 1 error in a critical file (`src/integrations/supabase/previewAuthStorage.ts`) and all 13 warnings alone — fixing those would mean a behavior or structural change, not "trivial") | **Merged** (#26) |
 | — | **Brief of 16 October (current)** | |
 | B0 | Driver claim, branch sync, this status update | **Merged** (#28) |
-| B1 | Design tokens: `docs/ecosystem-design-tokens.md`, `src/design/tokens.json` with a check against `src/index.css` (`scripts/dev/tokens.test.mjs`), public `/brand` page | In review |
+| B1 | Design tokens: `docs/ecosystem-design-tokens.md`, `src/design/tokens.json` with a check against `src/index.css` (`scripts/dev/tokens.test.mjs`), public `/brand` page | **Merged** (#29). **Tokens published, Trades can rebrand.** |
 | B2 | Signed hand-off: setup screen steps, branded "Opening…" state, errors and fallback, tests; "return to Houcine.world" convention | Pending |
-| B3a | Route manifest `src/routes/manifest.ts` and its check (version 4 item 1a) | Pending |
+| B3a | Route manifest `src/routes/manifest.ts`: RouteMeta, sitemap (now with priorities) and robots.txt come from it; `route()` makes an unknown top-level path a type error (the build fails); `scripts/dev/manifest.test.mjs` checks nested routes and the two files | In review |
 | B3b | Typed content layer and its validator (item 1b) | Pending |
 | B3c | `docs/content-guide.md` (item 1c) | Pending |
 | B4 | `/work`, `/journal` (with RSS), `/about`, `/contact` from the content layer | Pending |
