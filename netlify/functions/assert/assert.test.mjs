@@ -134,7 +134,7 @@ test("refused before calling Supabase: wrong method, other origin, missing or ma
   }
 });
 
-test("refused: missing or malformed settings (fail closed)", async () => {
+test("refused: missing or malformed settings (fail closed, answered as not configured)", async () => {
   for (const over of [
     { SSO_PRIVATE_KEY: "" }, { SSO_PRIVATE_KEY: "not a key at all, definitely not a key" },
     { OWNER_USER_ID: "" }, { OWNER_USER_ID: "owner" },
@@ -145,7 +145,8 @@ test("refused: missing or malformed settings (fail closed)", async () => {
     assert.equal(readSettings(env(over)), null, JSON.stringify(Object.keys(over)));
     const { impl, calls } = fakeFetch();
     const res = await createHandler({ env: env(over), fetchImpl: impl, now: () => NOW })(request());
-    assert.equal(res.status, 403);
+    assert.equal(res.status, 503);
+    assert.deepEqual(await res.json(), { error: "not configured" });
     assert.equal(calls.length, 0);
   }
 });
