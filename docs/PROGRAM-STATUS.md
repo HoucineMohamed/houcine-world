@@ -1,17 +1,51 @@
-# Houcine.world program, version 4 (build the site): status
+# Houcine.world program: status
 
 Updated after every item so an interrupted session can resume. One session branch,
 `claude/upbeat-hamilton-ymyymq`, so items run strictly one at a time: one item per pull request, then
-wait for its merge and sync the branch (`docs/automation.md`, section 7) before the next. Version 4
-replaces version 3; finished version 3 items are kept below.
+wait for its merge and sync the branch (`docs/automation.md`, section 7) before the next.
+
+## Owner must fill
+
+These are placeholders on purpose; no session invents them.
+
+| What | Where | Today |
+| --- | --- | --- |
+| Legal entity name | `src/data/legal.ts` | `[LEGAL ENTITY NAME]` |
+| Governing jurisdiction | `src/data/legal.ts` | `[GOVERNING JURISDICTION]` |
+| Privacy / legal contact email | `src/data/legal.ts` | `[CONTACT EMAIL FOR PRIVACY / LEGAL REQUESTS]` |
+| Postal address | `src/data/legal.ts` | `[POSTAL ADDRESS]` |
+| Public contact email | `src/config/contact.ts` (`CONTACT_EMAIL`) | empty: "Contact details coming soon" |
+| Selected work (projects you may show) | `src/content/management.ts` | empty: "Coming soon" |
+| Testimonials on /designs and /reads | existing page data | already in the code before this program; please confirm they are real, or ask for placeholders |
+| Smaller copies of the large images (1 to 3 MB each, e.g. `the-view-cover.png`, `houcine-photo.jpg`) | `src/assets/` | sessions may not add image files |
 
 ## Driver
 
-DRIVER: session_01YPgKc4KaGJPX6EDp5wNDGW, claimed 2026-10-15T17:39:24Z, updated 2026-10-15T18:36:00Z
+DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T16:58:00Z
 
-The branch was quiet for more than 60 minutes (no push, no open pull request) before this claim.
-Before starting any item, re-fetch and check for a newer DRIVER line; if one exists, stand down at
-once and discard any unpushed work.
+The previous claim (session_01YPgKc4KaGJPX6EDp5wNDGW, updated 2026-10-15T18:36:00Z) was about 22 hours
+old, no pull request was open, and the owner named this session the only driver. Before starting any
+item, re-fetch and check for a newer DRIVER line; never push while another claim is fresher than 30
+minutes.
+
+## The owner's brief of 16 October: order and readings
+
+Decisions taken without asking (the owner asked for no questions; the safest reading is recorded here):
+
+- **"Version 4 item 1"** means: (a) a typed route manifest `src/routes/manifest.ts` (path, title,
+  description, indexable, sitemap priority, owner-only) that RouteMeta, `sitemap.xml` and `robots.txt`
+  are checked against by a test; (b) a typed content layer `src/content/*.ts` (services, work, journal,
+  team, testimonials, faq) with schemas and a validating test; (c) `docs/content-guide.md`. Three small
+  pull requests, tests first.
+- **Order:** Phase 1 (design tokens and /brand) first, as the brief says; then Phase 2 (the signed
+  hand-off: its critical files go in their own needs-owner pull request, and non-critical work continues);
+  then version 4 item 1 (the three pull requests above); then Phase 3.
+- **Schema library:** the brief asks for zod schemas. zod must already be a dependency to be used (no new
+  dependency); it is checked before item 1(b) and recorded here.
+- **Tests:** the repository's only test runner is `node --test` (`scripts/ci/*.test.mjs`, run by CI). New
+  tests that CI should run would live in `scripts/ci/`, which is a critical path, so they are kept in
+  `scripts/dev/` (runnable, not yet in CI) until the owner merges a critical pull request that adds them
+  to CI.
 
 ### Deploy verification gap
 
@@ -37,19 +71,20 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | 0.4b | Accessibility fixes in non-critical files: checker errors 60 before, 0 after (7 known on /booking, a critical file) | **Merged** (#22) |
 | 0.5 | Performance pass with measured bundle sizes (route-level `React.lazy`/`Suspense`; main bundle 2,917 kB/gzip 731 kB before, now a shared 593 kB/gzip 177 kB chunk plus a per-page chunk) | **Merged** (#24) |
 | 0.6 | Trivial lint fixes (`npm run lint`: 6 errors/13 warnings before; fixed the 5 type/style-only errors with no behavior change, left the 1 error in a critical file (`src/integrations/supabase/previewAuthStorage.ts`) and all 13 warnings alone — fixing those would mean a behavior or structural change, not "trivial") | **Merged** (#26) |
-| 1 | Route manifest, typed content layer, validators, `docs/content-guide.md` | Pending |
-| 2 | `/work` hub and case-study template | Pending |
-| 3 | `/journal` with one draft post | Pending |
-| 4 | Ecosystem map and "How the ecosystem works" | Pending |
-| 5 | Command palette search | Pending |
-| 6 | `/brand` living style guide | Pending |
-| 7 | Workspace launch checklist (owner only, presentational) | Pending |
-| 8 | Documentation: architecture, runbook, roadmap | Pending |
-| Critical (a) | Phase 0 and 1 scripts in CI | Pending |
-| Critical (b) | `public/_headers` and a CSP proposal | Pending |
-| Critical (c) | `CLAUDE.md` with every rule | Pending |
-| Critical (d) | Lockfile fix | Pending |
-| Critical (e) | `index.html` share tags | Pending |
+| — | **Brief of 16 October (current)** | |
+| B0 | Driver claim, branch sync, this status update | In review |
+| B1 | Design tokens: `docs/ecosystem-design-tokens.md`, `src/design/tokens.json` with a check against `src/index.css`, public `/brand` page | Pending |
+| B2 | Signed hand-off: setup screen steps, branded "Opening…" state, errors and fallback, tests; "return to Houcine.world" convention | Pending |
+| B3a | Route manifest `src/routes/manifest.ts` and its check (version 4 item 1a) | Pending |
+| B3b | Typed content layer and its validator (item 1b) | Pending |
+| B3c | `docs/content-guide.md` (item 1c) | Pending |
+| B4 | `/work`, `/journal` (with RSS), `/about`, `/contact` from the content layer | Pending |
+| B5 | Ecosystem map; Services structured data from the manifest | Pending |
+| B6 | Site search (client-side dialog, keyboard shortcut) | Pending |
+| B7 | Performance and accessibility pass (skip link, landmarks, Core Web Vitals run, 390 px) | Pending |
+| B8 | SEO: Open Graph per page from the manifest, sitemap; `index.html` share tags as a needs-owner pull request | Pending |
+| B9 | Docs: runbook, security review refresh, content guide, glossary | Pending |
+| — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into B1 to B9 above | |
 
 ## To resume
 
