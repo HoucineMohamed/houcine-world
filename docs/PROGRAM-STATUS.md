@@ -22,7 +22,7 @@ These are placeholders on purpose; no session invents them.
 
 ## Driver
 
-DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T17:40:00Z
+DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T18:20:00Z
 
 The previous claim (session_01YPgKc4KaGJPX6EDp5wNDGW, updated 2026-10-15T18:36:00Z) was about 22 hours
 old, no pull request was open, and the owner named this session the only driver. Before starting any
@@ -44,6 +44,13 @@ Decisions taken without asking (the owner asked for no questions; the safest rea
   backlog C, and only then every critical change in ONE pull request (D, the critical bundle). Until D is
   merged, /contact shows the email fallback: the form is behind `CONTACT_FORM_ENABLED = false`
   (`src/config/contact.ts`).
+- **The complete program of 16 October (current, supersedes the earlier messages):** parts A (finish B5, B6,
+  then the accessibility pass), B (quality passes), C (backlog), D (the critical bundle), E (enable the
+  contact form after the bundle). **Reading:** only one branch may be pushed, so anything pushed while the
+  bundle is open would land inside it. Part E.2 (backlog while the bundle waits) is therefore done
+  **before** the bundle: all of part C first, then D, and the run stops once D is open. The "enable the
+  contact form" pull request (E.1) is pushed only after the bundle has merged and Deploy Supabase has
+  succeeded on the default branch.
 - **Where Phase 2 goes:** almost all of it is in critical files (`src/components/owner/**`,
   `netlify/functions/**`, `src/config/trades.ts`). With one branch, an open needs-owner pull request blocks
   every later push, so the non-critical Phase 2 part (the "return to Houcine.world" convention, docs) goes
@@ -89,8 +96,8 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | B3b | Typed content layer `src/content/` (services, work, journal, team, testimonials, faq) with zod schemas and `validateContent` (`src/content/schema.ts`); `scripts/dev/content.test.mjs`. Work, journal and testimonials ship empty; /manages reads its "Selected work" from `work.ts` | **Merged** (#31) |
 | B3c | `docs/content-guide.md`: add a project, a journal post, a testimonial, in plain words, all in the browser (the examples were run through the validator) | **Merged** (#32) |
 | B4 | `/work` (filters, search, tag chips; "Coming soon" while empty) and `/work/:slug` (context, role, approach, outcome, gallery, links; JSON-LD only for real entries); `/journal` and `/journal/:slug` (tags, reading time, related posts) with `public/rss.xml`; one draft post (hidden); a message form on `/contact` through the existing form function (hook unchanged), **switched off** by `CONTACT_FORM_ENABLED = false` until the critical bundle hardens the function (the page shows the email fallback); "See all work" under each Selected work; unknown slugs and the 404 page get `noindex`. `/about` already exists and is unchanged | In review |
-| B5 | Ecosystem map (SVG, keyboard, plain list, reduced motion), questions and answers with anchors, Services structured data from the manifest; the existing owner-only slot (renders nothing for anyone else) | In review |
-| B6 | Site search: dialog (lazy chunk), Ctrl+K and "/", header button, index from the manifest and content | Pending |
+| B5 | Ecosystem map (SVG, keyboard, plain list, reduced motion), questions and answers with anchors, Services structured data from the manifest; the existing owner-only slot (renders nothing for anyone else) | **Merged** (#34) |
+| B6 | Site search: dialog (lazy chunk), Ctrl+K and "/", header button, index from the manifest and content | In review |
 | Q1 | Accessibility pass (skip link, landmarks, focus, headings, labels, reduced motion, keyboard) | Pending |
 | Q2 | Performance pass (images, lazy loading, fonts, code splitting check, bundle report, Core Web Vitals headless) | Pending |
 | Q3 | 390 px pass on every non-critical page | Pending |
