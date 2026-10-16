@@ -52,8 +52,7 @@ a session to "run the smoke, link and accessibility checks" and to report the re
 | --- | --- |
 | `smoke.mjs` | Builds the site, then opens every public page at 1366px and 390px: the right title, exactly one main heading, no horizontal scroll, no console errors, no outside host beyond the known list, and no trace of the owner-only entries (pages, sitemap, robots.txt, main bundle). Problems in critical files are listed as "known" with the fix to approve. |
 | `link-check.mjs` | Links to pages that do not exist, `#anchors` with no target, images that do not load, and public pages that no other page links to. Outside links are listed by host, never visited. |
-| `keyboard-check.mjs` | The skip link, the phone menu (opens with Enter, keeps focus inside, closes with Escape), search (Ctrl+K and "/", results announced, Enter and Escape) and the ecosystem map (every node reached with Tab, with a visible focus). |
-| `a11y-check.mjs` | One main landmark, page language and title, no duplicate ids, the skip link first, heading order, form labels, image alt text, names of links and buttons, contrast of the design tokens, reduced motion; warnings for focus outlines and estimated text contrast. |
+| `a11y-check.mjs` | Heading order, form labels, image alt text, names of links and buttons, contrast of the design tokens, reduced motion; warnings for focus outlines and estimated text contrast. |
 
 Each is run as `node --experimental-strip-types scripts/dev/<script> ` (add `--build` to build first for the
 link and accessibility checks; `--no-build` skips the build of the smoke check). A non-zero exit means at

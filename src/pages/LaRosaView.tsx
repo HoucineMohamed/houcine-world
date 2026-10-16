@@ -122,7 +122,6 @@ const LaRosaView = () => {
           </Link>
         </div>
       </header>
-      <main id="main">
 
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -417,7 +416,7 @@ const LaRosaView = () => {
           <div className="grid md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 md:mb-0">
               <div className="group relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border-2 border-rose-500/30 shadow-2xl shadow-rose-600/30 hover:scale-105 hover:shadow-rose-600/50 transition-all duration-500">
-                <img loading="lazy" decoding="async" width={1440} height={1920} 
+                <img 
                   src={hajriPhoto} 
                   alt="Hajri Mohamed" 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -429,7 +428,7 @@ const LaRosaView = () => {
                 <div className="absolute inset-0 bg-rose-500/0 group-hover:bg-rose-500/10 transition-colors duration-500" />
               </div>
               <div className="group relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border-2 border-rose-500/30 shadow-2xl shadow-rose-600/30 hover:scale-105 hover:shadow-rose-600/50 transition-all duration-500">
-                <img loading="lazy" decoding="async" width={1440} height={1920} 
+                <img 
                   src={houcinePhoto} 
                   alt="Houcine Mohamed" 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -724,7 +723,6 @@ const LaRosaView = () => {
         </div>
       </section>
 
-      </main>
       <Footer />
       
       <style>{`

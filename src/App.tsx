@@ -2,7 +2,6 @@ import React, { Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import RouteMeta from "./components/RouteMeta";
-import SkipLink from "./components/SkipLink";
 import SiteSearch from "./components/search/SiteSearch";
 import { route } from "./routes/manifest";
 import PublicShell from "./components/PublicShell";
@@ -127,7 +126,6 @@ const AppRoutes = () => {
 
 const App = () => (
   <Router>
-    <SkipLink />
     <ScrollToTop />
     <RouteMeta />
     <SiteSearch />

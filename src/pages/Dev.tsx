@@ -128,7 +128,6 @@ const DevContent = () => {
           </Link>
         </div>
       </header>
-      <main id="main">
 
       {/* Hero Section */}
       <section 
@@ -293,7 +292,7 @@ const DevContent = () => {
 
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-card/90 to-transparent p-4">
                       <div className="flex items-center justify-center gap-2">
-                        <img loading="lazy" decoding="async" width={607} height={600} 
+                        <img 
                           src={pytunisiaLogo}
                           alt="PyTunisia Logo"
                           className="w-12 h-12 object-contain"
@@ -512,7 +511,6 @@ const DevContent = () => {
         </div>
       </section>
 
-      </main>
       <Footer />
     </div>
   );

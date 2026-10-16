@@ -48,7 +48,7 @@ export const ServicePageLayout = ({ children }: { children: ReactNode }) => (
       </div>
     </header>
 
-    <main id="main" className="pt-28 pb-20 px-6">
+    <main className="pt-28 pb-20 px-6">
       <div className="container mx-auto max-w-5xl space-y-20">{children}</div>
     </main>
 

@@ -142,11 +142,6 @@ const DesignsContent = () => {
   const fullText = "Design that speaks emotion.";
 
   useEffect(() => {
-    // With reduced motion, the heading appears at once instead of letter by letter.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setDisplayedText(fullText);
-      return;
-    }
     let index = 0;
     const interval = setInterval(() => {
       if (index <= fullText.length) {
@@ -181,7 +176,6 @@ const DesignsContent = () => {
           </Link>
         </div>
       </header>
-      <main id="main">
 
       {/* Hero Section */}
       <section
@@ -207,12 +201,8 @@ const DesignsContent = () => {
             />
           </div>
           <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 min-h-[4rem]">
-            {/* Screen readers get the whole heading once; the typing effect is visual only. */}
-            <span className="sr-only">{fullText}</span>
-            <span aria-hidden="true">
-              {displayedText}
-              <span className="animate-pulse">|</span>
-            </span>
+            {displayedText}
+            <span className="animate-pulse">|</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
             I build visual identities that move people and elevate brands.
@@ -251,7 +241,7 @@ const DesignsContent = () => {
           </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
             <div className="flex justify-center">
-              <img loading="lazy" decoding="async" width={500} height={500}
+              <img
                 src={profilePhoto}
                 alt="Houcine"
                 className="w-80 h-80 object-cover rounded-2xl shadow-xl shadow-accent/20 hover:shadow-accent/40 transition-all"
@@ -564,7 +554,6 @@ const DesignsContent = () => {
         </div>
       </section>
 
-      </main>
       <Footer />
 
 

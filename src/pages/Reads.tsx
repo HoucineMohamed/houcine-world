@@ -132,7 +132,6 @@ const ReadsContent = () => {
           />
         </div>
       </header>
-      <main id="main">
 
       {/* Hero Section */}
       <section 
@@ -410,7 +409,7 @@ const ReadsContent = () => {
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-xl" />
-                  <img loading="lazy" decoding="async" width={500} height={500} 
+                  <img 
                     src={profileImage}
                     alt="Houcine Mohamed"
                     className="relative rounded-xl w-full aspect-square object-cover"
@@ -490,7 +489,6 @@ const ReadsContent = () => {
         </div>
       </section>
 
-      </main>
       <Footer />
 
       <UnderConstructionModal 

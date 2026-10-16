@@ -64,7 +64,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main id="main">
+      <main>
         {/* Cinematic WebGL Hero */}
         <HeroSection />
 
