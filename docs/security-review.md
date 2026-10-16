@@ -4,6 +4,29 @@ Reviewed: 15 October 2026, on `main` at `f395741`. **Nothing was changed**: this
 Many fixes touch files on the critical list (login, Supabase migrations, edge functions, package
 files), so each one needs your approval as its own pull request.
 
+## Status of each finding (16 October 2026)
+
+| Finding | Status |
+| --- | --- |
+| C1 open sign-ups, form data readable by any signed-in user | **Owner action** (switch off sign-ups: `docs/security-fixes-proposed.md` section f) and **pending in the critical bundle** (narrower read policies) |
+| H1 `services` without row-level security | **Pending in the critical bundle** |
+| H2 public write paths without limits | **Pending in the critical bundle** (limits, honeypot and rate limit in the form function; direct anonymous inserts removed). Until then the new `/contact` form stays off (`CONTACT_FORM_ENABLED = false`) |
+| H3 unescaped text in notification emails | **Pending in the critical bundle** |
+| M1 open redirect after login | **Pending in the critical bundle** |
+| M2 no security headers | **Pending in the critical bundle** (`public/_headers` and a Content-Security-Policy) |
+| M3 OAuth origin trusts the browser | **Owner action**: set `WORKSPACE_ALLOWED_ORIGINS` in Supabase (Edge Functions → Secrets) |
+| M4 dependency advisories | **Pending in the critical bundle** (lockfile hygiene); upgrades afterwards |
+| M5 two role systems | **Accepted for now**, documented in `docs/architecture.md` |
+| L1 `.env` committed | **Accepted**: it holds only public values; sessions never edit `.env` |
+| L2 "Already subscribed" answer | **Pending in the critical bundle** (same answer in both cases) |
+| L3 inbox addresses in the function | **Pending in the critical bundle** (addresses from function secrets) |
+| L4 `dangerouslySetInnerHTML` in the chart styles | **Accepted** (built from code constants only) |
+| L5 users may edit more of their own profile than their name | **Pending in the critical bundle** |
+| L6 "Deploy Supabase" fails with "Invalid access token" | **Owner action**: replace the `SUPABASE_ACCESS_TOKEN` secret (steps in `docs/owner-review-guide.md` once the bundle is open); the bundle makes the workflow say so clearly |
+
+Fixed since the review, outside the critical files: broken image paths, missing labels and names, heading
+order, contrast of the destructive colour, landmarks and a skip link (pull requests #21, #22, #36).
+
 **What I could not see:** the Supabase dashboard (auth settings, secrets, the live database),
 Netlify's settings and the live response headers. Findings that depend on them say so.
 
