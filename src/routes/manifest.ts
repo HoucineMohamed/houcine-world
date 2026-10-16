@@ -114,6 +114,9 @@ export const CONTENT_PAGES: readonly ContentPage[] = [
 
 export const INDEXABLE: readonly RouteEntry[] = MANIFEST.filter((r) => r.indexable);
 
+/** A page's short name: its title without " | Houcine.world" (breadcrumbs, the sitemap page). */
+export const shortTitle = (title: string): string => title.split(" | ")[0].trim();
+
 /** public/sitemap.xml, exactly. */
 export const sitemapXml = (): string =>
   [
