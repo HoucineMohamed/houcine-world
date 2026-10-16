@@ -109,6 +109,14 @@ export const testimonials: Testimonial[] = [
 ];
 ```
 
+## Where your entries appear
+
+- Projects: `/work` (with filters and search), their own page `/work/<slug>`, the site search, and for the
+  management vertical the "Selected work" of `/manages`.
+- Journal posts: `/journal`, their own page `/journal/<slug>`, the RSS feed (`/rss.xml`) and the search.
+- Questions and answers: `/ecosystem`, each with its own anchor (`/ecosystem#faq-<slug>`), and the search.
+- Every published entry also gets its own line in the sitemap. Drafts appear nowhere.
+
 ## Change the services, the team or the questions and answers
 
 - **`src/content/services.ts`**: the four verticals, with what each is for and who it is for.
