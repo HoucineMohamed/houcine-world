@@ -122,6 +122,7 @@ const LaRosaView = () => {
           </Link>
         </div>
       </header>
+      <main id="main">
 
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -723,6 +724,7 @@ const LaRosaView = () => {
         </div>
       </section>
 
+      </main>
       <Footer />
       
       <style>{`

@@ -128,6 +128,7 @@ const DevContent = () => {
           </Link>
         </div>
       </header>
+      <main id="main">
 
       {/* Hero Section */}
       <section 
@@ -511,6 +512,7 @@ const DevContent = () => {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   );

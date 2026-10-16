@@ -109,7 +109,7 @@ const AboutMe = () => {
         </div>
       </header>
 
-      <main className="pt-20 sm:pt-24 pb-12 sm:pb-16">
+      <main id="main" className="pt-20 sm:pt-24 pb-12 sm:pb-16">
         {/* Profile Header Section */}
         <section 
           ref={headerAnimation.ref}

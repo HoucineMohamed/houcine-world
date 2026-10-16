@@ -41,6 +41,9 @@ const SearchDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange: (op
         <DialogDescription className="sr-only">Type to search the pages, services, work, journal and questions.</DialogDescription>
         <Command shouldFilter={false} label="Search the site" className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3">
           <CommandInput value={query} onValueChange={setQuery} placeholder="Search pages, services, work, journal…" />
+          <p className="sr-only" aria-live="polite" role="status">
+            {query.trim() === "" || results.length === 0 ? "" : `${results.length} ${results.length === 1 ? "result" : "results"}`}
+          </p>
           <CommandList>
             {query.trim() !== "" && <CommandEmpty>No result for “{query.trim()}”.</CommandEmpty>}
             {GROUPS.map(({ kind, label }) => {

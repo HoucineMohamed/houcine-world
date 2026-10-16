@@ -36,7 +36,7 @@ const fail = (where, what) => failures.push(`${where}: ${what}`);
 const KNOWN = {
   "/booking": {
     scroll: "the floating dots of src/pages/BookingForm.tsx (a critical file) reach past the right edge; " +
-      "the fix is overflow-hidden on that page's outer wrapper (docs/MORNING-REPORT.md)",
+      "the fix is overflow-hidden on that page's outer wrapper (critical bundle, docs/PROGRAM-STATUS.md)",
   },
 };
 const known = [];
