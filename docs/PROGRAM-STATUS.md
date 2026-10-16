@@ -81,8 +81,8 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | B1 | Design tokens: `docs/ecosystem-design-tokens.md`, `src/design/tokens.json` with a check against `src/index.css` (`scripts/dev/tokens.test.mjs`), public `/brand` page | **Merged** (#29). **Tokens published, Trades can rebrand.** |
 | B2 | Signed hand-off: setup screen steps, branded "Opening…" state, errors and fallback, tests; "return to Houcine.world" convention | Pending |
 | B3a | Route manifest `src/routes/manifest.ts`: RouteMeta, sitemap (now with priorities) and robots.txt come from it; `route()` makes an unknown top-level path a type error (the build fails); `scripts/dev/manifest.test.mjs` checks nested routes and the two files | **Merged** (#30) |
-| B3b | Typed content layer `src/content/` (services, work, journal, team, testimonials, faq) with zod schemas and `validateContent` (`src/content/schema.ts`); `scripts/dev/content.test.mjs`. Work, journal and testimonials ship empty; /manages reads its "Selected work" from `work.ts` | In review |
-| B3c | `docs/content-guide.md` (item 1c) | Pending |
+| B3b | Typed content layer `src/content/` (services, work, journal, team, testimonials, faq) with zod schemas and `validateContent` (`src/content/schema.ts`); `scripts/dev/content.test.mjs`. Work, journal and testimonials ship empty; /manages reads its "Selected work" from `work.ts` | **Merged** (#31) |
+| B3c | `docs/content-guide.md`: add a project, a journal post, a testimonial, in plain words, all in the browser (the examples were run through the validator) | In review |
 | B4 | `/work`, `/journal` (with RSS), `/about`, `/contact` from the content layer | Pending |
 | B5 | Ecosystem map; Services structured data from the manifest | Pending |
 | B6 | Site search (client-side dialog, keyboard shortcut) | Pending |
