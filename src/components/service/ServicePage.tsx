@@ -28,7 +28,7 @@ export const ServicePageLayout = ({ children }: { children: ReactNode }) => (
       <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <Link
           to="/"
-          className={cn("inline-flex items-center justify-center min-h-11 min-w-11 -my-1.5 -mx-1.5 rounded-md opacity-80 hover:opacity-100 transition-opacity", focusRing)}
+          className={cn("inline-flex items-center justify-center [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:-my-1.5 [@media(pointer:coarse)]:-mx-1.5 rounded-md opacity-80 hover:opacity-100 transition-opacity", focusRing)}
         >
           <img src={logoH} alt="Houcine.world home" className="h-8 w-auto" />
         </Link>
@@ -37,7 +37,7 @@ export const ServicePageLayout = ({ children }: { children: ReactNode }) => (
           <Link
             to="/#services"
             className={cn(
-              "inline-flex items-center gap-2 min-h-11 -my-3 rounded-md text-sm text-muted-foreground hover:text-foreground transition-colors",
+              "inline-flex items-center gap-2 [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:-my-3 rounded-md text-sm text-muted-foreground hover:text-foreground transition-colors",
               focusRing,
             )}
           >
@@ -168,7 +168,7 @@ const WorkCard = ({ item }: { item: WorkItem }) => {
 const AllWorkLink = () => (
   <Link
     to="/work"
-    className={cn("inline-flex items-center gap-2 min-h-11 text-sm text-muted-foreground hover:text-foreground rounded mt-3", focusRing)}
+    className={cn("inline-flex items-center gap-2 [@media(pointer:coarse)]:min-h-11 text-sm text-muted-foreground hover:text-foreground rounded mt-3", focusRing)}
   >
     See all work across the ecosystem <ArrowRight className="w-4 h-4" aria-hidden="true" />
   </Link>

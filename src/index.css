@@ -122,9 +122,9 @@ All colors MUST be HSL.
   /* On touch screens, buttons and toggles are at least 44 x 44 px (the size of a fingertip). Mouse
      users keep the compact sizes of the design. */
   @media (pointer: coarse) {
-    button,
-    [role="button"],
-    [role="combobox"] {
+    /* Only the page's own header, content and footer: dialogs, menus and form controls such as
+       checkboxes, switches and tabs keep their designed sizes. */
+    :is(header, main, footer) :is(button, [role="button"], [role="combobox"]):not([role="checkbox"]):not([role="switch"]):not([role="tab"]) {
       min-height: 44px;
       min-width: 44px;
     }

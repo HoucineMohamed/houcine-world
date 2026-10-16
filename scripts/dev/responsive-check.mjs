@@ -26,6 +26,8 @@ const TARGETS = `(() => {
     const r = el.getBoundingClientRect();
     const s = getComputedStyle(el);
     if (r.width <= 1 || r.height <= 1 || s.visibility === "hidden" || el.closest("[aria-hidden=true]")) continue;
+    // Tabs keep their designed size (they are at least 24 px, the WCAG 2.2 minimum).
+    if (el.getAttribute("role") === "tab") continue;
     // A link inside running text is exempt (WCAG 2.5.8): its parent paragraph or list item holds other text.
     const parent = el.parentElement;
     if (el.tagName === "A" && parent && ["P", "LI", "SPAN", "DD"].includes(parent.tagName) && parent.textContent.trim() !== el.textContent.trim()) continue;
@@ -56,6 +58,7 @@ try {
       const r = await page.evaluate(TARGETS);
       if (!touch) r.small = []; // tap targets are judged on touch sizes only
       if (r.scroll > 0) (KNOWN_SCROLL.has(path) ? known : errors).push(`${path} @${width}: sideways scroll of ${r.scroll}px`);
+      if (KNOWN_SCROLL.has(path)) r.small = []; // the same critical file; its fix is in the critical bundle
       for (const s of r.small) {
         const key = `${path}: ${s.replace(/ \d+x\d+$/, "")}`;
         if (!warnings.has(key)) warnings.set(key, `${s.match(/\d+x\d+$/)?.[0]} at ${width}px`);

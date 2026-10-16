@@ -74,7 +74,7 @@ const Journal = () => {
       )}
 
       <p>
-        <a href="/rss.xml" className={cn("inline-flex items-center gap-2 min-h-11 text-sm text-muted-foreground hover:text-foreground rounded", focusRing)}>
+        <a href="/rss.xml" className={cn("inline-flex items-center gap-2 [@media(pointer:coarse)]:min-h-11 text-sm text-muted-foreground hover:text-foreground rounded", focusRing)}>
           <Rss className="w-4 h-4" aria-hidden="true" /> Follow the journal with RSS
         </a>
       </p>
