@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { BASE_URL, DEFAULT_SHARE_IMAGE, DEFAULT_SHARE_IMAGE_ALT, SITE_NAME, structuredData } from "@/config/site";
+import { DEFAULT_SHARE_IMAGE, DEFAULT_SHARE_IMAGE_ALT, SITE_NAME, structuredData } from "@/config/site";
 import { DEFAULT_DESCRIPTION, PRIVATE_PREFIXES, PUBLIC_PAGES, canonicalUrl, type PageMeta } from "@/config/routes";
 
 // Per-page <title> and description without a new dependency. index.html keeps the defaults
@@ -75,16 +75,7 @@ const RouteMeta = () => {
     ensureMeta("name", "twitter:image:alt", DEFAULT_SHARE_IMAGE_ALT);
 
     setStructuredData(!isPrivate);
-    const canonical = isPrivate ? null : canonicalUrl(pathname);
-    setCanonical(canonical);
-
-    // Share data per page: the address shared is the canonical one; a published journal post is an article.
-    const shareUrl = canonical ?? `${BASE_URL}/`;
-    ensureMeta("property", "og:url", shareUrl);
-    ensureMeta("name", "twitter:url", shareUrl);
-    ensureMeta("property", "og:type", canonical && pathname.startsWith("/journal/") ? "article" : "website");
-    ensureMeta("property", "og:site_name", SITE_NAME);
-    ensureMeta("name", "twitter:card", "summary_large_image");
+    setCanonical(isPrivate ? null : canonicalUrl(pathname));
 
     // Ask search engines not to index app routes (not a security control: those routes are guarded), nor
     // any address that is not a known page: the 404 page and unknown or draft work and journal slugs,

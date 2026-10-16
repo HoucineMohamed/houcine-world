@@ -5,7 +5,7 @@ import RouteMeta from "./components/RouteMeta";
 import SkipLink from "./components/SkipLink";
 import SiteSearch from "./components/search/SiteSearch";
 import { route } from "./routes/manifest";
-import PublicShell, { PageErrorBoundary } from "./components/PublicShell";
+import PublicShell from "./components/PublicShell";
 import { usePageTracking } from "./hooks/useAnalytics";
 import AuthGuard from "./components/workspace/AuthGuard";
 import BrandGuard from "./components/workspace/BrandGuard";
@@ -19,11 +19,6 @@ const Index = React.lazy(() => import("./pages/Index"));
 const AboutMe = React.lazy(() => import("./pages/AboutMe"));
 const Dev = React.lazy(() => import("./pages/Dev"));
 const Brand = React.lazy(() => import("./pages/Brand"));
-const Team = React.lazy(() => import("./pages/Team"));
-const Changelog = React.lazy(() => import("./pages/Changelog"));
-const Status = React.lazy(() => import("./pages/Status"));
-const BrandKit = React.lazy(() => import("./pages/BrandKit"));
-const Services = React.lazy(() => import("./pages/Services"));
 const Work = React.lazy(() => import("./pages/Work"));
 const WorkEntry = React.lazy(() => import("./pages/WorkEntry"));
 const Journal = React.lazy(() => import("./pages/Journal"));
@@ -99,11 +94,6 @@ const AppRoutes = () => {
         <Route path={route("/journal")} element={<Journal />} />
         <Route path={route("/journal/:slug")} element={<JournalPost />} />
         <Route path={route("/brand")} element={<Brand />} />
-        <Route path={route("/team")} element={<Team />} />
-        <Route path={route("/changelog")} element={<Changelog />} />
-        <Route path={route("/status")} element={<Status />} />
-        <Route path={route("/brand-kit")} element={<BrandKit />} />
-        <Route path={route("/services")} element={<Services />} />
       </Route>
       <Route path={route("/admin")} element={<Admin />} />
       <Route path={route("/admin/login")} element={<AdminLogin />} />
@@ -135,33 +125,18 @@ const AppRoutes = () => {
   );
 };
 
-const AppLoading = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center" role="status" aria-live="polite">
-    <span className="sr-only">Loading…</span>
-    <span className="h-8 w-8 rounded-full border-2 border-border border-t-accent motion-safe:animate-spin" aria-hidden="true" />
-  </div>
-);
-
-/** The error boundary around every route, reset on each new address. */
-const RouteErrorBoundary = ({ children }: { children: React.ReactNode }) => {
-  const { pathname } = useLocation();
-  return <PageErrorBoundary key={pathname}>{children}</PageErrorBoundary>;
-};
-
 const App = () => (
   <Router>
     <SkipLink />
     <ScrollToTop />
     <RouteMeta />
     <SiteSearch />
-    {/* Each page is its own chunk (above). Public pages have their own skeleton and error boundary
-        (PublicShell); this outer pair covers the workspace and admin pages: a quiet loading state in the
-        site's colours, and the same calm message if a page crashes or its code cannot be downloaded. */}
-    <RouteErrorBoundary>
-      <Suspense fallback={<AppLoading />}>
-        <AppRoutes />
-      </Suspense>
-    </RouteErrorBoundary>
+    {/* Each page is its own chunk now (above); this is the one fallback shown while any of them
+        loads. Plain text, no new dependency, and intentionally unstyled -- it's rarely visible on a
+        fast connection and the goal here is smaller bundles, not a loading-screen design. */}
+    <Suspense fallback={<div style={{ padding: "2rem", textAlign: "center" }}>Loading…</div>}>
+      <AppRoutes />
+    </Suspense>
   </Router>
 );
 

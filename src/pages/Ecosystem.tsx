@@ -71,11 +71,6 @@ const Ecosystem = () => {
       <EcosystemMap services={services} />
       <div className="mt-12">
         <EcosystemList services={services} />
-        <p className="mt-6">
-          <Link to="/services" className={cn("inline-flex items-center min-h-11 text-sm text-accent underline hover:text-accent/80 rounded", focusRing)}>
-            All services on one page
-          </Link>
-        </p>
         <div className="grid gap-6 md:grid-cols-2 mt-6 empty:hidden">
           <OwnerServiceSlot />
         </div>
@@ -96,7 +91,7 @@ const Ecosystem = () => {
               {f.links && f.links.length > 0 && (
                 <span className="block mt-2">
                   {f.links.map((l) => (
-                    <Link key={l.href} to={l.href} className={cn("mr-4 inline-flex items-center min-h-11 text-accent underline hover:text-accent/80 rounded", focusRing)}>
+                    <Link key={l.href} to={l.href} className={cn("mr-4 text-accent underline hover:text-accent/80 rounded", focusRing)}>
                       {l.label}
                     </Link>
                   ))}
@@ -116,10 +111,6 @@ const Ecosystem = () => {
         More about the founder:{" "}
         <Link to="/about" className={cn("text-accent underline hover:text-accent/80 rounded", focusRing)}>
           About me
-        </Link>
-        {" "}and{" "}
-        <Link to="/team" className={cn("text-accent underline hover:text-accent/80 rounded", focusRing)}>
-          the team
         </Link>
         .
       </p>

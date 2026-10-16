@@ -68,7 +68,7 @@ export const EcosystemMap = ({ services }: { services: readonly Service[] }) => 
                 onFocus={() => setActive(n.slug)}
                 onBlur={() => setActive(null)}
                 className={cn(
-                  "block whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium backdrop-blur transition-colors [@media(pointer:coarse)]:py-3",
+                  "block whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium backdrop-blur transition-colors",
                   active === n.slug ? "border-accent bg-accent text-accent-foreground" : "border-border/60 bg-card/70 text-foreground hover:border-accent/50",
                   focusRing,
                 )}

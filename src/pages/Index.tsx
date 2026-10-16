@@ -23,7 +23,7 @@ const Index = () => {
       {/* Fixed Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/80">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/about" className="flex items-center gap-3 min-h-11 -my-0.5 group">
+          <Link to="/about" className="flex items-center gap-3 group">
             <img 
               src={logoH} 
               alt="Houcine Logo" 
@@ -36,10 +36,10 @@ const Index = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <Link to="/dev" className="inline-flex items-center justify-center min-h-11 min-w-11 -my-2.5 hover:text-accent transition-all hover:scale-105 duration-200">Tech</Link>
-            <Link to="/designs" className="inline-flex items-center justify-center min-h-11 min-w-11 -my-2.5 hover:text-accent transition-all hover:scale-105 duration-200">Studio</Link>
-            <Link to="/reads" className="inline-flex items-center justify-center min-h-11 min-w-11 -my-2.5 hover:text-accent transition-all hover:scale-105 duration-200">Education</Link>
-            <Link to="/manages" className="inline-flex items-center justify-center min-h-11 min-w-11 -my-2.5 hover:text-accent transition-all hover:scale-105 duration-200">Management</Link>
+            <Link to="/dev" className="hover:text-accent transition-all hover:scale-105 duration-200">Tech</Link>
+            <Link to="/designs" className="hover:text-accent transition-all hover:scale-105 duration-200">Studio</Link>
+            <Link to="/reads" className="hover:text-accent transition-all hover:scale-105 duration-200">Education</Link>
+            <Link to="/manages" className="hover:text-accent transition-all hover:scale-105 duration-200">Management</Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -84,7 +84,7 @@ const Index = () => {
               Four interconnected domains representing technology, creativity, knowledge, and leadership.
             </p>
             <p className="text-center mb-12">
-              <Link to="/ecosystem" className="inline-flex items-center min-h-11 text-sm text-accent underline hover:text-accent/80 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+              <Link to="/ecosystem" className="text-sm text-accent underline hover:text-accent/80 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                 About the ecosystem
               </Link>
             </p>

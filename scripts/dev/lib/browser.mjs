@@ -125,18 +125,9 @@ const connect = async (wsUrl) => {
 };
 
 /** Opens a path at a viewport width and waits for the page to settle. Returns what happened on the way. */
-export const open = async (page, base, path, { width = 1366, height = 900, reducedMotion = false, coarse = false, wait = 2500 } = {}) => {
+export const open = async (page, base, path, { width = 1366, height = 900, reducedMotion = false, wait = 2500 } = {}) => {
   await page.send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: width < 600 });
-  // coarse: a touch screen, so that (pointer: coarse) styles apply.
-  await page.send("Emulation.setTouchEmulationEnabled", { enabled: coarse, maxTouchPoints: coarse ? 5 : 1 });
-  const pointer = coarse ? "coarse" : "fine";
-  await page.send("Emulation.setEmulatedMedia", {
-    features: [
-      { name: "prefers-reduced-motion", value: reducedMotion ? "reduce" : "no-preference" },
-      { name: "pointer", value: pointer },
-      { name: "any-pointer", value: pointer },
-    ],
-  });
+  await page.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: reducedMotion ? "reduce" : "no-preference" }] });
   page.events.length = 0;
   await page.send("Page.navigate", { url: base + path });
   await sleep(wait);
