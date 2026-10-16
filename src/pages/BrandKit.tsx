@@ -30,7 +30,7 @@ const BrandKit = () => (
             <div className="p-6">
               <h3 className="text-lg font-semibold text-foreground">{f.name}</h3>
               <p className="text-sm text-muted-foreground mb-4">{f.size}</p>
-              <a href={f.href} download={f.file} className={cn(buttonVariants({ variant: "outline" }), "gap-2", focusRing)}>
+              <a href={f.href} download={f.file} className={cn(buttonVariants({ variant: "outline" }), "gap-2 [@media(pointer:coarse)]:min-h-11", focusRing)}>
                 <Download className="w-4 h-4" aria-hidden="true" />
                 Download {f.name.toLowerCase()}
               </a>
