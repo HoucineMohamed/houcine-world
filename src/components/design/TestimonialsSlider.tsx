@@ -48,6 +48,7 @@ export const TestimonialsSlider = ({ testimonials: externalTestimonials }: Testi
   };
 
   const currentTestimonial = testimonials[currentIndex];
+  if (!currentTestimonial) return null;
 
   return (
     <div className="relative max-w-4xl mx-auto">
