@@ -52,13 +52,7 @@ export const MANIFEST = [
   { path: "/work/:slug", title: `Work | ${SITE}`, description: "A case study from the Houcine.world ecosystem.", indexable: false, sitemapPriority: null, ownerOnly: false },
   { path: "/journal", title: `Journal | ${SITE}`, description: "Notes from the Houcine.world ecosystem.", indexable: true, sitemapPriority: 0.6, ownerOnly: false },
   { path: "/journal/:slug", title: `Journal | ${SITE}`, description: "A post from the Houcine.world journal.", indexable: false, sitemapPriority: null, ownerOnly: false },
-  { path: "/services", title: `Services | ${SITE}`, description: "The four verticals of Houcine.world: what each does and who it is for.", indexable: true, sitemapPriority: 0.7, ownerOnly: false },
-  { path: "/brand-kit", title: `Brand kit | ${SITE}`, description: "Download the Houcine.world logo and share image.", indexable: true, sitemapPriority: 0.4, ownerOnly: false },
-  { path: "/status", title: `Status | ${SITE}`, description: "Which version of Houcine.world is being served, and when it was published.", indexable: true, sitemapPriority: 0.1, ownerOnly: false },
-  { path: "/changelog", title: `Changelog | ${SITE}`, description: "What changed on the Houcine.world site, newest first.", indexable: true, sitemapPriority: 0.2, ownerOnly: false },
-  { path: "/team", title: `Team | ${SITE}`, description: "The people behind the Houcine.world ecosystem.", indexable: true, sitemapPriority: 0.5, ownerOnly: false },
   { path: "/brand", title: `Brand | ${SITE}`, description: "The Houcine.world design language: logo, colours, type, spacing and components, with copy-ready values.", indexable: true, sitemapPriority: 0.5, ownerOnly: false },
-  { path: "/sitemap", title: `Sitemap | ${SITE}`, description: "Every public page of Houcine.world, grouped, with one line on each.", indexable: true, sitemapPriority: 0.3, ownerOnly: false },
 
   // Sign-in and admin
   { path: "/admin", ...APP, ownerOnly: false },

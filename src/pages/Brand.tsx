@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Check, Copy, Palette } from "lucide-react";
 import { ServicePageLayout, ServiceHero, ServiceSection } from "@/components/service/ServicePage";
 import { Button } from "@/components/ui/button";
@@ -131,10 +130,6 @@ const Brand = () => (
           <div><dt className="text-muted-foreground">Size</dt><dd className="text-foreground">500 × 500 px, PNG</dd></div>
           <div><dt className="text-muted-foreground">In the header</dt><dd className="text-foreground">32 to 40 px high</dd></div>
           <div><dt className="text-muted-foreground">Share image</dt><dd className="font-mono text-foreground">public/og-default.png, 1200 × 630 px</dd></div>
-          <div>
-            <dt className="text-muted-foreground">Download</dt>
-            <dd><Link to="/brand-kit" className={cn("inline-flex items-center min-h-11 text-accent underline hover:text-accent/80 rounded", focusRing)}>The brand kit</Link></dd>
-          </div>
         </dl>
       </div>
     </ServiceSection>
