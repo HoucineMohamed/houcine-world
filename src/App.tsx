@@ -5,6 +5,8 @@ import RouteMeta from "./components/RouteMeta";
 import SkipLink from "./components/SkipLink";
 import SiteSearch from "./components/search/SiteSearch";
 import { route } from "./routes/manifest";
+import { PAGE_LOADERS } from "./routes/pageLoaders";
+import { usePrefetch } from "./lib/prefetch";
 import PublicShell, { PageErrorBoundary } from "./components/PublicShell";
 import { usePageTracking } from "./hooks/useAnalytics";
 import AuthGuard from "./components/workspace/AuthGuard";
@@ -15,31 +17,31 @@ import BrandGuard from "./components/workspace/BrandGuard";
 // ~2.9MB/730KB-gzip JS file; a visitor only ever needs the one page they're on. React.lazy keeps
 // each <Route>'s element as a plain reference, so nothing here changes which guard, role check or
 // path renders which page -- only when its code is fetched.
-const Index = React.lazy(() => import("./pages/Index"));
-const AboutMe = React.lazy(() => import("./pages/AboutMe"));
-const Dev = React.lazy(() => import("./pages/Dev"));
-const Brand = React.lazy(() => import("./pages/Brand"));
-const Team = React.lazy(() => import("./pages/Team"));
-const Changelog = React.lazy(() => import("./pages/Changelog"));
-const Status = React.lazy(() => import("./pages/Status"));
-const BrandKit = React.lazy(() => import("./pages/BrandKit"));
-const Services = React.lazy(() => import("./pages/Services"));
-const Work = React.lazy(() => import("./pages/Work"));
-const WorkEntry = React.lazy(() => import("./pages/WorkEntry"));
-const Journal = React.lazy(() => import("./pages/Journal"));
-const JournalPost = React.lazy(() => import("./pages/JournalPost"));
-const Designs = React.lazy(() => import("./pages/Designs"));
-const Reads = React.lazy(() => import("./pages/Reads"));
-const Manages = React.lazy(() => import("./pages/Manages"));
-const LaRosaView = React.lazy(() => import("./pages/LaRosaView"));
-const BookingForm = React.lazy(() => import("./pages/BookingForm"));
-const AboutDJ = React.lazy(() => import("./pages/AboutDJ"));
-const Review = React.lazy(() => import("./pages/Review"));
-const Terms = React.lazy(() => import("./pages/Terms"));
-const Privacy = React.lazy(() => import("./pages/Privacy"));
-const DataDeletion = React.lazy(() => import("./pages/DataDeletion"));
-const Contact = React.lazy(() => import("./pages/Contact"));
-const Ecosystem = React.lazy(() => import("./pages/Ecosystem"));
+const Index = React.lazy(PAGE_LOADERS["/"]);
+const AboutMe = React.lazy(PAGE_LOADERS["/about"]);
+const Dev = React.lazy(PAGE_LOADERS["/dev"]);
+const Brand = React.lazy(PAGE_LOADERS["/brand"]);
+const Team = React.lazy(PAGE_LOADERS["/team"]);
+const Changelog = React.lazy(PAGE_LOADERS["/changelog"]);
+const Status = React.lazy(PAGE_LOADERS["/status"]);
+const BrandKit = React.lazy(PAGE_LOADERS["/brand-kit"]);
+const Services = React.lazy(PAGE_LOADERS["/services"]);
+const Work = React.lazy(PAGE_LOADERS["/work"]);
+const WorkEntry = React.lazy(PAGE_LOADERS["/work/:slug"]);
+const Journal = React.lazy(PAGE_LOADERS["/journal"]);
+const JournalPost = React.lazy(PAGE_LOADERS["/journal/:slug"]);
+const Designs = React.lazy(PAGE_LOADERS["/designs"]);
+const Reads = React.lazy(PAGE_LOADERS["/reads"]);
+const Manages = React.lazy(PAGE_LOADERS["/manages"]);
+const LaRosaView = React.lazy(PAGE_LOADERS["/larosaview"]);
+const BookingForm = React.lazy(PAGE_LOADERS["/booking"]);
+const AboutDJ = React.lazy(PAGE_LOADERS["/about-dj"]);
+const Review = React.lazy(PAGE_LOADERS["/review"]);
+const Terms = React.lazy(PAGE_LOADERS["/terms"]);
+const Privacy = React.lazy(PAGE_LOADERS["/privacy"]);
+const DataDeletion = React.lazy(PAGE_LOADERS["/data-deletion"]);
+const Contact = React.lazy(PAGE_LOADERS["/contact"]);
+const Ecosystem = React.lazy(PAGE_LOADERS["/ecosystem"]);
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 const Admin = React.lazy(() => import("./pages/Admin"));
 const AdminLogin = React.lazy(() => import("./pages/AdminLogin"));
@@ -61,6 +63,7 @@ const WorkspaceNotFound = React.lazy(() => import("./pages/workspace/WorkspaceNo
 // Wrapper component to enable page tracking
 const AppRoutes = () => {
   usePageTracking();
+  usePrefetch();
 
   // The public site hides the native cursor globally (src/index.css) in favor
   // of <CustomCursor />, which only ever renders on public pages — none of
