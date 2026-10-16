@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { 
+import {
   BookOpen, Search, Mail, ExternalLink,
-  TrendingUp, Code2, Palette, Users, DollarSign, Cpu, Heart, GraduationCap, Construction, Loader2
+  TrendingUp, Code2, Palette, Users, DollarSign, Cpu, Heart, GraduationCap, Construction, Loader2,
+  type LucideIcon
 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
@@ -24,7 +25,7 @@ import { toast } from "sonner";
 import profileImage from "@/assets/profile.png";
 import { useFormSubmission } from "@/hooks/useFormSubmission";
 
-const categoryIcons: Record<BookCategory, React.ComponentType<any>> = {
+const categoryIcons: Record<BookCategory, LucideIcon> = {
   FinTech: TrendingUp,
   Development: Code2,
   Design: Palette,
@@ -408,7 +409,7 @@ const ReadsContent = () => {
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-xl" />
-                  <img loading="lazy" decoding="async" 
+                  <img 
                     src={profileImage}
                     alt="Houcine Mohamed"
                     className="relative rounded-xl w-full aspect-square object-cover"

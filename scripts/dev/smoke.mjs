@@ -8,7 +8,7 @@
 //
 // Offline: Chromium resolves every host except 127.0.0.1 to "not found" (scripts/dev/lib/browser.mjs).
 import { spawnSync } from "node:child_process";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { KNOWN_HOSTS, ROOT, flags, launch, loadRoutes, open, serveDist } from "./lib/browser.mjs";
 
@@ -26,9 +26,7 @@ if (!privateHost) throw new Error("Could not read the private host from src/conf
 const assets = join(ROOT, "dist/assets");
 const jsFiles = readdirSync(assets).filter((f) => f.endsWith(".js"));
 const ownerChunks = jsFiles.filter((f) => readFileSync(join(assets, f), "utf8").includes(privateHost));
-// The main bundle is the entry script that dist/index.html loads (route chunks load later, on demand).
-const mainBundle = readFileSync(join(ROOT, "dist/index.html"), "utf8").match(/<script[^>]+src="\/assets\/([^"]+\.js)"/)?.[1];
-if (!mainBundle || !jsFiles.includes(mainBundle)) throw new Error("Could not find the entry script in dist/index.html");
+const mainBundle = jsFiles.sort((a, b) => statSync(join(assets, b)).size - statSync(join(assets, a)).size)[0];
 
 const failures = [];
 const fail = (where, what) => failures.push(`${where}: ${what}`);

@@ -27,7 +27,7 @@ export const PortfolioLightbox = ({ item, isOpen, onClose }: PortfolioLightboxPr
         </DialogHeader>
         <div className="space-y-4">
           <div className="relative aspect-video overflow-hidden rounded-lg">
-            <img loading="lazy" decoding="async"
+            <img
               src={item.image}
               alt={item.title}
               className="w-full h-full object-cover"

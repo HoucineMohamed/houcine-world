@@ -196,7 +196,7 @@ const AboutDJ = () => {
           >
             <div className="relative rounded-2xl overflow-hidden border-2 border-rose-500/30 hover:border-rose-500 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-rose-600/40">
               <div className="aspect-video bg-gradient-to-br from-rose-900/40 to-background relative">
-                <img loading="lazy" decoding="async" 
+                <img 
                   src="https://i.ytimg.com/vi/art7YToqAKM/maxresdefault.jpg" 
                   alt="La Rosa View X Al Hayet FM" 
                   className="w-full h-full object-cover"

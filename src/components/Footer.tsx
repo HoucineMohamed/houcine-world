@@ -25,7 +25,7 @@ const Footer = () => {
               className="hover:scale-110 transition-all duration-200 group"
               aria-label="Houcine.world home"
             >
-              <img loading="lazy" decoding="async" 
+              <img 
                 src={logoH} 
                 alt="Houcine.world logo" 
                 className="h-6 w-auto opacity-80 group-hover:opacity-100 transition-opacity"
