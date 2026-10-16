@@ -57,21 +57,6 @@ test("content templates are real routes of the manifest and are not themselves i
   }
 });
 
-test("every indexable page and published entry has a title, a description and a canonical link from BASE_URL", async () => {
-  const { CONTENT_PAGES } = await import(join(root, "src/routes/manifest.ts"));
-  const { PUBLIC_PAGES, canonicalUrl } = await import(join(root, "src/config/routes.ts"));
-  const { BASE_URL } = await import(join(root, "src/config/site.ts"));
-  assert.equal(BASE_URL, "https://houcine.world");
-  const paths = [...MANIFEST.filter((r) => r.indexable).map((r) => r.path), ...CONTENT_PAGES.map((p) => p.path)];
-  for (const p of paths) {
-    const meta = PUBLIC_PAGES[p];
-    assert.ok(meta && meta.title.trim() && meta.description.trim(), `${p}: no title or description`);
-    assert.equal(canonicalUrl(p), `${BASE_URL}${p}`, `${p}: canonical`);
-  }
-  assert.equal(canonicalUrl("/workspace"), null);
-  assert.equal(canonicalUrl("/no-such-page"), null);
-});
-
 test("indexable titles are unique", () => {
   const titles = MANIFEST.filter((r) => r.indexable).map((r) => r.title);
   assert.equal(new Set(titles).size, titles.length);

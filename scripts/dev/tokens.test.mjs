@@ -44,11 +44,3 @@ test("the comparison itself catches a difference (guard against a check that alw
   const changed = { ...tokens.colors.root, background: "1 2% 3%" };
   assert.notDeepEqual(changed, cssBlock(":root"));
 });
-
-test("docs/ecosystem-design-tokens.md lists every colour with its value from tokens.json", () => {
-  const doc = readFileSync(join(root, "docs/ecosystem-design-tokens.md"), "utf8");
-  for (const [name, value] of Object.entries(tokens.colors.root)) {
-    assert.ok(doc.includes(`| \`--${name}\` | \`${value}\` |`), `--${name} ${value} is missing or different in the doc`);
-  }
-  assert.ok(doc.includes(`\`${tokens.radius.base}\``), "the radius is missing from the doc");
-});

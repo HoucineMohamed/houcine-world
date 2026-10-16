@@ -85,7 +85,7 @@ export const ServiceSection = ({
   title: string;
   children: ReactNode;
 }) => (
-  <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-28">
+  <section aria-labelledby={`${id}-title`}>
     <h2 id={`${id}-title`} className="text-3xl md:text-4xl font-bold font-display text-foreground mb-8">
       {title}
     </h2>
