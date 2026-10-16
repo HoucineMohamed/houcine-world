@@ -3,7 +3,7 @@
 // lands under "More" until it is given one. Never lists a private or owner-only page.
 //
 // Plain Node imports this file: keep its imports relative, with ".ts".
-import { CONTENT_PAGES, INDEXABLE } from "./manifest.ts";
+import { CONTENT_PAGES, INDEXABLE, shortTitle as label } from "./manifest.ts";
 
 export interface SiteMapLink {
   path: string;
@@ -25,8 +25,6 @@ const GROUPS: { title: string; paths: string[] }[] = [
   { title: "About this site", paths: ["/brand", "/brand-kit", "/status", "/changelog", "/sitemap"] },
   { title: "Legal", paths: ["/terms", "/privacy", "/data-deletion"] },
 ];
-
-const label = (title: string): string => title.split(" | ")[0].trim();
 
 export const siteMapGroups = (): SiteMapGroup[] => {
   const pages = new Map(INDEXABLE.map((r) => [r.path, r]));
