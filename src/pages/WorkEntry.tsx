@@ -8,6 +8,7 @@ import { work } from "@/content/work";
 import { services } from "@/content/services";
 import { assetUrl } from "@/content/assets";
 import { publishedWork } from "@/content/query";
+import { caseStudyStructuredData } from "@/content/templates";
 import { BASE_URL, SITE_NAME } from "@/config/site";
 
 // /work/:slug: one case study (context, role, approach, outcome, gallery, links) from src/content/work.ts.
@@ -29,16 +30,7 @@ const WorkEntry = () => {
     const script = document.createElement("script");
     script.id = JSON_LD_ID;
     script.type = "application/ld+json";
-    script.textContent = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "CreativeWork",
-      name: entry.title,
-      description: entry.summary,
-      url: `${BASE_URL}/work/${entry.slug}`,
-      ...(entry.date ? { dateCreated: entry.date } : {}),
-      keywords: entry.tags.join(", ") || undefined,
-      creator: { "@type": "Organization", name: SITE_NAME, url: `${BASE_URL}/` },
-    });
+    script.textContent = JSON.stringify(caseStudyStructuredData(entry, { baseUrl: BASE_URL, name: SITE_NAME }));
     document.head.appendChild(script);
     return () => script.remove();
   }, [entry]);
