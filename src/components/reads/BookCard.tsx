@@ -19,7 +19,7 @@ const BookCard = ({ book, onBuyNow, onAddToCart }: BookCardProps) => {
       <CardHeader className="p-2 sm:p-4 md:p-6">
         <div className="relative mb-2 sm:mb-4 overflow-hidden rounded-lg">
           <div className="aspect-[3/4] bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-            <img 
+            <img loading="lazy" decoding="async" 
               src={book.coverImage} 
               alt={book.title}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
