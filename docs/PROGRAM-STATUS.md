@@ -46,8 +46,7 @@ Decisions taken without asking (the owner asked for no questions; the safest rea
   this run; the run stops there.
 - **"20 minutes after each merge" (Phase 3):** a pause of 20 minutes after each Phase 3 merge before the
   next push, so the deploy of the previous item settles.
-- **Schema library:** the brief asks for zod schemas. zod must already be a dependency to be used (no new
-  dependency); it is checked before item 1(b) and recorded here.
+- **Schema library:** zod 3.25.76 is already a dependency (`package.json`), so the schemas use it.
 - **Tests:** the repository's only test runner is `node --test` (`scripts/ci/*.test.mjs`, run by CI). New
   tests that CI should run would live in `scripts/ci/`, which is a critical path, so they are kept in
   `scripts/dev/` (runnable, not yet in CI) until the owner merges a critical pull request that adds them
@@ -81,8 +80,8 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | B0 | Driver claim, branch sync, this status update | **Merged** (#28) |
 | B1 | Design tokens: `docs/ecosystem-design-tokens.md`, `src/design/tokens.json` with a check against `src/index.css` (`scripts/dev/tokens.test.mjs`), public `/brand` page | **Merged** (#29). **Tokens published, Trades can rebrand.** |
 | B2 | Signed hand-off: setup screen steps, branded "Opening…" state, errors and fallback, tests; "return to Houcine.world" convention | Pending |
-| B3a | Route manifest `src/routes/manifest.ts`: RouteMeta, sitemap (now with priorities) and robots.txt come from it; `route()` makes an unknown top-level path a type error (the build fails); `scripts/dev/manifest.test.mjs` checks nested routes and the two files | In review |
-| B3b | Typed content layer and its validator (item 1b) | Pending |
+| B3a | Route manifest `src/routes/manifest.ts`: RouteMeta, sitemap (now with priorities) and robots.txt come from it; `route()` makes an unknown top-level path a type error (the build fails); `scripts/dev/manifest.test.mjs` checks nested routes and the two files | **Merged** (#30) |
+| B3b | Typed content layer `src/content/` (services, work, journal, team, testimonials, faq) with zod schemas and `validateContent` (`src/content/schema.ts`); `scripts/dev/content.test.mjs`. Work, journal and testimonials ship empty; /manages reads its "Selected work" from `work.ts` | In review |
 | B3c | `docs/content-guide.md` (item 1c) | Pending |
 | B4 | `/work`, `/journal` (with RSS), `/about`, `/contact` from the content layer | Pending |
 | B5 | Ecosystem map; Services structured data from the manifest | Pending |
