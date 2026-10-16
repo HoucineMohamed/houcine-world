@@ -15,6 +15,7 @@ import BrandGuard from "./components/workspace/BrandGuard";
 const Index = React.lazy(() => import("./pages/Index"));
 const AboutMe = React.lazy(() => import("./pages/AboutMe"));
 const Dev = React.lazy(() => import("./pages/Dev"));
+const Brand = React.lazy(() => import("./pages/Brand"));
 const Designs = React.lazy(() => import("./pages/Designs"));
 const Reads = React.lazy(() => import("./pages/Reads"));
 const Manages = React.lazy(() => import("./pages/Manages"));
@@ -81,6 +82,7 @@ const AppRoutes = () => {
         <Route path="/data-deletion" element={<DataDeletion />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/ecosystem" element={<Ecosystem />} />
+        <Route path="/brand" element={<Brand />} />
       </Route>
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/login" element={<AdminLogin />} />
