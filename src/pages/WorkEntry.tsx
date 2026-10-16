@@ -4,12 +4,10 @@ import { ArrowLeft, ArrowUpRight, Briefcase } from "lucide-react";
 import { ServicePageLayout, ServiceHero, ServiceSection } from "@/components/service/ServicePage";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { isInternalHref } from "@/content/format";
 import { work } from "@/content/work";
 import { services } from "@/content/services";
 import { assetUrl } from "@/content/assets";
 import { publishedWork } from "@/content/query";
-import { caseStudyStructuredData } from "@/content/templates";
 import { BASE_URL, SITE_NAME } from "@/config/site";
 
 // /work/:slug: one case study (context, role, approach, outcome, gallery, links) from src/content/work.ts.
@@ -20,6 +18,8 @@ const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 const JSON_LD_ID = "work-structured-data";
 
+const isInternal = (href: string) => href.startsWith("/") && !href.startsWith("//");
+
 const WorkEntry = () => {
   const { slug } = useParams();
   const entry = publishedWork(work).find((w) => w.slug === slug);
@@ -29,7 +29,16 @@ const WorkEntry = () => {
     const script = document.createElement("script");
     script.id = JSON_LD_ID;
     script.type = "application/ld+json";
-    script.textContent = JSON.stringify(caseStudyStructuredData(entry, { baseUrl: BASE_URL, name: SITE_NAME }));
+    script.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      name: entry.title,
+      description: entry.summary,
+      url: `${BASE_URL}/work/${entry.slug}`,
+      ...(entry.date ? { dateCreated: entry.date } : {}),
+      keywords: entry.tags.join(", ") || undefined,
+      creator: { "@type": "Organization", name: SITE_NAME, url: `${BASE_URL}/` },
+    });
     document.head.appendChild(script);
     return () => script.remove();
   }, [entry]);
@@ -61,6 +70,11 @@ const WorkEntry = () => {
 
   return (
     <ServicePageLayout>
+      <div>
+        <Link to="/work" className={cn("inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground rounded", focusRing)}>
+          <ArrowLeft className="w-4 h-4" aria-hidden="true" /> All work
+        </Link>
+      </div>
       <ServiceHero icon={Briefcase} name={vertical?.name ?? SITE_NAME} promise={entry.title} intro={entry.summary} />
       {entry.tags.length > 0 && (
         <ul className="flex flex-wrap gap-2 -mt-12" aria-label="Tags">
@@ -95,7 +109,7 @@ const WorkEntry = () => {
         <ServiceSection id="links" title="Links">
           <ul className="space-y-3">
             {entry.links.map((l) =>
-              isInternalHref(l.href) ? (
+              isInternal(l.href) ? (
                 <li key={l.href}>
                   <Link to={l.href} className={cn("text-accent underline hover:text-accent/80 rounded", focusRing)}>{l.label}</Link>
                 </li>

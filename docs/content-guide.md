@@ -66,17 +66,6 @@ export const work: Work[] = [
 - `draft: true` keeps the project off every page until you change it to `false`.
 - To add a second project, put a comma after the closing `}` of the first one and paste another entry.
 
-## Start from a template (ask a session)
-
-A session can print a new project or post for you, ready to paste: ask it to "make a draft case study
-called ... for the studio vertical" or "a draft journal post called ... dated ...". It runs
-`scripts/dev/new-entry.mjs` (templates in `src/content/templates.ts`). The draft has the right address
-(slug) and every text reads "TODO: ...": the checks refuse it until each TODO is replaced with your own
-words, and it stays a draft (`draft: true`) so nothing appears on the site before you publish it.
-
-Published projects and posts also describe themselves to search engines (structured data), from the same
-templates; there is nothing to fill in for that.
-
 ## Add a journal post
 
 File: **`src/content/journal.ts`**. A post is made of **blocks**: paragraphs (`p`), subheadings (`h2`)
@@ -120,14 +109,6 @@ export const testimonials: Testimonial[] = [
 ];
 ```
 
-## Where your entries appear
-
-- Projects: `/work` (with filters and search), their own page `/work/<slug>`, the site search, and for the
-  management vertical the "Selected work" of `/manages`.
-- Journal posts: `/journal`, their own page `/journal/<slug>`, the RSS feed (`/rss.xml`) and the search.
-- Questions and answers: `/ecosystem`, each with its own anchor (`/ecosystem#faq-<slug>`), and the search.
-- Every published entry also gets its own line in the sitemap. Drafts appear nowhere.
-
 ## Change the services, the team or the questions and answers
 
 - **`src/content/services.ts`**: the four verticals, with what each is for and who it is for.
@@ -148,7 +129,6 @@ purpose.
 - `src/content/schema.ts`: the rules above, written as code.
 - `scripts/dev/content.test.mjs`: checks every entry against those rules.
 - `scripts/dev/manifest.test.mjs`: checks the list of pages, the sitemap and robots.txt.
-- `scripts/dev/templates.test.mjs`: checks the templates (a fresh draft is refused until written, then valid).
 
 They run on a session's computer today (`node --experimental-strip-types --test scripts/dev/*.test.mjs`)
 and will run on every pull request once a critical change, approved by the owner, adds them to CI.

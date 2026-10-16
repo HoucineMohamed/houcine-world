@@ -5,24 +5,26 @@ Claude session to do it (it opens a pull request that merges itself if it is not
 also edit on GitHub: open the file, click the pencil, change it, choose **"Create a new branch for this
 commit and start a pull request"**, then merge that pull request yourself.
 
-## Add a project, a journal post or a testimonial
+## Add a portfolio item ("Selected work")
 
-Follow `docs/content-guide.md`: each is one entry in a file of `src/content/` (`work.ts`, `journal.ts`,
-`testimonials.ts`), edited in the browser on GitHub. A project shows on `/work` (and, for the
-management vertical, in the "Selected work" of `/manages`); a post on `/journal` and in the RSS feed.
-While a list is empty, its page says "Coming soon".
+1. Open `src/content/management.ts` (the Houcine.management page; other pages can get the same kind of
+   file later).
+2. Add an entry inside the square brackets, for example:
+
+   ```ts
+   { title: "Project name", summary: "One or two plain sentences.", tags: ["Brand strategy"] },
+   ```
+
+   Optional fields: `href` (an internal address such as `/larosaview`, or an `https://` address you
+   own), and `image` with `imageAlt` (the image must be a file in `src/assets/`, imported at the top of
+   the file). Only add real, published work you have the right to show.
+3. While the list is empty, the page shows "Coming soon".
 
 ## Change the public contact email
 
 1. Open `src/config/contact.ts`.
 2. Put your address between the quotes: `export const CONTACT_EMAIL = "you@example.com";`
 3. Until it is set, the "Get in touch" buttons say "Contact details coming soon".
-
-## Turn the contact form on
-
-The message form on `/contact` is ready but off: `CONTACT_FORM_ENABLED = false` in `src/config/contact.ts`.
-It stays off until the hardened form function (part of the critical bundle) is merged **and** deployed
-(the "Deploy Supabase" workflow must succeed on `main`). Then a session changes that one line to `true`.
 
 ## Fill in the legal placeholders
 
