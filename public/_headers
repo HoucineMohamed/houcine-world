@@ -1,0 +1,20 @@
+# Security headers for every page and file of the site (Netlify reads this file from the published folder).
+# Explained in docs/owner-review-guide.md, topic 5. The headless checks (scripts/dev/lib/browser.mjs) serve the
+# built site with these same headers.
+#
+# Enforced now: headers that cannot break a page. The site may not be framed by another site, forms may only
+# post to the site itself, no plugin content, and HTTPS is remembered for a year (no subdomains, no preload list,
+# so a subdomain that is not on HTTPS yet is never locked out).
+#
+# Report-only: the full list of what the pages may load, built only from hosts the site already uses (Supabase,
+# Google Fonts, PostHog when analytics is configured, the YouTube and SoundCloud players, the Google Storage
+# images). A browser reports anything outside it in its console and blocks nothing. Turning it into an enforced
+# policy is a later, separate decision, once the reports have been read on the live site.
+/*
+  Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' https://us-assets.i.posthog.com https://eu-assets.i.posthog.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' https:; connect-src 'self' https://pcdkfpardswfwoiclvtm.supabase.co wss://pcdkfpardswfwoiclvtm.supabase.co https://us.i.posthog.com https://eu.i.posthog.com https://us-assets.i.posthog.com https://eu-assets.i.posthog.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://w.soundcloud.com; worker-src 'self' blob:; base-uri 'self'; object-src 'none'; form-action 'self'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000
