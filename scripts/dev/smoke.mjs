@@ -47,6 +47,7 @@ for (const f of ["dist/index.html", "dist/sitemap.xml", "dist/robots.txt", `dist
 if (ownerChunks.includes(mainBundle)) fail("main bundle", "is the owner chunk");
 
 const { PUBLIC_PAGES } = await loadRoutes();
+const { BASE_URL } = await import(join(ROOT, "src/config/site.ts"));
 const server = await serveDist();
 const page = await launch();
 const rows = [];
@@ -61,11 +62,22 @@ try {
         h1: document.querySelectorAll("h1").length,
         scroll: document.documentElement.scrollWidth - window.innerWidth,
         html: document.documentElement.outerHTML.includes(${JSON.stringify(privateHost)}),
+        canonical: document.querySelector('link[rel="canonical"]')?.href ?? null,
+        ogUrl: document.querySelector('meta[property="og:url"]')?.content ?? null,
+        ogTitle: document.querySelector('meta[property="og:title"]')?.content ?? null,
+        desc: document.querySelector('meta[name="description"]')?.content ?? "",
       })`);
       const ownerChunkLoaded = page.events.some((e) => e.method === "Network.requestWillBeSent" && ownerChunks.some((c) => e.params.request.url.endsWith(c)));
       if (expectedTitle !== null && s.title !== expectedTitle) fail(where, `title "${s.title}", expected "${expectedTitle}"`);
       if (expectedTitle === null && !/^Page not found/.test(s.title)) fail(where, `unknown path title "${s.title}"`);
       if (s.h1 !== 1) fail(where, `${s.h1} <h1> elements`);
+      if (expectedTitle !== null) {
+        const want = `${BASE_URL}${path}`;
+        if (s.canonical !== want) fail(where, `canonical ${s.canonical}, expected ${want}`);
+        if (s.ogUrl !== want) fail(where, `og:url ${s.ogUrl}, expected ${want}`);
+        if (s.ogTitle !== expectedTitle) fail(where, `og:title "${s.ogTitle}"`);
+        if (!s.desc.trim()) fail(where, "empty description");
+      } else if (s.canonical !== null) fail(where, "an unknown page has a canonical link");
       if (s.scroll > 0 && KNOWN[path]?.scroll) known.push(`${where}: horizontal scroll of ${s.scroll}px, known: ${KNOWN[path].scroll}`);
       else if (s.scroll > 0) fail(where, `horizontal scroll of ${s.scroll}px`);
       if (s.html) fail(where, "rendered HTML contains the private host");
