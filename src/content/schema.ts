@@ -95,12 +95,70 @@ export const faqSchema = z.object({
   links: z.array(link).max(4).optional(),
 });
 
-export type Service = z.infer<typeof serviceSchema>;
-export type Work = z.infer<typeof workSchema>;
-export type Post = z.infer<typeof postSchema>;
-export type TeamMember = z.infer<typeof teamSchema>;
-export type Testimonial = z.infer<typeof testimonialSchema>;
-export type Faq = z.infer<typeof faqSchema>;
+// The types of the content files. Written out by hand (not z.infer) because the app's TypeScript settings
+// are not strict, which would make every inferred field optional. The schemas above stay the runtime check.
+export type Vertical = "tech" | "studio" | "education" | "management" | "world";
+export interface Link {
+  label: string;
+  href: string;
+}
+export interface Image {
+  src: string;
+  alt: string;
+}
+export interface Service {
+  slug: string;
+  vertical: Vertical;
+  name: string;
+  path: string;
+  purpose: string;
+  audience: string;
+}
+export interface Work {
+  slug: string;
+  title: string;
+  vertical: Vertical;
+  summary: string;
+  context: string;
+  role: string;
+  approach: string;
+  outcome: string;
+  date?: string;
+  tags: string[];
+  gallery: Image[];
+  links: Link[];
+  draft: boolean;
+}
+export type Block = { type: "p"; text: string } | { type: "h2"; text: string } | { type: "ul"; items: string[] };
+export interface Post {
+  slug: string;
+  title: string;
+  summary: string;
+  date: string;
+  tags: string[];
+  body: Block[];
+  draft: boolean;
+}
+export interface TeamMember {
+  slug: string;
+  name: string;
+  role: string;
+  summary: string;
+  links: Link[];
+}
+export interface Testimonial {
+  slug: string;
+  quote: string;
+  author: string;
+  context: string;
+  confirmedByOwner: true;
+}
+export interface Faq {
+  slug: string;
+  question: string;
+  answer: string;
+  links?: Link[];
+}
 
 export interface ContentLists {
   services: unknown[];

@@ -9,6 +9,9 @@
 // The ".ts" import extension lets those scripts import this file with plain Node; keep every import here
 // relative and free of the "@" alias. Never list a private app or its address here.
 import { BASE_URL, SITE_NAME } from "../config/site.ts";
+import { work } from "../content/work.ts";
+import { journal } from "../content/journal.ts";
+import { publishedPosts, publishedWork } from "../content/query.ts";
 
 export const DEFAULT_DESCRIPTION = "The creative ecosystem of Mohamed Houcine";
 
@@ -45,6 +48,10 @@ export const MANIFEST = [
   { path: "/data-deletion", title: `Data Deletion | ${SITE}`, description: "How to ask Houcine.world to delete your data.", indexable: true, sitemapPriority: 0.3, ownerOnly: false },
   { path: "/contact", title: `Contact | ${SITE}`, description: "How to get in touch with Houcine.world.", indexable: true, sitemapPriority: 0.6, ownerOnly: false },
   { path: "/ecosystem", title: `About the ecosystem | ${SITE}`, description: "Houcine.world is a modular digital ecosystem with four verticals: tech, studio, education and management.", indexable: true, sitemapPriority: 0.7, ownerOnly: false },
+  { path: "/work", title: `Work | ${SITE}`, description: "Case studies from the four verticals of the Houcine.world ecosystem.", indexable: true, sitemapPriority: 0.7, ownerOnly: false },
+  { path: "/work/:slug", title: `Work | ${SITE}`, description: "A case study from the Houcine.world ecosystem.", indexable: false, sitemapPriority: null, ownerOnly: false },
+  { path: "/journal", title: `Journal | ${SITE}`, description: "Notes from the Houcine.world ecosystem.", indexable: true, sitemapPriority: 0.6, ownerOnly: false },
+  { path: "/journal/:slug", title: `Journal | ${SITE}`, description: "A post from the Houcine.world journal.", indexable: false, sitemapPriority: null, ownerOnly: false },
   { path: "/brand", title: `Brand | ${SITE}`, description: "The Houcine.world design language: logo, colours, type, spacing and components, with copy-ready values.", indexable: true, sitemapPriority: 0.5, ownerOnly: false },
 
   // Sign-in and admin
@@ -80,6 +87,25 @@ export const route = <P extends RoutePath>(path: P): P => path;
 /** Path prefixes of the app's private areas: never in the sitemap, disallowed in robots.txt, noindex. */
 export const PRIVATE_PREFIXES = ["/workspace", "/admin", "/auth"];
 
+/**
+ * Templates whose real pages come from the content layer: each published entry is its own page, with its
+ * own title, description, canonical link and sitemap line (CONTENT_PAGES). The pattern itself is not
+ * indexable; an unknown slug shows the not-found message.
+ */
+export const CONTENT_TEMPLATES = ["/work/:slug", "/journal/:slug"];
+
+export interface ContentPage {
+  path: string;
+  title: string;
+  description: string;
+  sitemapPriority: number;
+}
+
+export const CONTENT_PAGES: readonly ContentPage[] = [
+  ...publishedWork(work).map((w) => ({ path: `/work/${w.slug}`, title: `${w.title} | ${SITE}`, description: w.summary, sitemapPriority: 0.6 })),
+  ...publishedPosts(journal).map((p) => ({ path: `/journal/${p.slug}`, title: `${p.title} | ${SITE}`, description: p.summary, sitemapPriority: 0.5 })),
+];
+
 export const INDEXABLE: readonly RouteEntry[] = MANIFEST.filter((r) => r.indexable);
 
 /** public/sitemap.xml, exactly. */
@@ -87,7 +113,7 @@ export const sitemapXml = (): string =>
   [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...INDEXABLE.map((r) => `  <url><loc>${BASE_URL}${r.path}</loc><priority>${(r.sitemapPriority ?? 0).toFixed(1)}</priority></url>`),
+    ...[...INDEXABLE, ...CONTENT_PAGES].map((r) => `  <url><loc>${BASE_URL}${r.path}</loc><priority>${(r.sitemapPriority ?? 0).toFixed(1)}</priority></url>`),
     "</urlset>",
     "",
   ].join("\n");

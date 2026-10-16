@@ -17,11 +17,12 @@ These are placeholders on purpose; no session invents them.
 | Public contact email | `src/config/contact.ts` (`CONTACT_EMAIL`) | empty: "Contact details coming soon" |
 | Selected work (projects you may show) | `src/content/management.ts` | empty: "Coming soon" |
 | Testimonials on /designs and /reads | existing page data | already in the code before this program; please confirm they are real, or ask for placeholders |
+| Decide on the email escaping fix | `docs/security-fixes-proposed.md`, section (c) | the /contact message form (B4) uses the existing form function, whose notification emails do not escape the visitor's text (security review H3); the fix is ready as text, applying it is your decision |
 | Smaller copies of the large images (1 to 3 MB each, e.g. `the-view-cover.png`, `houcine-photo.jpg`) | `src/assets/` | sessions may not add image files |
 
 ## Driver
 
-DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T17:15:00Z
+DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T17:40:00Z
 
 The previous claim (session_01YPgKc4KaGJPX6EDp5wNDGW, updated 2026-10-15T18:36:00Z) was about 22 hours
 old, no pull request was open, and the owner named this session the only driver. Before starting any
@@ -82,8 +83,8 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | B2 | Signed hand-off: setup screen steps, branded "Opening…" state, errors and fallback, tests; "return to Houcine.world" convention | Pending |
 | B3a | Route manifest `src/routes/manifest.ts`: RouteMeta, sitemap (now with priorities) and robots.txt come from it; `route()` makes an unknown top-level path a type error (the build fails); `scripts/dev/manifest.test.mjs` checks nested routes and the two files | **Merged** (#30) |
 | B3b | Typed content layer `src/content/` (services, work, journal, team, testimonials, faq) with zod schemas and `validateContent` (`src/content/schema.ts`); `scripts/dev/content.test.mjs`. Work, journal and testimonials ship empty; /manages reads its "Selected work" from `work.ts` | **Merged** (#31) |
-| B3c | `docs/content-guide.md`: add a project, a journal post, a testimonial, in plain words, all in the browser (the examples were run through the validator) | In review |
-| B4 | `/work`, `/journal` (with RSS), `/about`, `/contact` from the content layer | Pending |
+| B3c | `docs/content-guide.md`: add a project, a journal post, a testimonial, in plain words, all in the browser (the examples were run through the validator) | **Merged** (#32) |
+| B4 | `/work` (filters, search, tag chips; "Coming soon" while empty) and `/work/:slug` (context, role, approach, outcome, gallery, links; JSON-LD only for real entries); `/journal` and `/journal/:slug` (tags, reading time, related posts) with `public/rss.xml`; one draft post (hidden); a message form on `/contact` through the existing form function (hook unchanged), **switched off** by `CONTACT_FORM_ENABLED = false` until the critical bundle hardens the function (the page shows the email fallback); "See all work" under each Selected work; unknown slugs and the 404 page get `noindex`. `/about` already exists and is unchanged | In review |
 | B5 | Ecosystem map; Services structured data from the manifest | Pending |
 | B6 | Site search (client-side dialog, keyboard shortcut) | Pending |
 | B7 | Performance and accessibility pass (skip link, landmarks, Core Web Vitals run, 390 px) | Pending |

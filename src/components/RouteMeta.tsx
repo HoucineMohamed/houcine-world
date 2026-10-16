@@ -77,15 +77,18 @@ const RouteMeta = () => {
     setStructuredData(!isPrivate);
     setCanonical(isPrivate ? null : canonicalUrl(pathname));
 
-    // Ask search engines not to index app routes. (Not a security control: those routes are guarded.)
+    // Ask search engines not to index app routes (not a security control: those routes are guarded), nor
+    // any address that is not a known page: the 404 page and unknown or draft work and journal slugs,
+    // which the single-page app answers with status 200.
+    const known = Object.prototype.hasOwnProperty.call(PUBLIC_PAGES, pathname);
     let robots = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]');
-    if (isPrivate) {
+    if (isPrivate || !known) {
       if (!robots) {
         robots = document.createElement("meta");
         robots.setAttribute("name", "robots");
         document.head.appendChild(robots);
       }
-      robots.setAttribute("content", "noindex, nofollow");
+      robots.setAttribute("content", isPrivate ? "noindex, nofollow" : "noindex");
     } else {
       robots?.remove();
     }

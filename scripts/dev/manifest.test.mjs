@@ -14,7 +14,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const { MANIFEST, PRIVATE_PREFIXES, sitemapXml, robotsTxt } = await import(join(root, "src/routes/manifest.ts"));
+const { MANIFEST, PRIVATE_PREFIXES, CONTENT_TEMPLATES, sitemapXml, robotsTxt } = await import(join(root, "src/routes/manifest.ts"));
 
 /** The paths of src/App.tsx, with the nested brand routes resolved to their full path. */
 const appPaths = () => {
@@ -50,6 +50,13 @@ test("entries are complete and consistent", () => {
   }
 });
 
+test("content templates are real routes of the manifest and are not themselves indexable", () => {
+  for (const t of CONTENT_TEMPLATES) {
+    const entry = MANIFEST.find((r) => r.path === t);
+    assert.ok(entry && !entry.indexable, `${t} must be a non-indexable manifest entry`);
+  }
+});
+
 test("indexable titles are unique", () => {
   const titles = MANIFEST.filter((r) => r.indexable).map((r) => r.title);
   assert.equal(new Set(titles).size, titles.length);
@@ -62,7 +69,7 @@ test("public/sitemap.xml is exactly what the manifest produces", () => {
 test("public/robots.txt is exactly what the manifest produces, and disallows every app area", () => {
   const robots = readFileSync(join(root, "public/robots.txt"), "utf8");
   assert.equal(robots, robotsTxt());
-  for (const r of MANIFEST.filter((x) => !x.indexable && x.path.startsWith("/"))) {
+  for (const r of MANIFEST.filter((x) => !x.indexable && x.path.startsWith("/") && !CONTENT_TEMPLATES.includes(x.path))) {
     assert.ok(PRIVATE_PREFIXES.some((p) => r.path === p || r.path.startsWith(`${p}/`)), `${r.path} is not indexable but no robots rule covers it`);
   }
 });

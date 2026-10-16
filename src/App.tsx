@@ -17,6 +17,10 @@ const Index = React.lazy(() => import("./pages/Index"));
 const AboutMe = React.lazy(() => import("./pages/AboutMe"));
 const Dev = React.lazy(() => import("./pages/Dev"));
 const Brand = React.lazy(() => import("./pages/Brand"));
+const Work = React.lazy(() => import("./pages/Work"));
+const WorkEntry = React.lazy(() => import("./pages/WorkEntry"));
+const Journal = React.lazy(() => import("./pages/Journal"));
+const JournalPost = React.lazy(() => import("./pages/JournalPost"));
 const Designs = React.lazy(() => import("./pages/Designs"));
 const Reads = React.lazy(() => import("./pages/Reads"));
 const Manages = React.lazy(() => import("./pages/Manages"));
@@ -83,6 +87,10 @@ const AppRoutes = () => {
         <Route path={route("/data-deletion")} element={<DataDeletion />} />
         <Route path={route("/contact")} element={<Contact />} />
         <Route path={route("/ecosystem")} element={<Ecosystem />} />
+        <Route path={route("/work")} element={<Work />} />
+        <Route path={route("/work/:slug")} element={<WorkEntry />} />
+        <Route path={route("/journal")} element={<Journal />} />
+        <Route path={route("/journal/:slug")} element={<JournalPost />} />
         <Route path={route("/brand")} element={<Brand />} />
       </Route>
       <Route path={route("/admin")} element={<Admin />} />
