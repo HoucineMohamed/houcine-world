@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Mail } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
+import { SearchButton } from "@/components/search/SiteSearch";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,16 +32,19 @@ export const ServicePageLayout = ({ children }: { children: ReactNode }) => (
         >
           <img src={logoH} alt="Houcine.world home" className="h-8 w-auto" />
         </Link>
-        <Link
-          to="/#services"
-          className={cn(
-            "inline-flex items-center gap-2 rounded-md text-sm text-muted-foreground hover:text-foreground transition-colors",
-            focusRing,
-          )}
-        >
-          <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-          Back to the ecosystem
-        </Link>
+        <div className="flex items-center gap-3 sm:gap-5">
+          <SearchButton />
+          <Link
+            to="/#services"
+            className={cn(
+              "inline-flex items-center gap-2 rounded-md text-sm text-muted-foreground hover:text-foreground transition-colors",
+              focusRing,
+            )}
+          >
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+            Back<span className="sr-only sm:not-sr-only">&nbsp;to the ecosystem</span>
+          </Link>
+        </div>
       </div>
     </header>
 
