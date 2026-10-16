@@ -36,6 +36,7 @@ export const PUBLIC = {
   C7: "The legal pages print as plain, readable text.",
   C8: "Pages open faster: their code starts loading when you point at a link.",
   C9: "Breadcrumbs, and a Back to top button on long pages.",
+  C10: "A sitemap page listing every page of the site.",
 };
 
 const status = readFileSync(join(root, "docs/PROGRAM-STATUS.md"), "utf8");
