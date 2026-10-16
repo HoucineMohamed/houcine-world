@@ -33,6 +33,7 @@ export const PUBLIC = {
   C3: "The brand kit: download the logo and the share image.",
   C5: "The Status page: which version of the site you are seeing.",
   C6: "This changelog.",
+  C7: "The legal pages print as plain, readable text.",
 };
 
 const status = readFileSync(join(root, "docs/PROGRAM-STATUS.md"), "utf8");
