@@ -31,7 +31,7 @@ const AboutDJ = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-6 py-4 flex items-center gap-4">
-          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
+          <Link to="/" className="inline-flex items-center justify-center min-h-11 min-w-11 -mx-1.5 -my-1.5 hover:scale-110 transition-all duration-200 group">
             <img 
               src={logoH} 
               alt="Houcine.world home" 
@@ -43,7 +43,7 @@ const AboutDJ = () => {
               onMouseLeave={(e) => e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(255, 255, 255, 0))"}
             />
           </Link>
-          <Link to="/larosaview" className="inline-block hover:scale-110 transition-all duration-200 group">
+          <Link to="/larosaview" className="inline-flex items-center justify-center min-h-11 min-w-11 -mx-1.5 -my-1.5 hover:scale-110 transition-all duration-200 group">
             <img 
               src={laRosaLogo} 
               alt="La Rosa View home" 
@@ -230,7 +230,7 @@ const AboutDJ = () => {
           <p className="text-xl text-muted-foreground mb-8">
             Let's create an unforgettable experience for your next event
           </p>
-          <Link to="/booking">
+          <Link to="/booking" className="inline-block">
             <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/50 hover:shadow-rose-600/70 transition-all hover:scale-105">
               Book Now
             </Button>

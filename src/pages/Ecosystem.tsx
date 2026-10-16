@@ -91,7 +91,7 @@ const Ecosystem = () => {
               {f.links && f.links.length > 0 && (
                 <span className="block mt-2">
                   {f.links.map((l) => (
-                    <Link key={l.href} to={l.href} className={cn("mr-4 text-accent underline hover:text-accent/80 rounded", focusRing)}>
+                    <Link key={l.href} to={l.href} className={cn("mr-4 inline-flex items-center min-h-11 text-accent underline hover:text-accent/80 rounded", focusRing)}>
                       {l.label}
                     </Link>
                   ))}

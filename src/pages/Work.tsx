@@ -19,7 +19,7 @@ const focusRing =
 
 const chip = (active: boolean) =>
   cn(
-    "inline-flex items-center rounded-full border px-3 py-1 text-sm transition-colors",
+    "inline-flex items-center rounded-full border px-3 py-1 text-sm transition-colors [@media(pointer:coarse)]:min-h-11",
     active ? "border-accent bg-accent text-accent-foreground" : "border-border/60 text-muted-foreground hover:text-foreground hover:border-accent/50",
     focusRing,
   );
