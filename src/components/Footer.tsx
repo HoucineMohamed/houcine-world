@@ -25,10 +25,10 @@ const Footer = () => {
               <Link to="/data-deletion" className="hover:text-accent transition-colors">Data Deletion</Link>
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1">
             <Link 
               to="/" 
-              className="hover:scale-110 transition-all duration-200 group"
+              className="inline-flex items-center justify-center min-h-11 min-w-11 hover:scale-110 transition-all duration-200 group"
               aria-label="Houcine.world home"
             >
               <img loading="lazy" decoding="async" width={500} height={500} 
@@ -50,7 +50,7 @@ const Footer = () => {
               href="https://www.linkedin.com/in/mohamed-houcine-4142b12b4/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-accent transition-all hover:scale-110 duration-200"
+              className="inline-flex items-center justify-center min-h-11 min-w-11 hover:text-accent transition-all hover:scale-110 duration-200"
               aria-label="LinkedIn profile"
             >
               <Linkedin className="h-6 w-6" />
@@ -59,7 +59,7 @@ const Footer = () => {
               href="https://www.behance.net/HoucineDesigns" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-accent transition-all hover:scale-110 duration-200"
+              className="inline-flex items-center justify-center min-h-11 min-w-11 hover:text-accent transition-all hover:scale-110 duration-200"
               aria-label="Behance portfolio"
             >
               <Palette className="h-6 w-6" />
@@ -68,7 +68,7 @@ const Footer = () => {
               href="https://github.com/HoucineMohamed" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-accent transition-all hover:scale-110 duration-200"
+              className="inline-flex items-center justify-center min-h-11 min-w-11 hover:text-accent transition-all hover:scale-110 duration-200"
               aria-label="GitHub profile"
             >
               <Github className="h-6 w-6" />
