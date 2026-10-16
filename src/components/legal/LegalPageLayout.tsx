@@ -18,7 +18,7 @@ const LegalPageLayout = ({
   title: string;
   children: React.ReactNode;
 }) => (
-  <div className="min-h-screen bg-background text-foreground">
+  <div className="legal-page min-h-screen bg-background text-foreground">
     <ScrollProgressBar />
     <CustomCursor />
 
