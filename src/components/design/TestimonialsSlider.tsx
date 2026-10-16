@@ -77,20 +77,17 @@ export const TestimonialsSlider = ({ testimonials: externalTestimonials }: Testi
         >
           <ChevronLeft className="w-4 h-4" aria-hidden="true" />
         </Button>
-        <div className="flex">
+        <div className="flex gap-2">
           {testimonials.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
               aria-label={`Show testimonial ${index + 1} of ${testimonials.length}`}
               aria-current={index === currentIndex ? "true" : undefined}
-              className={`group inline-flex items-center justify-center min-h-11 min-w-11 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
-            >
-              <span
-                aria-hidden="true"
-                className={`block h-2 rounded-full transition-all ${index === currentIndex ? "bg-accent w-8" : "bg-border w-2 group-hover:bg-muted-foreground"}`}
-              />
-            </button>
+              className={`w-2 h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                index === currentIndex ? "bg-accent w-8" : "bg-border"
+              }`}
+            />
           ))}
         </div>
         <Button

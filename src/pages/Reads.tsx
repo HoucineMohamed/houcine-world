@@ -113,7 +113,7 @@ const ReadsContent = () => {
       {/* Header */}
       <header className="border-b border-border/40 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <Link to="/" className="inline-flex items-center justify-center min-h-11 min-w-11 -mx-1.5 -my-1.5 hover:scale-110 transition-all duration-200 group">
+          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
             <img 
               src={logoH} 
               alt="Houcine.world home" 
@@ -410,7 +410,7 @@ const ReadsContent = () => {
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-xl" />
-                  <img loading="lazy" decoding="async" width={500} height={500} 
+                  <img 
                     src={profileImage}
                     alt="Houcine Mohamed"
                     className="relative rounded-xl w-full aspect-square object-cover"

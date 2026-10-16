@@ -1,11 +1,7 @@
-import { lazy, Suspense, useState, useCallback } from "react";
-import type { ServiceData } from "./WebGLHero";
+import { useState, useCallback } from "react";
+import WebGLHero, { ServiceData } from "./WebGLHero";
 import HeroOverlay from "./HeroOverlay";
 import HeroLoader from "./HeroLoader";
-
-// The 3D scene (three.js) is the largest part of the home page: it downloads as its own file, while
-// HeroLoader's shimmer and the HTML overlay are already on screen.
-const WebGLHero = lazy(() => import("./WebGLHero"));
 
 export default function HeroSection() {
   const [activeService, setActiveService] = useState<ServiceData | null>(null);
@@ -50,12 +46,10 @@ export default function HeroSection() {
       <HeroLoader isLoading={isSceneLoading} />
       
       {/* WebGL Canvas - always visible, no conditional rendering */}
-      <Suspense fallback={null}>
-        <WebGLHero 
-          onActiveServiceChange={handleActiveServiceChange} 
-          onSceneReady={handleSceneReady}
-        />
-      </Suspense>
+      <WebGLHero 
+        onActiveServiceChange={handleActiveServiceChange} 
+        onSceneReady={handleSceneReady}
+      />
       
       {/* HTML Overlay */}
       <HeroOverlay activeService={activeService} />
