@@ -99,7 +99,7 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | B5 | Ecosystem map (SVG, keyboard, plain list, reduced motion), questions and answers with anchors, Services structured data from the manifest; the existing owner-only slot (renders nothing for anyone else) | **Merged** (#34) |
 | B6 | Site search: dialog (lazy chunk), Ctrl+K and "/", header button, index from the manifest and content | **Merged** (#35) |
 | Q1 | Accessibility: skip link (first Tab stop, focuses `<main>`), one `<main>` on every public page (five pages gained one; /booking is in the bundle), a token focus outline everywhere, the /designs heading readable and still under reduced motion, search results announced; `a11y-check.mjs` adds landmark, language, title, duplicate-id and skip-link rules; new `keyboard-check.mjs` (menu, search, map). Errors: 0 (8 known on /booking) | In review |
-| Q2 | Performance pass (images, lazy loading, fonts, code splitting check, bundle report, Core Web Vitals headless) | Pending |
+| Q2 | Performance: below-the-fold images lazy with their real width and height; the 3D hero loads as its own file; the /dev page stops downloading the whole icon library (its file: 760,559 to 21,657 bytes); new `scripts/dev/perf-check.mjs` (lab Core Web Vitals). Fonts: already `display=swap` with preconnect (index.html, unchanged). Every page route was already lazy. Report below | In review |
 | Q3 | 390 px pass on every non-critical page | Pending |
 | Q4 | SEO, non-critical part (canonical, sitemap and robots from the manifest, Open Graph per page, Organization and WebSite JSON-LD) | Pending |
 | Q5 | 404 page and error boundary in the world style | Pending |
@@ -107,6 +107,27 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | C | Backlog: /about and /team from the content layer, /services overview, /press and /brand-kit from existing assets, FR/EN types and keys, /status, changelog, prefetch, print styles for legal pages, docs refresh | Pending |
 | D | **Critical bundle** (one pull request, needs-owner): form function hardening, contact form on, other safe security fixes, headers and CSP, index.html share tags, CLAUDE.md and lockfile, BookingForm, the signed hand-off, setup screen, end-to-end checklist, `docs/owner-review-guide.md` | Pending (last; the run stops after opening it) |
 | — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into the rows above | |
+
+## Performance report (Q2, lab numbers, headless Chromium on the session's computer, outside hosts blocked)
+
+Entry script 601,289 bytes (gzip 178,399); 95 script files, 2,260,266 bytes in all. Phone = 390px with a 4x
+slower CPU; desktop = 1366px. LCP and FCP in ms; CLS; TBT in ms; JS and images in KB loaded in 5 s.
+
+| Route | Size | LCP before → after | CLS | TBT before → after | JS before → after | Images before → after |
+| --- | --- | --- | --- | --- | --- | --- |
+| / | phone | 1060 → 900 | 0.000 | 247 → 245 | 1084 → 1083 | 197 → 197 |
+| /dev | phone | 924 → 748 | 0.000 | 192 → 105 | 1405 → 647 | 434 → 122 |
+| /designs | phone | 1840 → 1588 | 0.001 | 142 → 69 | 657 → 656 | 470 → 470 |
+| /larosaview | phone | 656 → 632 | 0.021 → 0.008 | 114 → 115 | 641 → 640 | 5052 → 2464 |
+| /work | phone | 376 → 316 | 0.000 | 0 → 0 | 612 → 611 | 122 → 122 |
+| / | desktop | 208 → 244 | 0.000 | 14 → 0 | 1084 → 1083 | 197 → 197 |
+| /dev | desktop | 280 → 192 | 0.000 | 0 → 0 | 1405 → 647 | 434 → 122 |
+| /designs | desktop | 1280 → 1228 | 0.001 | 0 → 0 | 657 → 656 | 470 → 470 |
+| /larosaview | desktop | 328 → 224 | 0.010 → 0.000 | 17 → 0 | 641 → 640 | 3780 → 1193 |
+| /work | desktop | 172 → 164 | 0.000 | 0 → 0 | 612 → 611 | 122 → 122 |
+
+The /designs LCP is its letter-by-letter heading. The largest remaining weight is images (1 to 3 MB each,
+listed under "Owner must fill"): smaller copies need the owner, because sessions add no image files.
 
 ## To resume
 
