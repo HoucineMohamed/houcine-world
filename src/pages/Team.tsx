@@ -2,14 +2,13 @@ import { Link } from "react-router-dom";
 import { Users } from "lucide-react";
 import { ServicePageLayout, ServiceHero, ServiceSection } from "@/components/service/ServicePage";
 import { cn } from "@/lib/utils";
+import { isInternalHref } from "@/content/format";
 import { team } from "@/content/team";
 
 // /team: the people behind the ecosystem, from src/content/team.ts. Only real people with their agreement.
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
-
-const isInternal = (href: string) => href.startsWith("/") && !href.startsWith("//");
 
 const Team = () => (
   <ServicePageLayout>
@@ -26,7 +25,7 @@ const Team = () => (
               <ul className="flex flex-wrap gap-x-4">
                 {m.links.map((l) => (
                   <li key={l.href}>
-                    {isInternal(l.href) ? (
+                    {isInternalHref(l.href) ? (
                       <Link to={l.href} className={cn("inline-flex items-center min-h-11 text-sm text-accent underline hover:text-accent/80 rounded", focusRing)}>
                         {l.label}
                       </Link>
