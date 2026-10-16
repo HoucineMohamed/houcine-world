@@ -19,6 +19,7 @@
   <url><loc>https://houcine.world/journal</loc><priority>0.6</priority></url>
   <url><loc>https://houcine.world/services</loc><priority>0.7</priority></url>
   <url><loc>https://houcine.world/brand-kit</loc><priority>0.4</priority></url>
+  <url><loc>https://houcine.world/status</loc><priority>0.1</priority></url>
   <url><loc>https://houcine.world/team</loc><priority>0.5</priority></url>
   <url><loc>https://houcine.world/brand</loc><priority>0.5</priority></url>
 </urlset>
