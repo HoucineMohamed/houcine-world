@@ -7,6 +7,8 @@ import Footer from "@/components/Footer";
 import { SearchButton } from "@/components/search/SiteSearch";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import BackToTop from "@/components/BackToTop";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -49,10 +51,12 @@ export const ServicePageLayout = ({ children }: { children: ReactNode }) => (
     </header>
 
     <main id="main" className="pt-28 pb-20 px-6">
+      <Breadcrumbs className="container mx-auto max-w-5xl mb-8" />
       <div className="container mx-auto max-w-5xl space-y-20">{children}</div>
     </main>
 
     <Footer />
+    <BackToTop />
   </div>
 );
 
