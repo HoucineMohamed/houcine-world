@@ -6,8 +6,7 @@ import { Card, CardDescription, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { journal } from "@/content/journal";
 import { publishedPosts, readingMinutes, tagsOf } from "@/content/query";
-import { formatDate } from "@/content/format";
-import { useFeedLink } from "./journalShared";
+import { formatDate, useFeedLink } from "./journalShared";
 
 // /journal: the published posts of src/content/journal.ts, newest first, with tag filters, the reading
 // time of each post and the RSS feed (public/rss.xml). Drafts never appear.
