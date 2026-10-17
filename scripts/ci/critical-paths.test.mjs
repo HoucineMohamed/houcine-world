@@ -19,6 +19,7 @@ const EXAMPLES = {
   ".env*": ".env.production.local",
   "src/integrations/**": "src/integrations/supabase/client.ts",
   "supabase/**": "supabase/migrations/20260808035658_b003fe84-8413-46dc-af8c-e644d3e9019b.sql",
+  "supabase/functions/**": "supabase/functions/send-notification/core.ts",
   "src/lib/supabaseClient.ts": "src/lib/supabaseClient.ts",
   "src/pages/AdminLogin.tsx": "src/pages/AdminLogin.tsx",
   "src/pages/Admin.tsx": "src/pages/Admin.tsx",
@@ -84,13 +85,16 @@ test("the example files exist in the repository (no typo in a path)", () => {
 
 test("the owner's required entries are present", () => {
   for (const required of [
-    ".github/**", ".env*", "src/integrations/**", "supabase/**", "src/hooks/useMemberships*",
+    ".github/**", ".env*", "src/integrations/**", "supabase/**", "supabase/functions/**", "src/hooks/useMemberships*",
     "src/components/owner/**", "src/config/trades.ts", "package.json", "package-lock.json",
     "netlify.toml", "netlify/functions/**", "public/_redirects", "public/_headers", "index.html",
   ]) {
     assert.ok(patterns.includes(required), `${required} must be a critical path`);
   }
   assert.ok(matchesGlob("src/integrations/supabase/types.ts", "src/integrations/**"));
+  for (const f of ["supabase/functions/send-notification/index.ts", "supabase/functions/_shared/cors.ts", "supabase/functions/x/y/z.ts"]) {
+    assert.ok(matchesGlob(f, "supabase/functions/**"), `${f} must be matched by supabase/functions/**`);
+  }
 });
 
 test("ordinary public pages and docs are not critical", () => {

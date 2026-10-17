@@ -1,1 +1,12 @@
+# Netlify redirect rules, read top to bottom (the first match wins).
+#
+# FUTURE DOMAIN, INACTIVE: the two lines starting with "# https://" are switched on only once houcine.world is
+# the site's primary domain on Netlify (Domain management) and its certificate is issued; then remove the "# "
+# in front of each, in a pull request (docs/owner-review-guide.md, topic 15, has the order). They send the www
+# address and the Netlify address to https://houcine.world with the same path, permanently. They must stay
+# ABOVE the last line, which serves the app for every other address.
+#
+# https://www.houcine.world/* https://houcine.world/:splat 301!
+# https://houcineworld.netlify.app/* https://houcine.world/:splat 301!
+
 /*    /index.html   200

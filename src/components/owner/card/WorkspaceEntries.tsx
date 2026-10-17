@@ -59,11 +59,14 @@ export const WorkspaceNavEntry = () => {
 
 // The single sign-on setup screen is a separate file, downloaded only when the owner opens it.
 const SsoSetup = lazy(() => import("../sso-setup"));
+// The owner command center (setup checklist, Houcine.Trades facts): also its own file, loaded on demand.
+const CommandCenter = lazy(() => import("../command-center"));
 
 /** Section with one card on the ecosystem page: the card matches the brand cards above it. */
 export const WorkspaceEcosystemEntry = () => {
   const href = validateTradesUrl(TRADES_URL);
   const [showSetup, setShowSetup] = useState(false);
+  const [showCenter, setShowCenter] = useState(false);
   const card = (
     <Card className={cn("h-full transition-colors", href === null ? "opacity-60" : "hover:border-accent")}>
       <CardHeader className="pb-4">
@@ -96,12 +99,25 @@ export const WorkspaceEcosystemEntry = () => {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{entry}</div>
       <button
         type="button"
+        onClick={() => setShowCenter((v) => !v)}
+        aria-expanded={showCenter}
+        className={cn("mt-4 mr-6 text-sm text-muted-foreground underline hover:text-foreground rounded", focusRing)}
+      >
+        {showCenter ? "Close the setup checklist" : "Setup checklist and Houcine.Trades facts"}
+      </button>
+      <button
+        type="button"
         onClick={() => setShowSetup((v) => !v)}
         aria-expanded={showSetup}
         className={cn("mt-4 text-sm text-muted-foreground underline hover:text-foreground rounded", focusRing)}
       >
         {showSetup ? "Close single sign-on setup" : "Single sign-on setup"}
       </button>
+      {showCenter && (
+        <Suspense fallback={<p className="mt-4 text-sm text-muted-foreground">Loading…</p>}>
+          <CommandCenter />
+        </Suspense>
+      )}
       {showSetup && (
         <Suspense fallback={<p className="mt-4 text-sm text-muted-foreground">Loading…</p>}>
           <SsoSetup />

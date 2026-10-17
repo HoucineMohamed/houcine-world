@@ -22,7 +22,7 @@ These are placeholders on purpose; no session invents them.
 
 ## Driver
 
-DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-17T21:25:00Z
+DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-17T21:47:00Z
 
 The previous claim (session_01YPgKc4KaGJPX6EDp5wNDGW, updated 2026-10-15T18:36:00Z) was about 22 hours
 old, no pull request was open, and the owner named this session the only driver. Before starting any
@@ -131,9 +131,10 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | F3 | Design-drift guard: `scripts/dev/tokens.test.mjs` now compares `tokens.json` with the doc's colour tables in both directions (both palettes, extra or missing rows) and the `--radius` row, and proves it catches each kind of drift; `docs/ecosystem-design-tokens.md` gains section 11, the token change protocol (what to change here, what the Trades side mirrors, how to tell it through `docs/trades-findings.md`, created here) | **Merged** (#55) |
 | F4 | `docs/ecosystem-owner-runbook.md`: the whole system on one page in plain words (sites, repositories, hosts, every secret and where it lives, which pull requests merge by themselves and which wait for the owner), recovery for each failure seen so far (sign-in, deploy, backup, token, domain) and a short decision tree; the Vercel disconnect click path | **Merged** (#56) |
 | F5 | `docs/domain-migration-plan.md`: the ordered move of Houcine.Trades to `trades.houcine.world` (Render custom domain, CNAME, certificate and test, then `TRADES_URL`, `TRADES_AUDIENCE` and the Trades audience setting together, then removing `onrender.com` from the allowlist), with a check and a rollback for every step; built on the Trades verifier's real rules (one audience, Host must match), read from its default branch | **Merged** (#57) |
-| F7 | `docs/trades-findings.md`: five findings for the Trades sessions from a read-only look at its sign-on code (none blocking), listed under \"For the Trades sessions\" | In review |
+| F7 | `docs/trades-findings.md`: five findings for the Trades sessions from a read-only look at its sign-on code (none blocking), listed under \"For the Trades sessions\" | **Merged** (#58) |
 | C | Backlog: every Part C item is done or in review (`/press` skipped, no real press material: owner content) | Done |
-| D | **Critical bundle** (one pull request, needs-owner): form function hardening, contact form on, other safe security fixes, headers and CSP, index.html share tags, CLAUDE.md and lockfile, BookingForm, the signed hand-off, setup screen, end-to-end checklist, `docs/owner-review-guide.md` | Pending (last; the run stops after opening it) |
+| D | **Critical bundle** (one pull request, needs-owner): form function hardening, other safe security fixes, headers and CSP, index.html share tags, CLAUDE.md and dependency notes, BookingForm, the signed hand-off screens, the setup screen and command center, the end-to-end checklist, the health check workflow, the inactive future-domain redirects, the hand-off URL test, and `docs/owner-review-guide.md` (read it first). The contact form stays OFF in it (`CONTACT_FORM_ENABLED=false`, Part E) | Open, waits for the owner (opened last; the run stops here) |
+| E | Enable the contact form: pushed ONLY after the bundle has merged AND the Deploy Supabase workflow has succeeded on main | Waits for the owner (after D) |
 | — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into the rows above | |
 
 ## Addition of 17 October: Parts F and G, readings

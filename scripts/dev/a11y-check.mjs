@@ -56,9 +56,7 @@ const errors = [];
 const warnings = [];
 // Known errors in files a session may not change (critical paths): reported, not counted.
 // Remove an entry once it is fixed, so that a return of the problem fails again.
-const KNOWN = [
-  { page: "/booking", kind: /^(heading order|form labels|landmarks: 0 <main>)/, why: "src/pages/BookingForm.tsx is a critical file (the fix is in the critical bundle, see docs/PROGRAM-STATUS.md)" },
-];
+const KNOWN = [];
 const known = [];
 const tokenRows = [];
 for (const theme of [":root", ".dark"]) {

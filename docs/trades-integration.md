@@ -11,8 +11,9 @@ embedded or shared between the two. The card is only a shortcut for the owner.
 - Merged: the owner-only entries (home card, workspace sidebar, `/workspace/ecosystem`), the Netlify
   Function `netlify/functions/assert` that signs a 60-second assertion, and the single sign-on setup screen
   that creates the key pair in the browser.
-- Not yet merged (critical bundle): the branded "Opening Houcine.Trades…" screen, the error and "not
-  configured" states, the step-by-step setup checklist, and a one-time end-to-end checklist in this document.
+- In the critical bundle (merged when the owner merges it): the branded "Opening Houcine.Trades…" screen, the
+  error and "not configured" states, the step-by-step setup checklist with a live check, the one-time
+  end-to-end check (section 10) and the order for moving to the custom domain (section 11).
 - Not done by any session: the Netlify variables (`SSO_PRIVATE_KEY`, `OWNER_USER_ID`, `TRADES_AUDIENCE`)
   and the `/sso` page in Houcine.Trades. Until both exist, the entries open the normal sign-in page.
 
@@ -322,3 +323,46 @@ Trigger deploy) and the public key in Houcine.Trades. Old notes stop working wit
 - The function's address `/api/assert` relies on Netlify's function routing taking priority over the site's
   "send everything to index.html" rule; check it on the deploy preview (section "Next steps" in the pull
   request).
+
+## 10. One-time end-to-end check (after the hand-off is set up)
+
+Do this once, in this order, after the steps of the setup screen (`/workspace/ecosystem` → Private apps →
+Single sign-on setup). Each line says what you should see.
+
+1. **Signed out**, open `https://houcine.world/`: no Houcine.Trades card anywhere, no "Private apps".
+2. **Signed in as a Brand Admin** (not the owner): still no card, no sidebar row, no Private apps section.
+3. **Signed in as the super admin**, open `/workspace/ecosystem`: the setup checklist shows the audience and
+   your user id. Click **Check now**: it should say "Working".
+4. Click the Houcine.Trades card on the home page: a full screen "Opening Houcine.Trades…" appears, then
+   Houcine.Trades opens **in the same tab**, signed in or at its authenticator step.
+5. Look at the address bar on Houcine.Trades: it shows `…/sso` and then its own page. Nothing after a `?`.
+6. Come back, and click the card again within a minute, several times: after about five tries in a minute (the limit is
+   counted by each running copy of the function, so it is not exact) the screen says it could not open
+   Houcine.Trades; **Try again** after a minute works, and **Open the sign-in page**
+   always opens the plain sign-in page.
+7. Optional: remove `SSO_PRIVATE_KEY` from Netlify and redeploy. The card then shows "The hand-off is not set
+   up yet" with the plain sign-in link. Put the key back and redeploy.
+
+If step 3 says "Not set up yet", a variable is missing or the site was not redeployed. If it says "Refused",
+`OWNER_USER_ID` does not match the id shown, or your account is not the super admin. If step 4 opens the
+normal sign-in page, the audience or the public key in Houcine.Trades does not match.
+
+## 11. Moving Houcine.Trades to its own domain (the order matters)
+
+The full plan, with a check and a rollback for every step, is `docs/domain-migration-plan.md`. In short: when
+`trades.houcine.world` replaces `houcine-trades.onrender.com`, do these in order. Doing them out of order only makes
+the hand-off fall back to the plain sign-in page; nothing breaks for good. (Houcine.Trades keeps one audience, on
+its `/security/sso` page, and the address used must match it.)
+
+1. In Render, add the custom domain `trades.houcine.world`; add the CNAME record at your DNS provider (section 8,
+   steps 4 and 5); wait for the certificate; open `https://trades.houcine.world` and see its sign-in page.
+2. Prepare the `TRADES_URL` pull request (step 4) without merging it yet.
+3. On Netlify, change **`TRADES_AUDIENCE`** to `trades.houcine.world` (scopes Production + Functions), and on
+   Houcine.Trades `/security/sso` set the audience to `trades.houcine.world` (switch sign-on on again if saving
+   switched it off).
+4. Merge the pull request that sets **`TRADES_URL`** to `"https://trades.houcine.world"` in `src/config/trades.ts`. Netlify deploys the site and the function together, so the new
+   address and the new audience go live at the same moment.
+5. Run the end-to-end check (section 10) once more.
+6. Only then, in another pull request, **remove `"onrender.com"`** from `TRADES_HOST_ALLOWLIST` in
+   `src/config/trades.ts`, so the old address can no longer be used. Set the GitHub variable `TRADES_HEALTH_URL`
+   to `https://trades.houcine.world/healthz` (owner review guide, topic 14).

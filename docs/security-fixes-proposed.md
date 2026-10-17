@@ -1,12 +1,33 @@
-# Proposed security fixes (text only, not applied)
+# Proposed security fixes, and what the hardening bundle applied
 
 Written 15 October 2026 from `docs/security-review.md` (C1, H1, H2, H3, L5) and a read-only look at
 the migrations, the `send-notification` function and the code that calls them.
 
-**Nothing on this page has been applied.** Every block below is a proposal written as text. Each fix
-touches the database, an edge function or the Supabase settings, which are critical areas: **applying
-any of them is your decision**, one at a time, each as its own pull request that you merge by hand (or,
-for the settings, a change you make yourself in the Supabase dashboard).
+## Status (16 October 2026, the critical bundle)
+
+Applied in the bundle (one migration, `supabase/migrations/20261016230000_security_fixes_safe.sql`, run by
+Deploy Supabase after the merge; the function change in `supabase/functions/send-notification/`):
+
+- **(a) H1, `services` row-level security:** applied as written, with `public.is_super_admin()` as the
+  super-admin check.
+- **(b) C1, who may read submissions and subscribers:** applied (admin or super admin only).
+- **(b) H2, direct anonymous inserts into `submissions` and `subscriptions`:** applied (the policies are dropped).
+- **(b) L5, profile columns:** applied (a signed-in user may update only `full_name`).
+- **(c) H3, escaping user text in the emails:** applied in the function, more strictly than proposed (every
+  value escaped, header-safe subject, strict fields, the trap field, the origin check), with tests.
+- **(d) H2, rate-limiting the forms:** the in-memory per-address limit is applied in the function; it is
+  best-effort (each running copy of the function counts on its own, a restart clears it).
+
+Not applied, one sentence each:
+
+- **(b) The "mark as read" update policy for the /admin inbox:** it would add a feature that does not work
+  today, not close a hole, so it is left for a separate decision.
+- **(b) Size limits on `page_views` and `cta_events`:** analytics is out of scope for any automated change, and a
+  limit shorter than a real page address would silently drop page views.
+- **(b) `user_roles`:** no change was proposed; it is already restrictive.
+- **(e) The test plan:** it is followed in `docs/owner-review-guide.md`, in the browser, after the merge.
+- **(f) Switching off new sign-ups in the Supabase dashboard:** it changes how people sign in, which this bundle
+  must not do; it stays a step for you to decide.
 
 Two notes about the SQL:
 
