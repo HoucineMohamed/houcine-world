@@ -29,6 +29,17 @@ old, no pull request was open, and the owner named this session the only driver.
 item, re-fetch and check for a newer DRIVER line; never push while another claim is fresher than 30
 minutes.
 
+## Second role: Houcine.Trades session T2 (the money path)
+
+Since 17 October this session also holds the role "T2" in the Houcine.Trades repository (the MetaTrader 5 money path, its own
+branch `claude/t2-money-path`). Its status, decisions and its own "Needs the owner" list are in **`docs/PROGRAM-STATUS-T2.md` of the
+Houcine.Trades repository**, not here. In short: the audit merged there as #50; everything else rides one pull request, #55, which
+waits for you (it touches critical paths). Live (real money) stays off throughout.
+
+- **Decision (17 October):** a message written for the Trades session "T1" reached this session. It was not acted on, because a real
+  T1 session works on its own branch; the owner was asked to give it to that session. This session never pushes to T1's branch.
+- **Order when both roles compete:** the Houcine.world critical bundle first, then T2.
+
 ## The owner's brief of 16 October: order and readings
 
 Decisions taken without asking (the owner asked for no questions; the safest reading is recorded here):
@@ -120,6 +131,7 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | F3 | Design-drift guard: `scripts/dev/tokens.test.mjs` now compares `tokens.json` with the doc's colour tables in both directions (both palettes, extra or missing rows) and the `--radius` row, and proves it catches each kind of drift; `docs/ecosystem-design-tokens.md` gains section 11, the token change protocol (what to change here, what the Trades side mirrors, how to tell it through `docs/trades-findings.md`, created here) | In review |
 | F4 | `docs/ecosystem-owner-runbook.md`: the whole system on one page in plain words (sites, repositories, hosts, every secret and where it lives, which pull requests merge by themselves and which wait for the owner), recovery for each failure seen so far (sign-in, deploy, backup, token, domain) and a short decision tree; the Vercel disconnect click path | In review |
 | F5 | `docs/domain-migration-plan.md`: the ordered move of Houcine.Trades to `trades.houcine.world` (Render custom domain, CNAME, certificate and test, then `TRADES_URL`, `TRADES_AUDIENCE` and the Trades audience setting together, then removing `onrender.com` from the allowlist), with a check and a rollback for every step; built on the Trades verifier's real rules (one audience, Host must match), read from its default branch | In review |
+| F7 | `docs/trades-findings.md`: five findings for the Trades sessions from a read-only look at its sign-on code (none blocking), listed under \"For the Trades sessions\" | In review |
 | C | Backlog: every Part C item is done or in review (`/press` skipped, no real press material: owner content) | Done |
 | D | **Critical bundle** (one pull request, needs-owner): form function hardening, contact form on, other safe security fixes, headers and CSP, index.html share tags, CLAUDE.md and lockfile, BookingForm, the signed hand-off, setup screen, end-to-end checklist, `docs/owner-review-guide.md` | Pending (last; the run stops after opening it) |
 | — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into the rows above | |
@@ -143,7 +155,14 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 
 ## For the Trades sessions
 
-Items in `docs/trades-findings.md` (what, where, why, suggested fix). None yet.
+Items in `docs/trades-findings.md` (what, where, why, suggested fix), read from the Trades default branch on
+17 October 2026. None of them blocks the hand-off; the sender's format passes every check.
+
+1. The used-note table `sso_token_uses` is never pruned.
+2. The note's audience is compared case-sensitively.
+3. The lifetime limit is 90 s, the sender makes 60 s.
+4. One audience at a time: the domain move is a coordinated switch (`docs/domain-migration-plan.md`).
+5. No live-readiness page exists to link from the owner card.
 
 ## Performance report (Q2, lab numbers, headless Chromium on the session's computer, outside hosts blocked)
 
