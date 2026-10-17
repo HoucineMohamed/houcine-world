@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { ServicePageLayout } from "@/components/service/ServicePage";
@@ -6,16 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { journal } from "@/content/journal";
 import { publishedPosts, readingMinutes, relatedPosts } from "@/content/query";
-import { journalPostStructuredData } from "@/content/templates";
-import { BASE_URL, SITE_NAME } from "@/config/site";
-import { formatDate } from "@/content/format";
-import { useFeedLink } from "./journalShared";
+import { formatDate, useFeedLink } from "./journalShared";
 
 // /journal/:slug: one published post, its tags, reading time and up to three related posts.
-// A draft or unknown slug shows a calm not-found message. Structured data (JSON-LD) is added only for a
-// published post.
-
-const JSON_LD_ID = "post-structured-data";
+// A draft or unknown slug shows a calm not-found message.
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -24,16 +17,6 @@ const JournalPost = () => {
   useFeedLink();
   const { slug } = useParams();
   const post = publishedPosts(journal).find((p) => p.slug === slug);
-
-  useEffect(() => {
-    if (!post) return;
-    const script = document.createElement("script");
-    script.id = JSON_LD_ID;
-    script.type = "application/ld+json";
-    script.textContent = JSON.stringify(journalPostStructuredData(post, { baseUrl: BASE_URL, name: SITE_NAME }));
-    document.head.appendChild(script);
-    return () => script.remove();
-  }, [post]);
 
   const back = (
     <Link to="/journal" className={cn("inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground rounded", focusRing)}>

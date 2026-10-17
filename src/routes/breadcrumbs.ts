@@ -3,12 +3,14 @@
 // addresses get no trail, and neither does the home page.
 //
 // Plain Node imports this file in scripts/dev/breadcrumbs.test.mjs: keep its imports relative, with ".ts".
-import { CONTENT_PAGES, INDEXABLE, shortTitle as label } from "./manifest.ts";
+import { CONTENT_PAGES, INDEXABLE } from "./manifest.ts";
 
 export interface Crumb {
   path: string;
   label: string;
 }
+
+const label = (title: string): string => title.split(" | ")[0].trim();
 
 const PAGES = new Map<string, string>([...INDEXABLE, ...CONTENT_PAGES].map((p) => [p.path, label(p.title)]));
 

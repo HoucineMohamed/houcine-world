@@ -12,7 +12,6 @@ import BackToTop from "@/components/BackToTop";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { isInternalHref } from "@/content/format";
 import { contactMailto } from "@/config/contact";
 import type { WorkItem } from "@/content/types";
 
@@ -134,6 +133,8 @@ export const ProcessSteps = ({
   </ol>
 );
 
+const isInternal = (href: string) => href.startsWith("/") && !href.startsWith("//");
+
 const WorkCard = ({ item }: { item: WorkItem }) => {
   const body = (
     <Card className="h-full border-border/50 bg-card/50 backdrop-blur overflow-hidden">
@@ -161,7 +162,7 @@ const WorkCard = ({ item }: { item: WorkItem }) => {
     </Card>
   );
   if (!item.href) return body;
-  return isInternalHref(item.href) ? (
+  return isInternal(item.href) ? (
     <Link to={item.href} className={cn("block h-full rounded-lg", focusRing)}>{body}</Link>
   ) : (
     <a href={item.href} rel="noopener noreferrer" className={cn("block h-full rounded-lg", focusRing)}>{body}</a>
