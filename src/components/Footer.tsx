@@ -20,8 +20,6 @@ const Footer = () => {
               <span aria-hidden="true">·</span>
               <Link to="/status" className="hover:text-accent transition-colors">Status</Link>
               <span aria-hidden="true">·</span>
-              <Link to="/sitemap" className="hover:text-accent transition-colors">Sitemap</Link>
-              <span aria-hidden="true">·</span>
               <Link to="/terms" className="hover:text-accent transition-colors">Terms of Service</Link>
               <span aria-hidden="true">·</span>
               <Link to="/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link>
