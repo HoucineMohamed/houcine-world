@@ -117,9 +117,31 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | C10 | `/sitemap`: every public page, grouped (Houcine.world, the four verticals, La Rosa View, about this site, legal), each with its one-line description, and published content entries under their list page; built from the manifest and the content layer (`src/routes/siteMap.ts`, a page with no group shows under "More" and fails the test); linked from the footer; added to `sitemap.xml`. `scripts/dev/sitemap-page.test.mjs` | **Merged** (#52) |
 | C11 | Case-study and journal-post templates (`src/content/templates.ts`): `caseStudyDraft` / `journalPostDraft` make a draft with a slug from the title and "TODO" texts that the content test refuses until written; `draftSource` prints it as TypeScript (`scripts/dev/new-entry.mjs`); the JSON-LD of a case study now comes from `caseStudyStructuredData`, and a published journal post gains `BlogPosting` data (`journalPostStructuredData`). Content guide updated. `scripts/dev/templates.test.mjs`; checked headless with the draft post published in a throwaway build (JSON-LD present, removed on leaving the page) | In review |
 | C12 | Content helpers tidied: `formatDate` and `isInternalHref` in `src/content/format.ts` (were copied in four pages and `journalShared.ts`), `shortTitle` in the manifest (was copied in the breadcrumb and sitemap helpers); a test fails if a page defines its own copy again. `scripts/dev/format.test.mjs`. No visible change | In review |
+| F3 | Design-drift guard: `scripts/dev/tokens.test.mjs` now compares `tokens.json` with the doc's colour tables in both directions (both palettes, extra or missing rows) and the `--radius` row, and proves it catches each kind of drift; `docs/ecosystem-design-tokens.md` gains section 11, the token change protocol (what to change here, what the Trades side mirrors, how to tell it through `docs/trades-findings.md`, created here) | In review |
 | C | Backlog: every Part C item is done or in review (`/press` skipped, no real press material: owner content) | Done |
 | D | **Critical bundle** (one pull request, needs-owner): form function hardening, contact form on, other safe security fixes, headers and CSP, index.html share tags, CLAUDE.md and lockfile, BookingForm, the signed hand-off, setup screen, end-to-end checklist, `docs/owner-review-guide.md` | Pending (last; the run stops after opening it) |
 | — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into the rows above | |
+
+## Addition of 17 October: Parts F and G, readings
+
+- **Order:** Part F comes after Part C; Part G goes into the critical bundle; Parts A to E are not reordered.
+- **F1 (setup checklist) and F2 (Houcine.Trades card) are critical by path**: they live in the owner chunk,
+  `src/components/owner/**`, which `.github/critical-paths.txt` lists. They go into the bundle (not ordinary
+  pull requests), as do G1 (a workflow in `.github`), G2 (`netlify.toml`, `public/_headers`, `public/_redirects`)
+  and G3 (a test of the owner hand-off).
+- **F3, F4, F5 and the findings file are documentation and a dev test**: ordinary pull requests, after C12.
+- **F6:** no public page mentions a private tool; the smoke check already fails on the private host in the
+  HTML, sitemap, robots.txt or main bundle, and the F-items add no public text.
+- **Reading the Trades repository** is allowed for findings only (never a push); findings go to
+  `docs/trades-findings.md` and are listed under "For the Trades sessions" below.
+- **Deploy Supabase does not deploy `send-notification`** and topic 3 forbids changing what it deploys: the
+  hardened function goes live only when the owner deploys it (guide, step d). The pull request that switches
+  the contact form on is therefore pushed only after Deploy Supabase succeeds AND the owner has deployed the
+  function; otherwise it is recorded here as waiting.
+
+## For the Trades sessions
+
+Items in `docs/trades-findings.md` (what, where, why, suggested fix). None yet.
 
 ## Performance report (Q2, lab numbers, headless Chromium on the session's computer, outside hosts blocked)
 
