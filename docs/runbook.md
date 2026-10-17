@@ -5,26 +5,24 @@ Claude session to do it (it opens a pull request that merges itself if it is not
 also edit on GitHub: open the file, click the pencil, change it, choose **"Create a new branch for this
 commit and start a pull request"**, then merge that pull request yourself.
 
-## Add a portfolio item ("Selected work")
+## Add a project, a journal post or a testimonial
 
-1. Open `src/content/management.ts` (the Houcine.management page; other pages can get the same kind of
-   file later).
-2. Add an entry inside the square brackets, for example:
-
-   ```ts
-   { title: "Project name", summary: "One or two plain sentences.", tags: ["Brand strategy"] },
-   ```
-
-   Optional fields: `href` (an internal address such as `/larosaview`, or an `https://` address you
-   own), and `image` with `imageAlt` (the image must be a file in `src/assets/`, imported at the top of
-   the file). Only add real, published work you have the right to show.
-3. While the list is empty, the page shows "Coming soon".
+Follow `docs/content-guide.md`: each is one entry in a file of `src/content/` (`work.ts`, `journal.ts`,
+`testimonials.ts`), edited in the browser on GitHub. A project shows on `/work` (and, for the
+management vertical, in the "Selected work" of `/manages`); a post on `/journal` and in the RSS feed.
+While a list is empty, its page says "Coming soon".
 
 ## Change the public contact email
 
 1. Open `src/config/contact.ts`.
 2. Put your address between the quotes: `export const CONTACT_EMAIL = "you@example.com";`
 3. Until it is set, the "Get in touch" buttons say "Contact details coming soon".
+
+## Turn the contact form on
+
+The message form on `/contact` is ready but off: `CONTACT_FORM_ENABLED = false` in `src/config/contact.ts`.
+It stays off until the hardened form function (part of the critical bundle) is merged **and** deployed
+(the "Deploy Supabase" workflow must succeed on `main`). Then a session changes that one line to `true`.
 
 ## Fill in the legal placeholders
 
@@ -44,7 +42,7 @@ automatically. `public/sitemap.xml` and `public/robots.txt` are written from the
 
 ## Check the site before a release (scripts a session runs)
 
-Three offline checks live in `scripts/dev/`. They serve the built site on the session's own computer and
+Several offline checks live in `scripts/dev/`. They serve the built site on the session's own computer and
 open it in a local headless Chromium that cannot reach the internet. You do not run them yourself: ask
 a session to "run the smoke, link and accessibility checks" and to report the results.
 

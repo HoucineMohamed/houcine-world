@@ -6,6 +6,16 @@ This page explains, in plain words, the one small card that points from this sit
 Houcine.Trades is a separate, private app in its own repository. Nothing is merged,
 embedded or shared between the two. The card is only a shortcut for the owner.
 
+## Current state (16 October 2026)
+
+- Merged: the owner-only entries (home card, workspace sidebar, `/workspace/ecosystem`), the Netlify
+  Function `netlify/functions/assert` that signs a 60-second assertion, and the single sign-on setup screen
+  that creates the key pair in the browser.
+- Not yet merged (critical bundle): the branded "Opening Houcine.Trades…" screen, the error and "not
+  configured" states, the step-by-step setup checklist, and a one-time end-to-end checklist in this document.
+- Not done by any session: the Netlify variables (`SSO_PRIVATE_KEY`, `OWNER_USER_ID`, `TRADES_AUDIENCE`)
+  and the `/sso` page in Houcine.Trades. Until both exist, the entries open the normal sign-in page.
+
 ## 1. What you see
 
 On the home page, in the Services grid ("The Ecosystem"), a fifth card appears:
