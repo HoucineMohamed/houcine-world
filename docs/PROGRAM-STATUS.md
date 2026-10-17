@@ -22,7 +22,7 @@ These are placeholders on purpose; no session invents them.
 
 ## Driver
 
-DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-16T23:41:00Z
+DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-17T00:03:00Z
 
 The previous claim (session_01YPgKc4KaGJPX6EDp5wNDGW, updated 2026-10-15T18:36:00Z) was about 22 hours
 old, no pull request was open, and the owner named this session the only driver. Before starting any
@@ -104,7 +104,7 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | Q4 | SEO (non-critical part): canonical links, sitemap, robots.txt and rss.xml from the manifest and BASE_URL (already in place, now tested for every page and entry); per-page `og:url`, `twitter:url`, `og:type` (article for journal posts), `og:site_name`, `twitter:card` in RouteMeta; the smoke check compares canonical, og:url, og:title and description on every public page. Organization and WebSite JSON-LD were already there. The static share tags in `index.html` are critical (bundle) | **Merged** (#39) |
 | Q5 | Errors and edge states: the 404 page and the public error boundary were already in the site's style; added a clear "This page could not load" message with Reload when a page's code cannot be downloaded (offline, or the site was updated), an error boundary (reset in place on each new address, so the workspace guards are never remounted) and a branded loading state around every route (the workspace and admin pages had plain text and no boundary), and an empty-list guard in the testimonials slider. Empty states: /work, /journal, Selected work, search, /reads filters all have one | **Merged** (#40) |
 | Q6 | Content quality gate: `scripts/dev/content-gate.mjs` (no "not written yet" words in the visible text of any public page, no console error on any page; the owner's legal placeholders are listed, not counted) and `scripts/dev/assets.test.mjs` (500 KB image budget; the 10 oversized images already in the site are listed and may not grow). Dead links, alt text and duplicate slugs were already covered by link-check, a11y-check and the content test | **Merged** (#41) |
-| Q7 | Docs refresh: runbook (content, contact form switch, every check script), security review (a status for every finding), content guide (where entries appear), trades integration (current state), tokens doc (now tested against `tokens.json`) | In review |
+| Q7 | Docs refresh: runbook (content, contact form switch, every check script), security review (a status for every finding), content guide (where entries appear), trades integration (current state), tokens doc (now tested against `tokens.json`) | **Merged** (#42) |
 | C | Backlog: /about and /team from the content layer, /services overview, /press and /brand-kit from existing assets, FR/EN types and keys, /status, changelog, prefetch, print styles for legal pages, docs refresh | Pending |
 | D | **Critical bundle** (one pull request, needs-owner): form function hardening, contact form on, other safe security fixes, headers and CSP, index.html share tags, CLAUDE.md and lockfile, BookingForm, the signed hand-off, setup screen, end-to-end checklist, `docs/owner-review-guide.md` | Pending (last; the run stops after opening it) |
 | — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into the rows above | |
