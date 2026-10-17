@@ -48,3 +48,15 @@ test("the store tells every listener and stops after unsubscribe", () => {
   assert.deepEqual(seen, ["opening", "error"]);
   assert.equal(s.get(), "idle");
 });
+
+test("the exact URL shape Houcine.Trades accepts: <TRADES_URL>sso#<note>, the bare form, nothing else", async () => {
+  const { url } = handoffOutcome(200, { assertion: NOTE }, HREF, "sso");
+  assert.equal(url, "https://houcine-trades.onrender.com/sso#eyJhbGciOiJFZERTQSJ9.eyJzdWIiOiJ4In0.c2ln");
+  assert.match(url, /^https:\/\/[a-z0-9.-]+\/sso#[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/);
+  assert.doesNotMatch(url, /#assertion=|\?|&/, "the bare fragment form, no query string, no name=value");
+  const { url: other } = handoffOutcome(200, { assertion: NOTE }, "https://trades.houcine.world/", "sso");
+  assert.equal(other, `https://trades.houcine.world/sso#${NOTE}`);
+  const { readFileSync } = await import("node:fs");
+  const config = readFileSync(new URL("../../../config/trades.ts", import.meta.url), "utf8");
+  assert.match(config, /export const TRADES_SSO_PATH = "sso";/, "the entries use the sso path");
+});
