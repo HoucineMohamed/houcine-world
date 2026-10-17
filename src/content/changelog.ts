@@ -45,6 +45,10 @@ export const changelog: ChangelogEntry[] = [
     text: "A sitemap page listing every page of the site."
   },
   {
+    date: "2026-10-17",
+    text: "Journal posts and case studies describe themselves to search engines."
+  },
+  {
     date: "2026-10-16",
     text: "The brand page: the design language of the site, with copy-ready values."
   },
