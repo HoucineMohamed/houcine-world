@@ -120,6 +120,7 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | F3 | Design-drift guard: `scripts/dev/tokens.test.mjs` now compares `tokens.json` with the doc's colour tables in both directions (both palettes, extra or missing rows) and the `--radius` row, and proves it catches each kind of drift; `docs/ecosystem-design-tokens.md` gains section 11, the token change protocol (what to change here, what the Trades side mirrors, how to tell it through `docs/trades-findings.md`, created here) | In review |
 | F4 | `docs/ecosystem-owner-runbook.md`: the whole system on one page in plain words (sites, repositories, hosts, every secret and where it lives, which pull requests merge by themselves and which wait for the owner), recovery for each failure seen so far (sign-in, deploy, backup, token, domain) and a short decision tree; the Vercel disconnect click path | In review |
 | F5 | `docs/domain-migration-plan.md`: the ordered move of Houcine.Trades to `trades.houcine.world` (Render custom domain, CNAME, certificate and test, then `TRADES_URL`, `TRADES_AUDIENCE` and the Trades audience setting together, then removing `onrender.com` from the allowlist), with a check and a rollback for every step; built on the Trades verifier's real rules (one audience, Host must match), read from its default branch | In review |
+| F7 | `docs/trades-findings.md`: five findings for the Trades sessions from a read-only look at its sign-on code (none blocking), listed under \"For the Trades sessions\" | In review |
 | C | Backlog: every Part C item is done or in review (`/press` skipped, no real press material: owner content) | Done |
 | D | **Critical bundle** (one pull request, needs-owner): form function hardening, contact form on, other safe security fixes, headers and CSP, index.html share tags, CLAUDE.md and lockfile, BookingForm, the signed hand-off, setup screen, end-to-end checklist, `docs/owner-review-guide.md` | Pending (last; the run stops after opening it) |
 | — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into the rows above | |
@@ -143,7 +144,14 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 
 ## For the Trades sessions
 
-Items in `docs/trades-findings.md` (what, where, why, suggested fix). None yet.
+Items in `docs/trades-findings.md` (what, where, why, suggested fix), read from the Trades default branch on
+17 October 2026. None of them blocks the hand-off; the sender's format passes every check.
+
+1. The used-note table `sso_token_uses` is never pruned.
+2. The note's audience is compared case-sensitively.
+3. The lifetime limit is 90 s, the sender makes 60 s.
+4. One audience at a time: the domain move is a coordinated switch (`docs/domain-migration-plan.md`).
+5. No live-readiness page exists to link from the owner card.
 
 ## Performance report (Q2, lab numbers, headless Chromium on the session's computer, outside hosts blocked)
 
