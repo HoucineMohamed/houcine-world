@@ -37,6 +37,10 @@ export const changelog: ChangelogEntry[] = [
     text: "Pages open faster: their code starts loading when you point at a link."
   },
   {
+    date: "2026-10-17",
+    text: "Breadcrumbs, and a Back to top button on long pages."
+  },
+  {
     date: "2026-10-16",
     text: "The brand page: the design language of the site, with copy-ready values."
   },
