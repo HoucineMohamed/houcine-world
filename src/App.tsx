@@ -26,7 +26,6 @@ const Changelog = React.lazy(PAGE_LOADERS["/changelog"]);
 const Status = React.lazy(PAGE_LOADERS["/status"]);
 const BrandKit = React.lazy(PAGE_LOADERS["/brand-kit"]);
 const Services = React.lazy(PAGE_LOADERS["/services"]);
-const SiteMap = React.lazy(PAGE_LOADERS["/sitemap"]);
 const Work = React.lazy(PAGE_LOADERS["/work"]);
 const WorkEntry = React.lazy(PAGE_LOADERS["/work/:slug"]);
 const Journal = React.lazy(PAGE_LOADERS["/journal"]);
@@ -108,7 +107,6 @@ const AppRoutes = () => {
         <Route path={route("/status")} element={<Status />} />
         <Route path={route("/brand-kit")} element={<BrandKit />} />
         <Route path={route("/services")} element={<Services />} />
-        <Route path={route("/sitemap")} element={<SiteMap />} />
       </Route>
       <Route path={route("/admin")} element={<Admin />} />
       <Route path={route("/admin/login")} element={<AdminLogin />} />

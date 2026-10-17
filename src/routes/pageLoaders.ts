@@ -28,7 +28,6 @@ export const PAGE_LOADERS = {
   "/status": () => import("../pages/Status"),
   "/brand-kit": () => import("../pages/BrandKit"),
   "/services": () => import("../pages/Services"),
-  "/sitemap": () => import("../pages/SiteMap"),
 } as const;
 
 export type PageLoaderPath = keyof typeof PAGE_LOADERS;

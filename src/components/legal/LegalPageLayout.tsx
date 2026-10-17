@@ -4,8 +4,6 @@ import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import BackToTop from "@/components/BackToTop";
 import { LEGAL_LAST_UPDATED } from "@/data/legal";
 
 /**
@@ -41,7 +39,6 @@ const LegalPageLayout = ({
 
     <main id="main" className="pt-32 pb-20 px-6">
       <div className="container mx-auto max-w-3xl">
-        <Breadcrumbs className="mb-6" />
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">{title}</h1>
         <p className="text-sm text-muted-foreground mb-12">Last updated: {LEGAL_LAST_UPDATED}</p>
         <div className="space-y-10 text-muted-foreground leading-relaxed [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mb-1 [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1 [&_li]:mb-1 [&_a]:text-accent [&_a]:underline [&_a:hover]:text-accent/80">
@@ -51,7 +48,6 @@ const LegalPageLayout = ({
     </main>
 
     <Footer />
-    <BackToTop />
   </div>
 );
 
