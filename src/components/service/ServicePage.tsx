@@ -7,12 +7,9 @@ import Footer from "@/components/Footer";
 import { SearchButton } from "@/components/search/SiteSearch";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import BackToTop from "@/components/BackToTop";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { isInternalHref } from "@/content/format";
 import { contactMailto } from "@/config/contact";
 import type { WorkItem } from "@/content/types";
 
@@ -52,12 +49,10 @@ export const ServicePageLayout = ({ children }: { children: ReactNode }) => (
     </header>
 
     <main id="main" className="pt-28 pb-20 px-6">
-      <Breadcrumbs className="container mx-auto max-w-5xl mb-8" />
       <div className="container mx-auto max-w-5xl space-y-20">{children}</div>
     </main>
 
     <Footer />
-    <BackToTop />
   </div>
 );
 
@@ -90,7 +85,7 @@ export const ServiceSection = ({
   title: string;
   children: ReactNode;
 }) => (
-  <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-28">
+  <section aria-labelledby={`${id}-title`}>
     <h2 id={`${id}-title`} className="text-3xl md:text-4xl font-bold font-display text-foreground mb-8">
       {title}
     </h2>
@@ -134,6 +129,8 @@ export const ProcessSteps = ({
   </ol>
 );
 
+const isInternal = (href: string) => href.startsWith("/") && !href.startsWith("//");
+
 const WorkCard = ({ item }: { item: WorkItem }) => {
   const body = (
     <Card className="h-full border-border/50 bg-card/50 backdrop-blur overflow-hidden">
@@ -161,7 +158,7 @@ const WorkCard = ({ item }: { item: WorkItem }) => {
     </Card>
   );
   if (!item.href) return body;
-  return isInternalHref(item.href) ? (
+  return isInternal(item.href) ? (
     <Link to={item.href} className={cn("block h-full rounded-lg", focusRing)}>{body}</Link>
   ) : (
     <a href={item.href} rel="noopener noreferrer" className={cn("block h-full rounded-lg", focusRing)}>{body}</a>

@@ -189,30 +189,6 @@ bg-background px-3 py-2 text-base md:text-sm placeholder:text-muted-foreground` 
 text-xs font-semibold transition-colors`; variants `default` (primary), `secondary`, `destructive`,
 `outline` (`text-foreground`).
 
-## 11. Token change protocol
-
-Houcine.world and Houcine.Trades share a look but not code: each repository keeps its own tokens. A change
-here must be mirrored there by hand, or the two drift apart. `scripts/dev/tokens.test.mjs` guards this side:
-it fails when `src/index.css`, `src/design/tokens.json` and this page disagree.
-
-**On this side (Houcine.world), in one pull request:**
-
-1. Change the value in `src/index.css` (the source of truth).
-2. Change the same value in `src/design/tokens.json`.
-3. Change the row in the tables of this page (sections 2 and 6), including the hex value.
-4. Run `node --experimental-strip-types --test scripts/dev/tokens.test.mjs`: it must pass.
-5. Write in the pull request description which tokens changed, from what to what.
-
-**What the Trades session must mirror:** only the shared brand values, which are the logo, the greys and
-white of the public look, the radius scale and the font stacks. Houcine.Trades keeps its own palettes
-(Ledger and Terminal); it maps the shared values onto its own slots in `src/app/styles/tokens.css` (see the
-appendix below for the correspondence).
-
-**How to tell it:** after the pull request merges, add a line to `docs/trades-findings.md` under "Design" with
-the token names, the old and new values and the pull request link. The Trades sessions read that file; the
-owner can also paste the line into a Trades session. Then update the appendix of this page once the Trades
-side has changed.
-
 ## Appendix: side by side with Houcine.Trades (as of module 16)
 
 A reference only: no Trades token is applied to this site. Source: `src/app/styles/tokens.css` in the
