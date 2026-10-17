@@ -25,6 +25,10 @@ export const changelog: ChangelogEntry[] = [
     text: "The Status page: which version of the site you are seeing."
   },
   {
+    date: "2026-10-17",
+    text: "This changelog."
+  },
+  {
     date: "2026-10-16",
     text: "The brand page: the design language of the site, with copy-ready values."
   },
