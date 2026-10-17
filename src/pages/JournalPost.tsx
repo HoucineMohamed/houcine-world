@@ -8,8 +8,7 @@ import { journal } from "@/content/journal";
 import { publishedPosts, readingMinutes, relatedPosts } from "@/content/query";
 import { journalPostStructuredData } from "@/content/templates";
 import { BASE_URL, SITE_NAME } from "@/config/site";
-import { formatDate } from "@/content/format";
-import { useFeedLink } from "./journalShared";
+import { formatDate, useFeedLink } from "./journalShared";
 
 // /journal/:slug: one published post, its tags, reading time and up to three related posts.
 // A draft or unknown slug shows a calm not-found message. Structured data (JSON-LD) is added only for a
