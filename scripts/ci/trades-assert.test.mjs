@@ -4,3 +4,4 @@
 import "../../netlify/functions/assert/assert.test.mjs";
 import "../../src/components/owner/card/handoff.test.mjs";
 import "../../src/components/owner/sso-setup/steps.test.mjs";
+import "../../src/components/owner/command-center/items.test.mjs";
