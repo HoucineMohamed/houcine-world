@@ -22,7 +22,7 @@ These are placeholders on purpose; no session invents them.
 
 ## Driver
 
-DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-17T16:48:00Z
+DRIVER: session_01VP1RwsmUvWqEFAra4mTMdQ, claimed 2026-10-16T16:58:00Z, updated 2026-10-17T17:06:00Z
 
 The previous claim (session_01YPgKc4KaGJPX6EDp5wNDGW, updated 2026-10-15T18:36:00Z) was about 22 hours
 old, no pull request was open, and the owner named this session the only driver. Before starting any
@@ -107,7 +107,8 @@ merged by the owner), signed hand-off for the owner entries (#16, merged by the 
 | Q7 | Docs refresh: runbook (content, contact form switch, every check script), security review (a status for every finding), content guide (where entries appear), trades integration (current state), tokens doc (now tested against `tokens.json`) | **Merged** (#42) |
 | C1 | `/team` from `src/content/team.ts` (one real entry: the founder); `/about` already exists as a full page and is left unchanged (rewriting it would replace text the owner wrote) | **Merged** (#43) |
 | C2 | `/services`: one section per vertical (anchors `#tech`, `#studio`, `#education`, `#management`) with what it does and who it is for, and the same Services structured data as `/ecosystem`; every `ServiceSection` now carries its id, so any section can be linked | **Merged** (#44) |
-| C3 | `/brand-kit`: download the existing H mark and share image (no new files), linked from `/brand`. `/press` is skipped: there is no real press material to show (owner content) | In review |
+| C3 | `/brand-kit`: download the existing H mark and share image (no new files), linked from `/brand`. `/press` is skipped: there is no real press material to show (owner content) | **Merged** (#45) |
+| C4 | English/French structure: `src/content/i18n.ts` (languages, `Localized` type, `pick()` with English fallback, interface keys), no French text shipped (tested); `docs/translation.md` lists what needs a native reviewer, in order | In review |
 | C | Backlog: /about and /team from the content layer, /services overview, /press and /brand-kit from existing assets, FR/EN types and keys, /status, changelog, prefetch, print styles for legal pages, docs refresh | Pending |
 | D | **Critical bundle** (one pull request, needs-owner): form function hardening, contact form on, other safe security fixes, headers and CSP, index.html share tags, CLAUDE.md and lockfile, BookingForm, the signed hand-off, setup screen, end-to-end checklist, `docs/owner-review-guide.md` | Pending (last; the run stops after opening it) |
 | — | Earlier version 4 items 2 to 8 and critical (a) to (e) are folded into the rows above | |
