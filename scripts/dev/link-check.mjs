@@ -63,10 +63,7 @@ try {
       if (url.hash.length > 1 && inbound.has(target)) {
         const id = decodeURIComponent(url.hash.slice(1));
         if (!pages.get(target).ids.includes(id)) {
-          // Known: /booking (src/pages/BookingForm.tsx, a critical file) has no <main> yet, so the skip link's
-          // #main has no target there; the critical bundle adds it. Remove this once it is merged.
-          if (target === "/booking" && id === "main") known.push(`${from}: anchor ${href} (known: BookingForm has no <main> yet)`);
-          else broken.push(`${from}: anchor ${href} not found on ${target}`);
+          broken.push(`${from}: anchor ${href} not found on ${target}`);
         }
       }
     }

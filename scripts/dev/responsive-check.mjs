@@ -17,8 +17,8 @@ if (flags.build) {
   if (b.status !== 0) process.exit(b.status ?? 1);
 }
 const WIDTHS = [360, 390, 768, 1024, 1366];
-// Known: /booking (src/pages/BookingForm.tsx) is a critical file; its sideways scroll is fixed in the critical bundle.
-const KNOWN_SCROLL = new Set(["/booking"]);
+// Pages whose sideways scroll is known and waiting for a fix in a critical file (none today).
+const KNOWN_SCROLL = new Set([]);
 
 const TARGETS = `(() => {
   const small = [];
@@ -58,7 +58,7 @@ try {
       const r = await page.evaluate(TARGETS);
       if (!touch) r.small = []; // tap targets are judged on touch sizes only
       if (r.scroll > 0) (KNOWN_SCROLL.has(path) ? known : errors).push(`${path} @${width}: sideways scroll of ${r.scroll}px`);
-      if (KNOWN_SCROLL.has(path)) r.small = []; // the same critical file; its fix is in the critical bundle
+      if (KNOWN_SCROLL.has(path)) r.small = []; // a known critical file: its fix comes with its own pull request
       for (const s of r.small) {
         const key = `${path}: ${s.replace(/ \d+x\d+$/, "")}`;
         if (!warnings.has(key)) warnings.set(key, `${s.match(/\d+x\d+$/)?.[0]} at ${width}px`);

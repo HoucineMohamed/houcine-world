@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AlertTriangle, Copy, KeyRound, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Checklist from "./Checklist";
 
 // Single sign-on setup for Houcine.Trades (docs/trades-integration.md). Owner only: it is loaded on demand
 // from the owner-only "Private apps" section of /workspace/ecosystem, never from a public page.
@@ -82,10 +83,13 @@ const SsoSetup = () => {
           <CardTitle className="text-base">Single sign-on setup</CardTitle>
         </div>
         <CardDescription>
-          Creates a new signing key pair in this browser. Nothing is sent anywhere or saved.
+          The steps to let the Houcine.Trades cards open it signed in, in order, with a live check. The key pair
+          is made in this browser; nothing is sent anywhere or saved.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5 text-sm">
+        <Checklist />
+
         <div className="rounded-md border border-border p-4 space-y-2" role="note">
           <p className="flex items-center gap-2 font-semibold text-foreground">
             <AlertTriangle className="w-4 h-4" aria-hidden="true" /> Before you start

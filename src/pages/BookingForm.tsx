@@ -99,6 +99,7 @@ const BookingForm = () => {
       </header>
 
       {/* Main Content */}
+      <main id="main">
       <section 
         ref={formAnimation.ref}
         className={`relative min-h-screen flex items-center justify-center px-6 pt-24 pb-16 transition-all duration-700 ${
@@ -106,7 +107,7 @@ const BookingForm = () => {
         }`}
       >
         {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-950/40 via-background to-background">
+        <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-rose-950/40 via-background to-background">
           <div className="absolute inset-0 opacity-20">
             {[...Array(30)].map((_, i) => (
               <div
@@ -134,9 +135,9 @@ const BookingForm = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500/20 to-rose-900/20 rounded-3xl blur-3xl" />
                 <div className="relative bg-gradient-to-br from-rose-900/40 to-background border border-rose-500/30 rounded-3xl p-12 backdrop-blur">
                   <Sparkles className="w-16 h-16 text-rose-400 mb-6 animate-pulse" />
-                  <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
+                  <p className="text-4xl font-bold mb-6 bg-gradient-to-r from-rose-400 to-rose-600 bg-clip-text text-transparent">
                     Let's Create Magic Together
-                  </h2>
+                  </p>
                   <p className="text-lg text-muted-foreground leading-relaxed mb-6">
                     Ready to elevate your event? Fill out the form and let's discuss how we can bring your vision to life with unforgettable music and energy.
                   </p>
@@ -175,21 +176,27 @@ const BookingForm = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Full Name *</label>
+                      <label htmlFor="booking-name" className="text-sm font-medium mb-2 block">Full Name *</label>
                       <Input
+                        id="booking-name"
+                        autoComplete="name"
                         required
                         placeholder="Your name"
+                        maxLength={100}
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="bg-background/50"
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Email *</label>
+                      <label htmlFor="booking-email" className="text-sm font-medium mb-2 block">Email *</label>
                       <Input
+                        id="booking-email"
+                        autoComplete="email"
                         required
                         type="email"
                         placeholder="your@email.com"
+                        maxLength={254}
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="bg-background/50"
@@ -198,10 +205,13 @@ const BookingForm = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium mb-2 block">Phone Number</label>
+                    <label htmlFor="booking-phone" className="text-sm font-medium mb-2 block">Phone Number</label>
                     <Input
+                      id="booking-phone"
+                      autoComplete="tel"
                       type="tel"
                       placeholder="+216 XX XXX XXX"
+                      maxLength={40}
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="bg-background/50"
@@ -209,9 +219,9 @@ const BookingForm = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium mb-2 block">Event Type *</label>
+                    <label htmlFor="booking-event-type" className="text-sm font-medium mb-2 block">Event Type *</label>
                     <Select value={formData.eventType} onValueChange={(value) => setFormData({ ...formData, eventType: value })}>
-                      <SelectTrigger className="bg-background/50">
+                      <SelectTrigger id="booking-event-type" className="bg-background/50">
                         <SelectValue placeholder="Select event type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -227,8 +237,9 @@ const BookingForm = () => {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Event Date *</label>
+                      <label htmlFor="booking-date" className="text-sm font-medium mb-2 block">Event Date *</label>
                       <Input
+                        id="booking-date"
                         required
                         type="date"
                         value={formData.date}
@@ -237,10 +248,12 @@ const BookingForm = () => {
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Location *</label>
+                      <label htmlFor="booking-location" className="text-sm font-medium mb-2 block">Location *</label>
                       <Input
+                        id="booking-location"
                         required
                         placeholder="City, Venue"
+                        maxLength={200}
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                         className="bg-background/50"
@@ -249,10 +262,12 @@ const BookingForm = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium mb-2 block">Additional Details</label>
+                    <label htmlFor="booking-message" className="text-sm font-medium mb-2 block">Additional Details</label>
                     <Textarea
+                      id="booking-message"
                       rows={5}
                       placeholder="Tell us more about your event, expected number of guests, special requirements..."
+                      maxLength={5000}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       className="bg-background/50"
@@ -283,6 +298,7 @@ const BookingForm = () => {
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
 

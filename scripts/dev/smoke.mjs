@@ -33,12 +33,7 @@ const fail = (where, what) => failures.push(`${where}: ${what}`);
 
 // Known problems in files a session may not change (critical paths). Reported, not counted as failures.
 // Remove an entry once it is fixed, so that a return of the problem fails again.
-const KNOWN = {
-  "/booking": {
-    scroll: "the floating dots of src/pages/BookingForm.tsx (a critical file) reach past the right edge; " +
-      "the fix is overflow-hidden on that page's outer wrapper (critical bundle, docs/PROGRAM-STATUS.md)",
-  },
-};
+const KNOWN = {};
 const known = [];
 
 for (const f of ["dist/index.html", "dist/sitemap.xml", "dist/robots.txt", `dist/assets/${mainBundle}`]) {

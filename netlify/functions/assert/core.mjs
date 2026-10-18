@@ -2,7 +2,9 @@
 // It checks, with the caller's OWN Supabase token, that the caller is the owner (super admin and the
 // OWNER_USER_ID), then signs a 60-second EdDSA assertion for Houcine.Trades. The Supabase token is
 // only used here, on this site's own server, and is never returned, stored or logged.
-// Everything that can fail returns a generic 403. No CORS headers: same origin only.
+// Everything that can fail returns a generic 403, except missing settings: 503 "not configured", so the owner's
+// screen can say that the hand-off is not set up yet (nothing is checked or signed then). No CORS headers: same
+// origin only.
 import { createPrivateKey, randomBytes, sign } from "node:crypto";
 
 export const ISSUER = "houcine.world";
@@ -105,7 +107,7 @@ export const createHandler = ({
       if (!Number.isFinite(length) || length > MAX_BODY) return json(413, { error: "too large" });
 
       const settings = readSettings(env);
-      if (!settings) return forbidden();
+      if (!settings) return json(503, { error: "not configured" });
 
       const authorization = request.headers.get("authorization") ?? "";
       if (authorization.length > MAX_AUTH_HEADER || !authorization.startsWith("Bearer ")) return forbidden();

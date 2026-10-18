@@ -1,0 +1,46 @@
+# Ecosystem health: every 30 minutes, two read-only GET requests (https://houcine.world/ and the Houcine.Trades
+# public health address, which answers only "ok" or "not ok"), each retried once. When one fails, it opens or adds
+# a comment to ONE issue titled "Ecosystem health" and the run turns red; when both are fine again it adds one
+# "Recovered" comment. It writes nothing else and uses no secret beyond GitHub's own short-lived token.
+# GitHub may pause scheduled workflows in a repository with no activity for 60 days: look at the Actions tab now
+# and then (docs/ecosystem-owner-runbook.md).
+# The logic and its tests: scripts/ci/ecosystem-health.mjs and scripts/ci/ecosystem-health.test.mjs.
+#
+# The Houcine.Trades address comes from the repository variable TRADES_HEALTH_URL (Settings → Secrets and
+# variables → Actions → Variables); without it, https://houcine-trades.onrender.com/healthz is used. After moving
+# Houcine.Trades to its own domain, set that variable to https://trades.houcine.world/healthz.
+#
+# To stop it: Actions → Ecosystem health → "…" → Disable workflow (enable it the same way). To close a reported
+# problem once it is fixed, close the issue; the next failure opens a new one.
+name: Ecosystem health
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ecosystem-health
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/ci
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check houcine.world and Houcine.Trades
+        run: node scripts/ci/ecosystem-health.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TRADES_HEALTH_URL: ${{ vars.TRADES_HEALTH_URL }}

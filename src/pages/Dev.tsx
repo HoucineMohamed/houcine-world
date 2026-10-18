@@ -402,6 +402,7 @@ const DevContent = () => {
                     <label htmlFor="dev-contact-name" className="text-sm font-medium">Name *</label>
                     <Input 
                       id="dev-contact-name"
+                      maxLength={100}
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Your name"
@@ -413,6 +414,7 @@ const DevContent = () => {
                     <Input 
                       id="dev-contact-email"
                       type="email"
+                      maxLength={254}
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="your@email.com"
@@ -461,6 +463,7 @@ const DevContent = () => {
                   <label htmlFor="dev-contact-message" className="text-sm font-medium">Message *</label>
                   <Textarea 
                     id="dev-contact-message"
+                    maxLength={5000}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Tell me about your project..."
