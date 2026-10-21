@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { X, Headphones, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import laRosaLogo from "@/assets/images/larosaview-logo.png";
+import { SERVICE_EMAILS } from "@/config/contact";
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +20,7 @@ const ChatWidget = () => {
 
   const contactInfoMessage = `📩 Contact La Rosa View
 
-Email: larosaview@gmail.com
+Email: ${SERVICE_EMAILS.larosaview}
 Instagram: @larosaview
 
 Bookings & inquiries available 24/7.`;

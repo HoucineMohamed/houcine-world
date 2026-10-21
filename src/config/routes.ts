@@ -26,7 +26,7 @@ export const PUBLIC_PAGES: Record<string, PageMeta> = {
   },
   "/reads": {
     title: `Houcine.education | ${SITE}`,
-    description: "A curated digital bookstore for learners exploring tech, design, and innovation.",
+    description: "Houcine.education: an educational service currently under construction.",
   },
   "/manages": {
     title: `Houcine.management | ${SITE}`,

@@ -9,7 +9,7 @@ import CustomCursor from "@/components/CustomCursor";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { contactMailto } from "@/config/contact";
+import { CONTACT_EMAIL, contactMailto } from "@/config/contact";
 import type { WorkItem } from "@/content/types";
 
 // Shared building blocks for the public service pages. Same header, footer and tokens as the
@@ -179,8 +179,10 @@ export const SelectedWork = ({ items }: { items: readonly WorkItem[] }) =>
   );
 
 /** Call to action: a plain mailto from src/config/contact.ts, or a disabled note while it is not set. */
-export const ContactCta = ({ title, text, subject }: { title: string; text: string; subject: string }) => {
-  const href = contactMailto(subject);
+export const ContactCta = ({
+  title, text, subject, email = CONTACT_EMAIL,
+}: { title: string; text: string; subject: string; email?: string }) => {
+  const href = contactMailto(email, subject);
   return (
     <section aria-labelledby="contact-title" className="rounded-lg border border-border/50 bg-card/50 p-8 md:p-12 text-center">
       <h2 id="contact-title" className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">

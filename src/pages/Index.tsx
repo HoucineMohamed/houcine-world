@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Terminal, Palette, BookOpen, Briefcase, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoH from "@/assets/logo-h.png";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import HeroSection from "@/components/hero/HeroSection";
+import EcosystemMap from "@/components/EcosystemMap";
 import OwnerServiceSlot from "@/components/owner/OwnerServiceSlot";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
@@ -61,12 +61,12 @@ const Index = () => {
       </header>
 
       <main>
-        {/* Cinematic WebGL Hero */}
+        {/* Living-logo hero: see src/components/hero/HeroSection.tsx */}
         <HeroSection />
 
-        {/* Services Grid */}
-        <section 
-          id="services" 
+        {/* Ecosystem map: replaces the old four-card grid with a connected typographic list */}
+        <section
+          id="services"
           ref={servicesAnimation.ref}
           className={`py-20 px-6 bg-secondary/30 transition-all duration-700 ${
             servicesAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
@@ -77,106 +77,18 @@ const Index = () => {
               The Ecosystem
             </h2>
             <p className="text-muted-foreground text-center mb-4 max-w-2xl mx-auto">
-              Four interconnected domains representing technology, creativity, knowledge, and leadership.
+              Four connected disciplines, each with its own route and its own character.
             </p>
             <p className="text-center mb-12">
               <Link to="/ecosystem" className="text-sm text-accent underline hover:text-accent/80 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                 About the ecosystem
               </Link>
             </p>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <Link to="/dev" className="block h-full group">
-                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-white/5">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
-                        <Terminal className="w-6 h-6 text-accent" />
-                      </div>
-                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.tech</CardTitle>
-                    </div>
-                    <CardDescription className="text-base">
-                      Building scalable, modern applications with React, TypeScript, and cutting-edge web technologies.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">Web Apps • API Design • Full-Stack Development</p>
-                    <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10 group-hover:border-accent/50">
-                      View projects
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
 
-              <Link to="/designs" className="block h-full group">
-                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent/10">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
-                        <Palette className="w-6 h-6 text-accent" />
-                      </div>
-                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.studio</CardTitle>
-                    </div>
-                    <CardDescription className="text-base">
-                      Crafting bold visual experiences through branding, UI/UX, and creative direction.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">Branding • UI/UX • Visual Design</p>
-                    <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10 group-hover:border-accent/50">
-                      View portfolio
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
+            <EcosystemMap />
 
-              <Link to="/reads" className="block h-full group">
-                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent/10">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
-                        <BookOpen className="w-6 h-6 text-accent" />
-                      </div>
-                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.education</CardTitle>
-                    </div>
-                    <CardDescription className="text-base">
-                      A curated digital bookstore for learners exploring tech, design, and innovation.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">Digital Books • Learning Resources • Curated Knowledge</p>
-                    <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10 group-hover:border-accent/50">
-                      Browse titles
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              <Link to="/manages" className="block h-full group">
-                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-white/5">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
-                        <Briefcase className="w-6 h-6 text-accent" />
-                      </div>
-                      <CardTitle className="group-hover:text-accent transition-colors">Houcine.management</CardTitle>
-                    </div>
-                    <CardDescription className="text-base">
-                      Building and managing creative brands, artists, and strategic projects.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">DJ La Rosa View • The Shape Shifters • Brand Strategy</p>
-                    <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10 group-hover:border-accent/50">
-                      View case studies
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* Private card: renders only for the super admin (see docs/trades-integration.md) */}
-              <OwnerServiceSlot />
-            </div>
+            {/* Private card: renders only for the super admin (see docs/trades-integration.md) */}
+            <OwnerServiceSlot />
           </div>
         </section>
       </main>

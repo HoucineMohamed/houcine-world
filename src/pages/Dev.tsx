@@ -14,15 +14,22 @@ import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { CurrencyProvider, useCurrency, Currency } from "@/contexts/CurrencyContext";
-import { devServicePackages, DevServicePackage } from "@/data/devServicePackages";
-import DevServiceCard from "@/components/dev/DevServiceCard";
+import { devServicePackages } from "@/data/devServicePackages";
 import { useFormSubmission } from "@/hooks/useFormSubmission";
 import { toast } from "sonner";
+import { PAYMENT_POLICY_TEXT } from "@/config/contact";
+
+// The broader technology direction (program: master redesign, section 10) -- intended scope, not
+// proof every capability is already a shipped product. The five devServicePackages entries below
+// remain the concrete, delivered project types.
+const SERVICE_CATEGORIES = [
+  "Website development", "Web applications", "E-commerce", "CMS development and integration",
+  "API development and integrations", "Workflow automation", "AI integration",
+  "Database integration and architecture", "Technical consulting", "Performance optimization",
+  "Technical maintenance", "Booking and management systems",
+] as const;
 
 const DevContent = () => {
-  const { currency, setCurrency, convertPrice } = useCurrency();
-  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -43,11 +50,6 @@ const DevContent = () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-  };
-
-  const handleRequestQuote = (service: DevServicePackage) => {
-    setFormData({ ...formData, service: service.name });
-    scrollToSection('contact');
   };
 
   const { submitForm, isSubmitting } = useFormSubmission();
@@ -74,31 +76,14 @@ const DevContent = () => {
     }
   };
 
-  // Currency-dependent budget ranges
-  const getBudgetRanges = () => {
-    const currencySymbol = currency === "EUR" ? "€" : currency === "USD" ? "$" : "TND";
-    const ranges = currency === "TND" 
-      ? [
-          { value: "under-500", label: `Under 500 ${currencySymbol}` },
-          { value: "500-900", label: `500 - 900 ${currencySymbol}` },
-          { value: "900-1500", label: `900 - 1,500 ${currencySymbol}` },
-          { value: "over-1500", label: `Over 1,500 ${currencySymbol}` },
-        ]
-      : currency === "EUR"
-      ? [
-          { value: "under-150", label: `Under ${currencySymbol}150` },
-          { value: "150-270", label: `${currencySymbol}150 - ${currencySymbol}270` },
-          { value: "270-450", label: `${currencySymbol}270 - ${currencySymbol}450` },
-          { value: "over-450", label: `Over ${currencySymbol}450` },
-        ]
-      : [
-          { value: "under-160", label: `Under ${currencySymbol}160` },
-          { value: "160-290", label: `${currencySymbol}160 - ${currencySymbol}290` },
-          { value: "290-490", label: `${currencySymbol}290 - ${currencySymbol}490` },
-          { value: "over-490", label: `Over ${currencySymbol}490` },
-        ];
-    return ranges;
-  };
+  // Budget brackets start at the €699 / $699 floor (section 10); the same numbers serve both
+  // currencies since prices are not live-converted.
+  const BUDGET_RANGES = [
+    { value: "699-1500", label: "€699 – 1,500 / $699 – 1,500" },
+    { value: "1500-3000", label: "€1,500 – 3,000 / $1,500 – 3,000" },
+    { value: "3000-6000", label: "€3,000 – 6,000 / $3,000 – 6,000" },
+    { value: "over-6000", label: "Over €6,000 / $6,000" },
+  ];
 
   const skills = [
     { category: "Frontend", items: ["React", "Tailwind", "HTML/CSS", "JavaScript"] },
@@ -144,10 +129,11 @@ const DevContent = () => {
         
         <div className="container mx-auto px-6 text-center relative z-10">
           <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 bg-gradient-to-r from-foreground via-accent to-foreground bg-clip-text text-transparent animate-fade-in">
-            Building Fast, Scalable, and Beautifully Coded Websites
+            Digital systems, not just websites
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
-            I help individuals and startups transform ideas into real, efficient, and elegant digital platforms.
+            I design, build and integrate the technology behind a business — from a first website
+            to the applications, automation and AI-assisted tools that run it day to day.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -176,18 +162,37 @@ const DevContent = () => {
         }`}
       >
         <div className="container mx-auto px-6 max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">What I Build</h2>
-            <p className="text-xl text-muted-foreground">Professional web development services tailored to your needs</p>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">What I build</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Representative project types -- the scope and stack are tailored to each engagement.
+            </p>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8">
-            {devServicePackages.map((service, index) => (
-              <DevServiceCard 
-                key={index} 
-                service={service}
-                onRequestQuote={handleRequestQuote}
-              />
+          <ul className="max-w-3xl mx-auto mb-16">
+            {devServicePackages.map((service) => (
+              <li key={service.name} className="border-t border-border/50 py-6 first:border-t-0">
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
+                  <h3 className="text-lg font-display font-semibold text-foreground">{service.name}</h3>
+                  <Badge variant="secondary" className="w-fit">{service.deliveryTime}</Badge>
+                </div>
+                <p className="text-muted-foreground">{service.description}</p>
+              </li>
             ))}
+          </ul>
+
+          <div className="max-w-3xl mx-auto text-center">
+            <h3 className="text-xl font-display font-semibold mb-2">Also working in</h3>
+            <p className="text-muted-foreground mb-6">
+              The intended direction for Houcine.tech -- not every category is an established
+              service yet, and scope is agreed per project.
+            </p>
+            <ul className="flex flex-wrap justify-center gap-x-3 gap-y-2">
+              {SERVICE_CATEGORIES.map((c) => (
+                <li key={c} className="text-sm text-muted-foreground border border-border/50 rounded-full px-4 py-1.5">
+                  {c}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
@@ -201,62 +206,29 @@ const DevContent = () => {
         }`}
       >
         <div className="container mx-auto px-6 max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-xl text-muted-foreground mb-8">Choose your currency and see real-time pricing</p>
-            
-            <div className="flex justify-center gap-4 mb-8">
-              <Button
-                variant={currency === "EUR" ? "default" : "outline"}
-                onClick={() => setCurrency("EUR")}
-                className={currency === "EUR" ? "" : ""}
-              >
-                EUR (€)
-              </Button>
-              <Button
-                variant={currency === "USD" ? "default" : "outline"}
-                onClick={() => setCurrency("USD")}
-                className={currency === "USD" ? "" : ""}
-              >
-                USD ($)
-              </Button>
-              <Button
-                variant={currency === "TND" ? "default" : "outline"}
-                onClick={() => setCurrency("TND")}
-                className={currency === "TND" ? "" : ""}
-              >
-                TND
-              </Button>
-            </div>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Starting price</h2>
+            <p className="text-2xl md:text-3xl font-display font-semibold text-accent mb-2">
+              €699 / $699
+            </p>
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+              Technology projects start here. Final pricing depends on complexity, integrations,
+              infrastructure and project scope -- not every project costs the same amount.
+            </p>
           </div>
 
           <Card className="border-border/50 bg-card/50 backdrop-blur max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
                 <DollarSign className="w-6 h-6 text-accent" />
-                Payment Options
+                Payment
               </CardTitle>
-              <CardDescription>
-                I accept multiple payment methods for your convenience
-              </CardDescription>
+              <CardDescription>{PAYMENT_POLICY_TEXT}</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="text-center p-4 border border-border/50 rounded-lg">
-                  <p className="font-semibold mb-2">PayPal</p>
-                  <p className="text-sm text-muted-foreground">Secure online payments</p>
-                </div>
-                <div className="text-center p-4 border border-border/50 rounded-lg">
-                  <p className="font-semibold mb-2">Bank Transfer</p>
-                  <p className="text-sm text-muted-foreground">Direct bank transfer</p>
-                </div>
-                <div className="text-center p-4 border border-border/50 rounded-lg">
-                  <p className="font-semibold mb-2">CTI</p>
-                  <p className="text-sm text-muted-foreground">Tunisian card payment</p>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground text-center">
-                All prices include initial consultation, design, development, and basic revisions. Custom features quoted separately.
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                A quote covers the agreed scope: consultation, design, development and an agreed
+                number of revisions. Work outside that scope is quoted separately.
               </p>
             </CardContent>
           </Card>
@@ -446,7 +418,7 @@ const DevContent = () => {
                         <SelectValue placeholder="Select currency first in pricing section" />
                       </SelectTrigger>
                       <SelectContent>
-                        {getBudgetRanges().map((range) => (
+                        {BUDGET_RANGES.map((range) => (
                           <SelectItem key={range.value} value={range.value}>
                             {range.label}
                           </SelectItem>
@@ -516,12 +488,6 @@ const DevContent = () => {
   );
 };
 
-const Dev = () => {
-  return (
-    <CurrencyProvider>
-      <DevContent />
-    </CurrencyProvider>
-  );
-};
+const Dev = () => <DevContent />;
 
 export default Dev;
