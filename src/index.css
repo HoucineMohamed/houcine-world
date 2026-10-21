@@ -131,8 +131,7 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    @apply bg-background text-foreground font-sans;
     cursor: none; /* Hide default cursor for custom one */
   }
 
@@ -152,7 +151,7 @@ All colors MUST be HSL.
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Orbitron', 'Inter', sans-serif;
+    @apply font-display;
   }
 
   /* ========================================
@@ -550,6 +549,22 @@ All colors MUST be HSL.
       opacity: 1;
       transform: translateX(0);
     }
+  }
+
+  /* Homepage living-logo hero: a slow, choreographed scale/position drift -- never a spin -- so the
+     logo reads as a dimensional object occupying the scene rather than a looping animation. Paired
+     in LogoHero.tsx with a pointer-driven tilt on a nested element (kept separate so the two
+     transforms don't fight over the same `transform` property). */
+  @keyframes logoDrift {
+    0% { transform: translateY(0) scale(1) rotateZ(0deg); }
+    25% { transform: translateY(-14px) scale(1.035) rotateZ(0.6deg); }
+    50% { transform: translateY(2px) scale(0.985) rotateZ(-0.4deg); }
+    75% { transform: translateY(-8px) scale(1.015) rotateZ(0.3deg); }
+    100% { transform: translateY(0) scale(1) rotateZ(0deg); }
+  }
+
+  .animate-logo-drift {
+    animation: logoDrift 16s ease-in-out infinite;
   }
 }
 

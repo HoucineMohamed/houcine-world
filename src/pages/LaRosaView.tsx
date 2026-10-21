@@ -18,6 +18,7 @@ import CustomCursor from "@/components/CustomCursor";
 import ChatWidget from "@/components/ChatWidget";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useFormSubmission } from "@/hooks/useFormSubmission";
+import { SERVICE_EMAILS } from "@/config/contact";
 
 const LaRosaView = () => {
   const [formData, setFormData] = useState({
@@ -517,7 +518,7 @@ const LaRosaView = () => {
 
             {/* Contact Info */}
             <div className="space-y-6 sm:space-y-8">
-              <a href="mailto:contactlarosaview@gmail.com" className="block">
+              <a href={`mailto:${SERVICE_EMAILS.larosaview}`} className="block">
                 <Card className="border-border/50 bg-card/50 backdrop-blur hover:border-rose-500/50 transition-all hover:scale-105 cursor-pointer hover:shadow-xl hover:shadow-rose-600/20">
                   <CardContent className="p-4 sm:p-5 md:p-6">
                     <div className="flex items-center gap-3 sm:gap-4">
@@ -527,7 +528,7 @@ const LaRosaView = () => {
                       <div className="min-w-0">
                         <h3 className="text-sm sm:text-base font-semibold mb-0.5 sm:mb-1">Email Us</h3>
                         <p className="text-xs sm:text-sm text-rose-400 hover:text-rose-300 transition-colors break-all">
-                          contactlarosaview@gmail.com
+                          {SERVICE_EMAILS.larosaview}
                         </p>
                       </div>
                     </div>

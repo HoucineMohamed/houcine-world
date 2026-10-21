@@ -9,14 +9,20 @@
  * pages are legally final — see the constants marked "PLACEHOLDER".
  */
 
+import { CONTACT_EMAIL } from "@/config/contact";
+
 export const ECOSYSTEM_NAME = "Houcine.world";
 
-/** The four ecosystem pillars, as referenced across the public site (Index, WebGLHero, useAnalytics). */
+/** The four ecosystem pillars, as referenced across the public site. */
 export const ECOSYSTEM_SERVICES = [
-  { name: "Houcine.tech", description: "Software development and technical work." },
-  { name: "Houcine.studio", description: "Design and creative work." },
-  { name: "Houcine.education", description: "Digital books and educational content." },
-  { name: "Houcine.management", description: "Management of independent creative brands, such as La Rosa View." },
+  { name: "Houcine.tech", description: "Technology, engineering, digital systems and AI integration." },
+  { name: "Houcine.studio", description: "Branding, graphic design and digital experiences." },
+  { name: "Houcine.education", description: "An educational service currently under construction." },
+  {
+    name: "Houcine.management",
+    description:
+      "Management and coordination of brands, artists, creative ventures and businesses, such as La Rosa View.",
+  },
 ] as const;
 
 /**
@@ -76,18 +82,18 @@ export const CONNECTED_PLATFORMS = [
   },
 ] as const;
 
-// ── Placeholders: fill these in before treating these pages as legally final ──
+/** The legal entity operating this ecosystem. */
+export const LEGAL_ENTITY_NAME = "Houcine.management";
 
-/** PLACEHOLDER — the legal entity operating this ecosystem (e.g. a registered company or the individual owner's legal name). */
-export const LEGAL_ENTITY_NAME = "[LEGAL ENTITY NAME]";
-
-/** PLACEHOLDER — the jurisdiction whose law governs these Terms and where disputes would be handled. */
+/** PLACEHOLDER — the jurisdiction whose law governs these Terms and where disputes would be handled.
+ *  Not supplied; needs a real answer from the owner before these pages are legally final. */
 export const GOVERNING_JURISDICTION = "[GOVERNING JURISDICTION]";
 
-/** PLACEHOLDER — a single contact address for privacy questions, data-access/deletion requests, and general legal/Terms questions. */
-export const LEGAL_CONTACT_EMAIL = "[CONTACT EMAIL FOR PRIVACY / LEGAL REQUESTS]";
+/** A single contact address for privacy questions, data-access/deletion requests, and general legal/Terms questions. */
+export const LEGAL_CONTACT_EMAIL = CONTACT_EMAIL;
 
-/** PLACEHOLDER — a postal address where written privacy and deletion requests can be sent. */
+/** PLACEHOLDER — a postal address where written privacy and deletion requests can be sent.
+ *  Not supplied; needs a real answer from the owner before these pages are legally final. */
 export const LEGAL_POSTAL_ADDRESS = "[POSTAL ADDRESS]";
 
 /** Shown on every legal page. Update whenever the copy materially changes. */

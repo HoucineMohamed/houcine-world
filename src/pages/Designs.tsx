@@ -13,7 +13,6 @@ import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { CurrencyProvider, useCurrency, Currency } from "@/contexts/CurrencyContext";
 import { ServicePackageCard } from "@/components/design/ServicePackageCard";
 
 import { TestimonialsSlider, Testimonial } from "@/components/design/TestimonialsSlider";
@@ -22,43 +21,20 @@ import { brandingPackages, graphicDesignPackages, uiuxPackages } from "@/data/se
 import { toast } from "sonner";
 import profilePhoto from "@/assets/profile.png";
 import { useFormSubmission } from "@/hooks/useFormSubmission";
+import { PAYMENT_POLICY_TEXT } from "@/config/contact";
 
-const processSteps = [
-  {
-    title: "Discovery",
-    description: "Understanding your vision, audience, and market positioning through strategic research and collaborative dialogue.",
-  },
-  {
-    title: "Concept & Direction",
-    description: "Defining the creative direction with mood boards, typography systems, and visual language foundations.",
-  },
-  {
-    title: "Design Execution",
-    description: "Crafting every element with precision — from logo systems to complete brand collateral.",
-  },
-  {
-    title: "Refinement & Delivery",
-    description: "Polishing details through iterative feedback and delivering production-ready assets.",
-  },
+// Replaces the old "Process-Driven Design" and "Design Philosophy" sections (program: master
+// redesign, section 9). Two distinct compositions, not more numbered-card grids.
+const technologyPoints = [
+  { title: "Faster exploration", description: "More directions considered before committing to one." },
+  { title: "Thoughtful iteration", description: "Tools accelerate the work; judgment decides what stays." },
+  { title: "Visual consistency", description: "Every asset traces back to the same design system." },
 ];
 
-const designPrinciples = [
-  {
-    title: "Systems Over Trends",
-    description: "Building scalable design systems that outlast fleeting aesthetics and grow with your brand.",
-  },
-  {
-    title: "Clarity Before Aesthetics",
-    description: "Every design decision serves communication first — beauty follows function.",
-  },
-  {
-    title: "Consistency Creates Trust",
-    description: "Unified visual language across all touchpoints builds recognition and credibility.",
-  },
-  {
-    title: "Function Meets Emotion",
-    description: "Designs that work seamlessly while creating meaningful emotional connections.",
-  },
+const recognitionPoints = [
+  "A mark people recognize before they read the name.",
+  "The same voice and visual language across every touchpoint.",
+  "Design decisions a brand can still stand behind a year from now.",
 ];
 
 const DesignsContent = () => {
@@ -74,8 +50,6 @@ const DesignsContent = () => {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const contactSectionRef = useRef<HTMLDivElement>(null);
-
-  const { currency, setCurrency } = useCurrency();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -262,19 +236,15 @@ const DesignsContent = () => {
                 I'm Houcine, a visual designer crafting timeless identities through emotional storytelling
                 and design strategy. My approach blends art and precision — every color, every line has a reason.
               </p>
-              <div className="grid grid-cols-3 gap-4 pt-6">
-                <Card className="p-4 text-center border-border/50 bg-card/50">
-                  <div className="text-3xl font-bold text-accent mb-1">25+</div>
-                  <div className="text-sm text-muted-foreground">Clients</div>
-                </Card>
-                <Card className="p-4 text-center border-border/50 bg-card/50">
-                  <div className="text-3xl font-bold text-accent mb-1">3</div>
-                  <div className="text-sm text-muted-foreground">Years Experience</div>
-                </Card>
-                <Card className="p-4 text-center border-border/50 bg-card/50">
-                  <div className="text-3xl font-bold text-accent mb-1">5</div>
-                  <div className="text-sm text-muted-foreground">Design Categories</div>
-                </Card>
+              <div className="flex gap-10 pt-6 border-t border-border/50">
+                <div>
+                  <div className="text-4xl md:text-5xl font-display font-bold text-foreground">+200</div>
+                  <div className="text-sm text-muted-foreground mt-1">Clients</div>
+                </div>
+                <div>
+                  <div className="text-4xl md:text-5xl font-display font-bold text-foreground">+5</div>
+                  <div className="text-sm text-muted-foreground mt-1">Years of Experience</div>
+                </div>
               </div>
               <div className="pt-4">
                 <Button
@@ -303,19 +273,7 @@ const DesignsContent = () => {
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
               Creative Services
             </h2>
-            <div className="flex items-center justify-center gap-4 flex-wrap">
-              <span className="text-muted-foreground">Currency:</span>
-              {(["EUR", "USD", "TND"] as Currency[]).map((curr) => (
-                <Button
-                  key={curr}
-                  variant={currency === curr ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setCurrency(curr)}
-                >
-                  {curr}
-                </Button>
-              ))}
-            </div>
+            <p className="text-muted-foreground max-w-xl mx-auto">{PAYMENT_POLICY_TEXT} All prices below are starting prices.</p>
           </div>
 
           <Tabs defaultValue="branding" className="max-w-7xl mx-auto">
@@ -335,7 +293,7 @@ const DesignsContent = () => {
             </TabsList>
 
             <TabsContent value="branding">
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="max-w-3xl mx-auto">
                 {brandingPackages.map((pkg, index) => (
                   <ServicePackageCard
                     key={index}
@@ -347,7 +305,7 @@ const DesignsContent = () => {
             </TabsContent>
 
             <TabsContent value="graphic">
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="max-w-3xl mx-auto">
                 {graphicDesignPackages.map((pkg, index) => (
                   <ServicePackageCard
                     key={index}
@@ -359,7 +317,7 @@ const DesignsContent = () => {
             </TabsContent>
 
             <TabsContent value="uiux">
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="max-w-3xl mx-auto">
                 {uiuxPackages.map((pkg, index) => (
                   <ServicePackageCard
                     key={index}
@@ -370,83 +328,64 @@ const DesignsContent = () => {
               </div>
             </TabsContent>
           </Tabs>
-
-          <div className="text-center mt-8 text-sm text-muted-foreground">
-            Payment options: PayPal, CTI, or Cash
-          </div>
         </div>
       </section>
 
-      {/* Process-Driven Design Section */}
+      {/* Intelligent Creative Technology -- replaces "Process-Driven Design" */}
       <section
         ref={processAnimation.ref}
         className={`py-12 md:py-16 bg-secondary/20 transition-all duration-700 ${
           processAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-8">
-            Process-Driven Design
-          </h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
-            {processSteps.map((step, index) => (
-              <Card
-                key={index}
-                className="border-border/50 bg-card/50 backdrop-blur p-5 md:p-6 group hover:border-accent/50 hover:bg-card/80 transition-all duration-300 relative overflow-hidden"
-              >
-                {/* Animated Step Number */}
-                <div className="relative mb-4">
-                  <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-accent/30 flex items-center justify-center group-hover:border-accent group-hover:bg-accent/10 transition-all duration-500 group-hover:scale-110"
-                    style={{ animationDelay: `${index * 150}ms` }}
-                  >
-                    <span className="text-xl md:text-2xl font-display font-bold text-accent/70 group-hover:text-accent transition-colors duration-300">
-                      {index + 1}
-                    </span>
-                  </div>
-                  {/* Connecting line for visual flow (hidden on last item) */}
-                  {index < processSteps.length - 1 && (
-                    <div className="hidden lg:block absolute top-1/2 left-full w-full h-[2px] bg-gradient-to-r from-accent/20 to-transparent -translate-y-1/2 pointer-events-none" />
-                  )}
-                </div>
-                <h3 className="font-display font-semibold text-lg mb-3 group-hover:text-accent transition-colors">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {step.description}
-                </p>
-              </Card>
-            ))}
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-10 md:gap-16">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+                Intelligent creative technology
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Modern creative tools and AI-assisted exploration move the early work faster —
+                more directions, sketched and compared sooner. What stays, what's refined, and
+                what's discarded is still a human creative decision at every step.
+              </p>
+            </div>
+            <ul className="space-y-6 md:pt-2">
+              {technologyPoints.map(({ title, description }) => (
+                <li key={title} className="border-t border-border/50 pt-4">
+                  <h3 className="font-display font-semibold text-foreground mb-1">{title}</h3>
+                  <p className="text-sm text-muted-foreground">{description}</p>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* Design Philosophy Section */}
+      {/* Design Built for Recognition -- replaces "Design Philosophy" */}
       <section
         ref={philosophyAnimation.ref}
         className={`py-12 md:py-16 transition-all duration-700 ${
           philosophyAnimation.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-center mb-8">
-            Design Philosophy
+        <div className="container mx-auto px-6 max-w-3xl text-center">
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+            Design built for recognition
           </h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
-            {designPrinciples.map((principle, index) => (
-              <Card
-                key={index}
-                className="border-border/50 bg-card/50 backdrop-blur p-5 md:p-6 group hover:border-accent/50 hover:bg-card/80 transition-all duration-300"
-              >
-                <h3 className="font-display font-semibold text-lg mb-3 group-hover:text-accent transition-colors">
-                  {principle.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {principle.description}
-                </p>
-              </Card>
+          <p className="text-lg text-muted-foreground leading-relaxed mb-10">
+            A coherent visual identity is what makes a brand recognizable, distinctive and
+            consistent across every place someone encounters it — and what makes the next thing
+            that brand says easier to believe.
+          </p>
+          <ul className="space-y-4 text-left max-w-xl mx-auto">
+            {recognitionPoints.map((point) => (
+              <li key={point} className="flex items-start gap-3 text-muted-foreground">
+                <span className="text-accent mt-1" aria-hidden="true">—</span>
+                <span>{point}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
@@ -543,9 +482,8 @@ const DesignsContent = () => {
                     <SelectValue placeholder="Select payment method" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="paypal">PayPal</SelectItem>
-                    <SelectItem value="cti">CTI (Carte Technologique Internationale)</SelectItem>
-                    <SelectItem value="cash">Cash (Manual Contact)</SelectItem>
+                    <SelectItem value="revolut">Revolut</SelectItem>
+                    <SelectItem value="societe-generale">Société Générale</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -580,12 +518,6 @@ const DesignsContent = () => {
   );
 };
 
-const Designs = () => {
-  return (
-    <CurrencyProvider>
-      <DesignsContent />
-    </CurrencyProvider>
-  );
-};
+const Designs = () => <DesignsContent />;
 
 export default Designs;

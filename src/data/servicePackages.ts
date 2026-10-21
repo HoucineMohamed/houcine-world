@@ -1,3 +1,7 @@
+// Houcine.studio pricing (program: master redesign, section 9). Every name and starting price here
+// is exact and must not be renamed, duplicated, or repriced without the owner's say-so. All prices
+// are starting prices in EUR and USD -- the same number for both, never a live conversion.
+
 export interface ServicePackage {
   name: string;
   description: string;
@@ -37,8 +41,20 @@ export const brandingPackages: ServicePackage[] = [
   },
   {
     name: "Brand Excellence",
-    description: "Premium brand strategy and design",
-    basePrice: 899,
+    description: "Strategic brand identity with guidelines that scale",
+    basePrice: 499,
+    features: [
+      "Full brand strategy",
+      "Logo & identity system",
+      "Brand guidelines (extended)",
+      "Marketing collateral essentials",
+    ],
+    fullDescription: "A strategic branding package combining brand strategy with a complete identity system and extended guidelines, built to scale as your brand grows.",
+  },
+  {
+    name: "Houcine's Brand",
+    description: "The complete branding experience, start to launch",
+    basePrice: 799,
     features: [
       "Full brand strategy",
       "Logo & identity system",
@@ -48,7 +64,7 @@ export const brandingPackages: ServicePackage[] = [
       "Brand photography direction",
       "3 months support",
     ],
-    fullDescription: "The ultimate branding experience combining strategic thinking with exceptional design. Includes comprehensive brand development, marketing materials, and ongoing support to ensure successful brand launch.",
+    fullDescription: "The complete branding experience, combining strategic thinking with exceptional design -- full brand development, marketing materials, packaging, and ongoing support through launch.",
   },
 ];
 
@@ -56,7 +72,7 @@ export const graphicDesignPackages: ServicePackage[] = [
   {
     name: "Social Media Pack",
     description: "Engaging content for your platforms",
-    basePrice: 149,
+    basePrice: 179,
     features: [
       "15 social media posts",
       "Story templates",
@@ -69,47 +85,29 @@ export const graphicDesignPackages: ServicePackage[] = [
   {
     name: "Marketing Materials",
     description: "Print and digital collateral",
-    basePrice: 299,
+    basePrice: 199,
     features: [
-      "Brochure design",
       "Flyer design",
       "Poster design",
       "Business cards",
-      "Email templates",
       "Print-ready files",
     ],
     fullDescription: "Professional marketing materials designed to communicate your message effectively. All deliverables are print-ready and optimized for both digital and physical distribution.",
   },
   {
     name: "Visual Campaign",
-    description: "Complete campaign design suite",
-    basePrice: 649,
+    description: "Cohesive key visuals for a campaign",
+    basePrice: 299,
     features: [
       "Campaign concept",
       "Key visuals",
       "Digital ads (multiple sizes)",
-      "Print materials",
-      "Presentation design",
-      "Campaign guidelines",
     ],
-    fullDescription: "A comprehensive campaign package with cohesive visuals across all touchpoints. Includes strategic direction, key visual development, and implementation across digital and traditional media.",
+    fullDescription: "A focused campaign package with cohesive key visuals and digital ad variations, giving your message one consistent look across placements.",
   },
 ];
 
 export const uiuxPackages: ServicePackage[] = [
-  {
-    name: "Landing Page Design",
-    description: "High-converting single page",
-    basePrice: 399,
-    features: [
-      "Custom landing page",
-      "Mobile responsive",
-      "Interactive prototypes",
-      "3 sections",
-      "2 revision rounds",
-    ],
-    fullDescription: "A professionally designed landing page optimized for conversions. Includes responsive design, interactive elements, and user-tested layouts to maximize engagement and action.",
-  },
   {
     name: "Website Design",
     description: "Multi-page website experience",
@@ -125,18 +123,30 @@ export const uiuxPackages: ServicePackage[] = [
     fullDescription: "Complete website design with custom layouts for each page, cohesive design system, and optimized user experience. Fully responsive and ready for development.",
   },
   {
-    name: "App Design (Mobile/Web)",
+    name: "App Design",
     description: "Full application interface",
-    basePrice: 899,
+    basePrice: 699,
     features: [
       "Complete app design",
-      "User research",
       "Wireframes & prototypes",
       "Design system",
       "Animation guidelines",
       "Developer handoff",
+    ],
+    fullDescription: "End-to-end application design service including wireframing, high-fidelity designs, and a comprehensive design system, with developer-ready documentation.",
+  },
+  {
+    name: "Houcine's Pack",
+    description: "Website and app design, combined",
+    basePrice: 799,
+    features: [
+      "Website + app design system",
+      "User research",
+      "Wireframes & prototypes",
+      "Unlimited revisions",
+      "Developer handoff",
       "3 months support",
     ],
-    fullDescription: "End-to-end application design service including user research, wireframing, high-fidelity designs, and comprehensive design system. Includes developer documentation and ongoing support.",
+    fullDescription: "The complete UI/UX package: one coherent design system spanning both your website and your app, from user research through developer handoff, with ongoing support.",
   },
 ];
