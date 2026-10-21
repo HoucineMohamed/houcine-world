@@ -4,19 +4,33 @@ Updated after every item so an interrupted session can resume. One session branc
 `claude/upbeat-hamilton-ymyymq`, so items run strictly one at a time: one item per pull request, then
 wait for its merge and sync the branch (`docs/automation.md`, section 7) before the next.
 
+## Note: a separate master-redesign brief landed on this branch (21 October)
+
+While this program's session (T2/driver above) was running, a **different session in a separate
+conversation** received a large, separate "master redesign" brief directly from the owner (creative
+direction, business repositioning: new homepage hero and ecosystem map, exact Houcine.studio pricing,
+a €699/$699 Houcine.tech floor, Houcine.education as honest "under construction", the contact/legal
+values below, and other content changes). That session found this branch mid-flight, merged this
+program's work in rather than overwrite it, resolved the few real conflicts (keeping this program's
+newer infrastructure — the typed route manifest, breadcrumbs, search, the contact form behind
+`CONTACT_FORM_ENABLED` — over its own now-superseded equivalents), and pushed. It merged automatically
+as #60 (no critical path touched). Two rows below changed as a direct result; see that session's own
+commit messages (32d3074, 6345f63) for the full list of what changed. This program's own tracking
+below is otherwise unchanged by that session and remains this program's to maintain.
+
 ## Owner must fill
 
 These are placeholders on purpose; no session invents them.
 
 | What | Where | Today |
 | --- | --- | --- |
-| Legal entity name | `src/data/legal.ts` | `[LEGAL ENTITY NAME]` |
+| Legal entity name | `src/data/legal.ts` | **Filled 21 Oct, by the owner's master-redesign brief: "Houcine.management"** |
 | Governing jurisdiction | `src/data/legal.ts` | `[GOVERNING JURISDICTION]` |
-| Privacy / legal contact email | `src/data/legal.ts` | `[CONTACT EMAIL FOR PRIVACY / LEGAL REQUESTS]` |
+| Privacy / legal contact email | `src/data/legal.ts` | now derived from `CONTACT_EMAIL` below (`contact@houcine.world`) instead of a separate placeholder |
 | Postal address | `src/data/legal.ts` | `[POSTAL ADDRESS]` |
-| Public contact email | `src/config/contact.ts` (`CONTACT_EMAIL`) | empty: "Contact details coming soon" |
+| Public contact email | `src/config/contact.ts` (`CONTACT_EMAIL`) | **Filled 21 Oct: `contact@houcine.world`, plus a per-service address each (`SERVICE_EMAILS`) and a public phone number** |
 | Selected work (projects you may show) | `src/content/management.ts` | empty: "Coming soon" |
-| Testimonials on /designs and /reads | existing page data | already in the code before this program; please confirm they are real, or ask for placeholders |
+| Testimonials on /designs | existing page data | already in the code before this program; please confirm they are real, or ask for placeholders. (The /reads page itself was rebuilt 21 October as an honest "under construction" page per the master-redesign brief; it no longer shows testimonials, reviews, or a mock catalog — see the note above.) |
 | Decide on the email escaping fix | `docs/security-fixes-proposed.md`, section (c) | the /contact message form (B4) uses the existing form function, whose notification emails do not escape the visitor's text (security review H3); the fix is ready as text, applying it is your decision |
 | Smaller copies of the large images (1 to 3 MB each, e.g. `the-view-cover.png`, `houcine-photo.jpg`) | `src/assets/` | sessions may not add image files |
 
