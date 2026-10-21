@@ -109,6 +109,27 @@ All colors MUST be HSL.
     scroll-behavior: smooth;
   }
 
+  /* A visible keyboard focus everywhere, in the ring colour of the tokens. Components that draw their
+     own ring (focus-visible:ring-*) remove this outline with focus-visible:outline-none. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  main:focus {
+    outline: none;
+  }
+
+  /* On touch screens, buttons and toggles are at least 44 x 44 px (the size of a fingertip). Mouse
+     users keep the compact sizes of the design. */
+  @media (pointer: coarse) {
+    /* Only the page's own header, content and footer: dialogs, menus and form controls such as
+       checkboxes, switches and tabs keep their designed sizes. */
+    :is(header, main, footer) :is(button, [role="button"], [role="combobox"]):not([role="checkbox"]):not([role="switch"]):not([role="tab"]) {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
     cursor: none; /* Hide default cursor for custom one */
@@ -544,5 +565,47 @@ All colors MUST be HSL.
 
   .animate-logo-drift {
     animation: logoDrift 16s ease-in-out infinite;
+  }
+}
+
+/* ========================================
+   PRINT: the legal pages (/terms, /privacy, /data-deletion) print as plain black text on white, without
+   the header, footer, cursor, search or skip link, and with the address of each outside link written out.
+   ======================================== */
+@media print {
+  .legal-page {
+    background: #fff !important;
+    color: #000 !important;
+    min-height: 0 !important;
+  }
+  .legal-page > *:not(main) {
+    display: none !important;
+  }
+  .legal-page main {
+    padding: 0 !important;
+  }
+  .legal-page main * {
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .legal-page main a[href^="http"]::after,
+  .legal-page main a[href^="mailto:"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.9em;
+  }
+  .legal-page h1,
+  .legal-page h2,
+  .legal-page h3 {
+    break-after: avoid;
+  }
+  .legal-page p,
+  .legal-page li {
+    orphans: 3;
+    widows: 3;
+  }
+  body {
+    cursor: auto !important;
   }
 }

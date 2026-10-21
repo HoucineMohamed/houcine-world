@@ -8,7 +8,7 @@ import { spawn } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
-import { dirname, extname, join, normalize, resolve } from "node:path";
+import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
@@ -45,19 +45,47 @@ const TYPES = {
   ".ico": "image/x-icon", ".txt": "text/plain; charset=utf-8", ".xml": "application/xml", ".woff2": "font/woff2",
 };
 
-/** Serves dist/ on 127.0.0.1 with the SPA fallback that public/_redirects gives on Netlify. */
+/**
+ * The headers of public/_headers (copied to dist/ by the build) for the "/*" rule, as Netlify would send them.
+ * Strict-Transport-Security is left out: browsers ignore it on plain http, and the checks run on http.
+ */
+export const siteHeaders = (dir = join(ROOT, "dist")) => {
+  const file = join(dir, "_headers");
+  if (!existsSync(file)) {
+    if (existsSync(join(dir, "index.html"))) console.warn(`${file} not found: the site is served without its security headers`);
+    return {};
+  }
+  const out = {};
+  let inAll = false;
+  for (const line of readFileSync(file, "utf8").split("\n")) {
+    if (line.startsWith("#") || line.trim() === "") continue;
+    if (!/^\s/.test(line)) { inAll = line.trim() === "/*"; continue; }
+    const m = line.trim().match(/^([A-Za-z-]+):\s*(.*)$/);
+    if (inAll && m && m[1].toLowerCase() !== "strict-transport-security") out[m[1].toLowerCase()] = m[2];
+  }
+  return out;
+};
+
+/** Serves dist/ on 127.0.0.1 with the SPA fallback that public/_redirects gives on Netlify, and its headers. */
 export const serveDist = (dir = join(ROOT, "dist")) =>
   new Promise((ok, fail) => {
     if (!existsSync(join(dir, "index.html"))) return fail(new Error(`${dir}/index.html not found: build first`));
+    const headers = siteHeaders(dir);
     const server = createServer((req, res) => {
-      const path = decodeURIComponent(new URL(req.url, "http://x").pathname);
+      let path;
+      try {
+        path = decodeURIComponent(new URL(req.url, "http://x").pathname);
+      } catch {
+        res.writeHead(400).end();
+        return;
+      }
       let file = normalize(join(dir, path));
-      if (!file.startsWith(dir)) { res.writeHead(403).end(); return; }
+      if (file !== dir && !file.startsWith(dir + sep)) { res.writeHead(403).end(); return; }
       if (!existsSync(file) || statSync(file).isDirectory()) {
         if (extname(path)) { res.writeHead(404).end("not found"); return; }
         file = join(dir, "index.html");
       }
-      res.writeHead(200, { "content-type": TYPES[extname(file)] ?? "application/octet-stream" });
+      res.writeHead(200, { ...headers, "content-type": TYPES[extname(file)] ?? "application/octet-stream" });
       res.end(readFileSync(file));
     });
     server.listen(0, "127.0.0.1", () => ok({ url: `http://127.0.0.1:${server.address().port}`, close: () => server.close() }));
@@ -125,9 +153,18 @@ const connect = async (wsUrl) => {
 };
 
 /** Opens a path at a viewport width and waits for the page to settle. Returns what happened on the way. */
-export const open = async (page, base, path, { width = 1366, height = 900, reducedMotion = false, wait = 2500 } = {}) => {
+export const open = async (page, base, path, { width = 1366, height = 900, reducedMotion = false, coarse = false, wait = 2500 } = {}) => {
   await page.send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: width < 600 });
-  await page.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: reducedMotion ? "reduce" : "no-preference" }] });
+  // coarse: a touch screen, so that (pointer: coarse) styles apply.
+  await page.send("Emulation.setTouchEmulationEnabled", { enabled: coarse, maxTouchPoints: coarse ? 5 : 1 });
+  const pointer = coarse ? "coarse" : "fine";
+  await page.send("Emulation.setEmulatedMedia", {
+    features: [
+      { name: "prefers-reduced-motion", value: reducedMotion ? "reduce" : "no-preference" },
+      { name: "pointer", value: pointer },
+      { name: "any-pointer", value: pointer },
+    ],
+  });
   page.events.length = 0;
   await page.send("Page.navigate", { url: base + path });
   await sleep(wait);

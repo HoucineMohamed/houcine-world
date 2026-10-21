@@ -103,7 +103,7 @@ const LaRosaView = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur bg-background/95">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
-          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
+          <Link to="/" className="inline-flex items-center justify-center [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:-mx-1.5 [@media(pointer:coarse)]:-my-2 [@media(pointer:coarse)]:sm:-my-1.5 hover:scale-110 transition-all duration-200 group">
             <img 
               src={logoH} 
               alt="Houcine.world home" 
@@ -117,12 +117,13 @@ const LaRosaView = () => {
           </Link>
           <Link 
             to="/about-dj" 
-            className="inline-flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base text-foreground hover:text-rose-400 transition-all hover:scale-105 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-rose-500/10 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-background"
+            className="inline-flex items-center gap-1.5 sm:gap-2 [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:-my-1.5 [@media(pointer:coarse)]:sm:-my-0.5 text-sm sm:text-base text-foreground hover:text-rose-400 transition-all hover:scale-105 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-rose-500/10 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-background"
           >
             About DJ
           </Link>
         </div>
       </header>
+      <main id="main">
 
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -350,7 +351,7 @@ const LaRosaView = () => {
                       href="https://youtu.be/60qJDqOgB70" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm text-rose-400 hover:text-rose-300 transition-colors"
+                      className="inline-flex items-center gap-2 [@media(pointer:coarse)]:min-h-11 text-sm text-rose-400 hover:text-rose-300 transition-colors"
                     >
                       <Youtube className="w-4 h-4" />
                       Watch on YouTube
@@ -417,7 +418,7 @@ const LaRosaView = () => {
           <div className="grid md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 md:mb-0">
               <div className="group relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border-2 border-rose-500/30 shadow-2xl shadow-rose-600/30 hover:scale-105 hover:shadow-rose-600/50 transition-all duration-500">
-                <img 
+                <img loading="lazy" decoding="async" width={1440} height={1920} 
                   src={hajriPhoto} 
                   alt="Hajri Mohamed" 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -429,7 +430,7 @@ const LaRosaView = () => {
                 <div className="absolute inset-0 bg-rose-500/0 group-hover:bg-rose-500/10 transition-colors duration-500" />
               </div>
               <div className="group relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-br from-rose-900/40 to-background border-2 border-rose-500/30 shadow-2xl shadow-rose-600/30 hover:scale-105 hover:shadow-rose-600/50 transition-all duration-500">
-                <img 
+                <img loading="lazy" decoding="async" width={1440} height={1920} 
                   src={houcinePhoto} 
                   alt="Houcine Mohamed" 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -542,7 +543,7 @@ const LaRosaView = () => {
                     href="https://www.instagram.com/la.rosaview/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
+                    className="flex items-center justify-center gap-2 sm:gap-3 [@media(pointer:coarse)]:min-h-11 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                     <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 relative z-10" />
@@ -553,7 +554,7 @@ const LaRosaView = () => {
                     href="https://www.tiktok.com/@larosaview"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
+                    className="flex items-center justify-center gap-2 sm:gap-3 [@media(pointer:coarse)]:min-h-11 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                     <Video className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 relative z-10" />
@@ -564,7 +565,7 @@ const LaRosaView = () => {
                     href="https://www.youtube.com/@LaRosa-View"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
+                    className="flex items-center justify-center gap-2 sm:gap-3 [@media(pointer:coarse)]:min-h-11 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                     <Youtube className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 relative z-10" />
@@ -575,7 +576,7 @@ const LaRosaView = () => {
                     href="https://soundcloud.com/la-rosa-view"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
+                    className="flex items-center justify-center gap-2 sm:gap-3 [@media(pointer:coarse)]:min-h-11 p-3 sm:p-4 rounded-lg border border-border/50 bg-card/50 hover:border-rose-500/50 hover:bg-rose-500/10 transition-all hover:scale-105 group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                     <Play className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 relative z-10" />
@@ -724,6 +725,7 @@ const LaRosaView = () => {
         </div>
       </section>
 
+      </main>
       <Footer />
       
       <style>{`

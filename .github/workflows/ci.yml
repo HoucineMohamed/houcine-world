@@ -40,4 +40,5 @@ jobs:
         run: npm run build
 
       - name: Automation tests
-        run: node --test "scripts/ci/*.test.mjs"
+        # --experimental-strip-types: the send-notification tests import the function's TypeScript rules directly.
+        run: node --experimental-strip-types --test "scripts/ci/*.test.mjs"

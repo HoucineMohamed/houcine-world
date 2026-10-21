@@ -5,26 +5,24 @@ Claude session to do it (it opens a pull request that merges itself if it is not
 also edit on GitHub: open the file, click the pencil, change it, choose **"Create a new branch for this
 commit and start a pull request"**, then merge that pull request yourself.
 
-## Add a portfolio item ("Selected work")
+## Add a project, a journal post or a testimonial
 
-1. Open `src/content/management.ts` (the Houcine.management page; other pages can get the same kind of
-   file later).
-2. Add an entry inside the square brackets, for example:
-
-   ```ts
-   { title: "Project name", summary: "One or two plain sentences.", tags: ["Brand strategy"] },
-   ```
-
-   Optional fields: `href` (an internal address such as `/larosaview`, or an `https://` address you
-   own), and `image` with `imageAlt` (the image must be a file in `src/assets/`, imported at the top of
-   the file). Only add real, published work you have the right to show.
-3. While the list is empty, the page shows "Coming soon".
+Follow `docs/content-guide.md`: each is one entry in a file of `src/content/` (`work.ts`, `journal.ts`,
+`testimonials.ts`), edited in the browser on GitHub. A project shows on `/work` (and, for the
+management vertical, in the "Selected work" of `/manages`); a post on `/journal` and in the RSS feed.
+While a list is empty, its page says "Coming soon".
 
 ## Change the public contact email
 
 1. Open `src/config/contact.ts`.
 2. Put your address between the quotes: `export const CONTACT_EMAIL = "you@example.com";`
 3. Until it is set, the "Get in touch" buttons say "Contact details coming soon".
+
+## Turn the contact form on
+
+The message form on `/contact` is ready but off: `CONTACT_FORM_ENABLED = false` in `src/config/contact.ts`.
+It stays off until the hardened form function (part of the critical bundle) is merged **and** deployed
+(the "Deploy Supabase" workflow must succeed on `main`). Then a session changes that one line to `true`.
 
 ## Fill in the legal placeholders
 
@@ -44,7 +42,7 @@ automatically. `public/sitemap.xml` and `public/robots.txt` are written from the
 
 ## Check the site before a release (scripts a session runs)
 
-Three offline checks live in `scripts/dev/`. They serve the built site on the session's own computer and
+Several offline checks live in `scripts/dev/`. They serve the built site on the session's own computer and
 open it in a local headless Chromium that cannot reach the internet. You do not run them yourself: ask
 a session to "run the smoke, link and accessibility checks" and to report the results.
 
@@ -52,7 +50,12 @@ a session to "run the smoke, link and accessibility checks" and to report the re
 | --- | --- |
 | `smoke.mjs` | Builds the site, then opens every public page at 1366px and 390px: the right title, exactly one main heading, no horizontal scroll, no console errors, no outside host beyond the known list, and no trace of the owner-only entries (pages, sitemap, robots.txt, main bundle). Problems in critical files are listed as "known" with the fix to approve. |
 | `link-check.mjs` | Links to pages that do not exist, `#anchors` with no target, images that do not load, and public pages that no other page links to. Outside links are listed by host, never visited. |
-| `a11y-check.mjs` | Heading order, form labels, image alt text, names of links and buttons, contrast of the design tokens, reduced motion; warnings for focus outlines and estimated text contrast. |
+| `content-gate.mjs` | The visible text of every public page has no "not written yet" words (lorem ipsum, TODO, TBD, placeholder, [CAPITALS]) and no page logs a console error; the legal placeholders you fill in are listed, not counted. |
+| `responsive-check.mjs` | No sideways scroll at 360, 390, 768, 1024 and 1366 px, and tap targets of at least 44 px on touch screens; `--shots=<folder>` saves screenshots (outside the repository). |
+| `perf-check.mjs` | Lab numbers (LCP, FCP, CLS, blocking time, bytes) on five routes at phone and desktop sizes, to compare before and after a change. |
+| `*.test.mjs` | `node --experimental-strip-types --test scripts/dev/*.test.mjs`: tokens, route manifest, content layer, search, structured data, image size budget. |
+| `keyboard-check.mjs` | The skip link, the phone menu (opens with Enter, keeps focus inside, closes with Escape), search (Ctrl+K and "/", results announced, Enter and Escape) and the ecosystem map (every node reached with Tab, with a visible focus). |
+| `a11y-check.mjs` | One main landmark, page language and title, no duplicate ids, the skip link first, heading order, form labels, image alt text, names of links and buttons, contrast of the design tokens, reduced motion; warnings for focus outlines and estimated text contrast. |
 
 Each is run as `node --experimental-strip-types scripts/dev/<script> ` (add `--build` to build first for the
 link and accessibility checks; `--no-build` skips the build of the smoke check). A non-zero exit means at

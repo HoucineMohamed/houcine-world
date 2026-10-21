@@ -99,7 +99,7 @@ const DevContent = () => {
       {/* Header */}
       <header className="border-b border-border/40 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
-          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
+          <Link to="/" className="inline-flex items-center justify-center [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:-mx-1.5 [@media(pointer:coarse)]:-my-1.5 hover:scale-110 transition-all duration-200 group">
             <img 
               src={logoH} 
               alt="Houcine.world home" 
@@ -113,6 +113,7 @@ const DevContent = () => {
           </Link>
         </div>
       </header>
+      <main id="main">
 
       {/* Hero Section */}
       <section 
@@ -264,7 +265,7 @@ const DevContent = () => {
 
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-card/90 to-transparent p-4">
                       <div className="flex items-center justify-center gap-2">
-                        <img 
+                        <img loading="lazy" decoding="async" width={607} height={600} 
                           src={pytunisiaLogo}
                           alt="PyTunisia Logo"
                           className="w-12 h-12 object-contain"
@@ -373,6 +374,7 @@ const DevContent = () => {
                     <label htmlFor="dev-contact-name" className="text-sm font-medium">Name *</label>
                     <Input 
                       id="dev-contact-name"
+                      maxLength={100}
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Your name"
@@ -384,6 +386,7 @@ const DevContent = () => {
                     <Input 
                       id="dev-contact-email"
                       type="email"
+                      maxLength={254}
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="your@email.com"
@@ -432,6 +435,7 @@ const DevContent = () => {
                   <label htmlFor="dev-contact-message" className="text-sm font-medium">Message *</label>
                   <Textarea 
                     id="dev-contact-message"
+                    maxLength={5000}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Tell me about your project..."
@@ -483,6 +487,7 @@ const DevContent = () => {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   );

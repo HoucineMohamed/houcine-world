@@ -116,6 +116,11 @@ const DesignsContent = () => {
   const fullText = "Design that speaks emotion.";
 
   useEffect(() => {
+    // With reduced motion, the heading appears at once instead of letter by letter.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDisplayedText(fullText);
+      return;
+    }
     let index = 0;
     const interval = setInterval(() => {
       if (index <= fullText.length) {
@@ -136,7 +141,7 @@ const DesignsContent = () => {
       {/* Header */}
       <header className="border-b border-border/40 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
-          <Link to="/" className="inline-block hover:scale-110 transition-all duration-200 group">
+          <Link to="/" className="inline-flex items-center justify-center [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:-mx-1.5 [@media(pointer:coarse)]:-my-1.5 hover:scale-110 transition-all duration-200 group">
             <img 
               src={logoH} 
               alt="Houcine.world home" 
@@ -150,6 +155,7 @@ const DesignsContent = () => {
           </Link>
         </div>
       </header>
+      <main id="main">
 
       {/* Hero Section */}
       <section
@@ -175,8 +181,12 @@ const DesignsContent = () => {
             />
           </div>
           <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 min-h-[4rem]">
-            {displayedText}
-            <span className="animate-pulse">|</span>
+            {/* Screen readers get the whole heading once; the typing effect is visual only. */}
+            <span className="sr-only">{fullText}</span>
+            <span aria-hidden="true">
+              {displayedText}
+              <span className="animate-pulse">|</span>
+            </span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
             I build visual identities that move people and elevate brands.
@@ -215,7 +225,7 @@ const DesignsContent = () => {
           </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
             <div className="flex justify-center">
-              <img
+              <img loading="lazy" decoding="async" width={500} height={500}
                 src={profilePhoto}
                 alt="Houcine"
                 className="w-80 h-80 object-cover rounded-2xl shadow-xl shadow-accent/20 hover:shadow-accent/40 transition-all"
@@ -424,6 +434,7 @@ const DesignsContent = () => {
                 <Label htmlFor="name">Name *</Label>
                 <Input
                   id="name"
+                  maxLength={100}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
@@ -434,6 +445,7 @@ const DesignsContent = () => {
                 <Input
                   id="email"
                   type="email"
+                  maxLength={254}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
@@ -453,6 +465,7 @@ const DesignsContent = () => {
                 <Label htmlFor="message">Message *</Label>
                 <Textarea
                   id="message"
+                  maxLength={5000}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   rows={5}
@@ -492,6 +505,7 @@ const DesignsContent = () => {
         </div>
       </section>
 
+      </main>
       <Footer />
 
 

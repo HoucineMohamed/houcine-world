@@ -22,6 +22,13 @@ export const PAYMENT_METHODS = "Revolut and Société Générale";
 export const PAYMENT_POLICY_TEXT =
   "Prices are displayed in EUR or USD. Accepted payment methods are Revolut and Société Générale.";
 
+/**
+ * The message form on /contact. OFF until the hardened form function (escaping, limits, rate limit) is
+ * merged by the owner in the critical bundle; while it is off, /contact shows only the email above.
+ * Turning it on is this one line.
+ */
+export const CONTACT_FORM_ENABLED = false;
+
 const EMAIL_SHAPE = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[A-Za-z]{2,}$/;
 
 /** A mailto: link for a given address with an optional subject, or null if the address isn't valid. */
