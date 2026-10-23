@@ -191,35 +191,11 @@ const DevContent = () => {
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">What I build</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Representative project types -- the scope and stack are tailored to each engagement.
+              Websites, applications, automation, AI and infrastructure. Every price is a starting
+              point; the final quote depends on the agreed scope.
             </p>
           </div>
-          <ul className="max-w-3xl mx-auto mb-16">
-            {devServicePackages.map((service) => (
-              <li key={service.name} className="border-t border-border/50 py-6 first:border-t-0">
-                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
-                  <h3 className="text-lg font-display font-semibold text-foreground">{service.name}</h3>
-                  <Badge variant="secondary" className="w-fit">{service.deliveryTime}</Badge>
-                </div>
-                <p className="text-muted-foreground">{service.description}</p>
-              </li>
-            ))}
-          </ul>
-
-          <div className="max-w-3xl mx-auto text-center">
-            <h3 className="text-xl font-display font-semibold mb-2">Also working in</h3>
-            <p className="text-muted-foreground mb-6">
-              The intended direction for Houcine.tech -- not every category is an established
-              service yet, and scope is agreed per project.
-            </p>
-            <ul className="flex flex-wrap justify-center gap-x-3 gap-y-2">
-              {SERVICE_CATEGORIES.map((c) => (
-                <li key={c} className="text-sm text-muted-foreground border border-border/50 rounded-full px-4 py-1.5">
-                  {c}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <TechCatalogue onQuote={requestQuote} />
         </div>
       </section>
 
@@ -235,15 +211,18 @@ const DevContent = () => {
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Starting price</h2>
             <p className="text-2xl md:text-3xl font-display font-semibold text-accent mb-2">
-              €699 / $699
+              From €699 / $699
             </p>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              Technology projects start here. Final pricing depends on complexity, integrations,
-              infrastructure and project scope -- not every project costs the same amount.
+              One-time projects start here; monthly plans start at €699 / $699 per month. Final pricing
+              depends on features, integrations, infrastructure and scope -- larger systems such as SaaS
+              platforms, full mobile apps or advanced AI cost more than their entry price.
             </p>
+            <p className="text-sm text-muted-foreground mt-3">Prices are listed in EUR and USD with the same amount; they are not converted.</p>
           </div>
 
-          <Card className="border-border/50 bg-card/50 backdrop-blur max-w-2xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <Card className="border-border/50 bg-card/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
                 <DollarSign className="w-6 h-6 text-accent" />
@@ -253,9 +232,20 @@ const DevContent = () => {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                A quote covers the agreed scope: consultation, design, development and an agreed
-                number of revisions. Work outside that scope is quoted separately.
+                Every project gets a written, scoped quote before work begins: consultation, design,
+                development and an agreed number of revisions. Work outside that scope is quoted separately.
               </p>
+            </CardContent>
+          </Card>
+          <Card className="border-border/50 bg-card/50 backdrop-blur">
+            <CardHeader>
+              <CardTitle className="text-2xl">Not included unless quoted</CardTitle>
+              <CardDescription>Third-party costs are identified in each quote.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
+                {PRICE_EXCLUSIONS.map((x) => <li key={x}>{x}</li>)}
+              </ul>
             </CardContent>
           </Card>
         </div>
