@@ -15,6 +15,7 @@ import { Resend } from "https://esm.sh/resend@2.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import {
   checkSubmission,
+  checkTechBudget,
   checkSubscription,
   clientAddress,
   createRateLimiter,
@@ -24,6 +25,7 @@ import {
   submissionEmail,
   subscriptionEmail,
 } from "./core.ts";
+import { TECH_PRICES } from "./techPrices.ts";
 
 const MAX_BODY = 20_000;
 const allow = createRateLimiter();
@@ -109,6 +111,8 @@ const handler = async (req: Request): Promise<Response> => {
     if (action === "submit") {
       const checked = checkSubmission(body);
       if (!checked.ok) return json(400, { error: checked.error }, origin);
+      const budgetError = checkTechBudget(checked.value, TECH_PRICES);
+      if (budgetError) return json(400, { error: budgetError }, origin);
       // A robot filled the hidden field: same answer as a person, nothing saved or sent.
       if (checked.trap) {
         console.info("send-notification: hidden field filled, dropped");
