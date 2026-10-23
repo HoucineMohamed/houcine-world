@@ -19,7 +19,7 @@ const headers = (h) => ({ get: (k) => h[k.toLowerCase()] ?? null });
 // What each page of the site sends today (src/pages/*.tsx through src/hooks/useFormSubmission.ts).
 const REAL_FORMS = [
   { pageName: "Houcine.world", formType: "Contact", userName: "Ana", userEmail: "ana@example.com", message: "Hello\nthere" },
-  { pageName: "Houcine.tech", formType: "Quote Request", userName: "Ana", userEmail: "ana@example.com", serviceType: "web-app", message: "A site", additionalData: { budget: "5k-10k" } },
+  { pageName: "Houcine.tech", formType: "Quote Request", userName: "Ana", userEmail: "ana@example.com", serviceType: "Business Website Development", message: "A site", additionalData: { budget: "1500-3000" } },
   { pageName: "Houcine.studio", formType: "Quote Request", userName: "Ana", userEmail: "ana@example.com", serviceType: "branding", message: "A logo", additionalData: { paymentPreference: "card" } },
   { pageName: "Houcine.studio", formType: "Quote Request", userName: "Ana", userEmail: "ana@example.com", serviceType: "branding", message: "A logo" },
   { pageName: "Booking", formType: "DJ Booking Request", userName: "Ana", userEmail: "ana@example.com", userPhone: "+216 20 000 000", serviceType: "wedding", message: "Evening set", additionalData: { eventDate: "2026-12-31", eventLocation: "Tunis" } },

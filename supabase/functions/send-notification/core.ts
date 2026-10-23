@@ -159,6 +159,32 @@ export const escapeHtml = (s: string): string =>
 /** Text that is safe in a mail header: no CR, LF or other control character, single spaces, at most 200 characters. */
 export const headerSafe = (s: string): string => s.replace(CONTROL, " ").replace(/\s+/g, " ").trim().slice(0, 200);
 
+const BUDGET = /^(?:(\d{1,7})-(\d{1,7})|over-(\d{1,7}))(\/month)?$/;
+
+/**
+ * Houcine.tech quote requests: a budget must belong to a known service, use that service's billing period
+ * (one-time or "/month"), and reach at least the service's starting price. `prices` is the server copy of the
+ * catalogue (techPrices.ts). Returns an error message, or null when the submission is fine.
+ */
+export const checkTechBudget = (
+  s: Submission,
+  prices: Record<string, readonly [number, "one-time" | "monthly"]>,
+): string | null => {
+  const budget = s.additionalData?.budget;
+  if (s.pageName !== "Houcine.tech" || budget === undefined) return null;
+  const price = s.serviceType !== undefined && Object.prototype.hasOwnProperty.call(prices, s.serviceType) ? prices[s.serviceType] : undefined;
+  if (!price) return "Invalid field: budget";
+  const m = BUDGET.exec(budget);
+  if (!m) return "Invalid field: budget";
+  const [from, billing] = price;
+  if ((m[4] === "/month") !== (billing === "monthly")) return "Invalid field: budget";
+  if (m[3] !== undefined) return null;
+  const min = Number(m[1]);
+  const max = Number(m[2]);
+  if (min >= max || max <= from) return "Budget is below the service's starting price";
+  return null;
+};
+
 /** The site's own origins: the domain, the Netlify site and its deploy previews, and the local dev server. */
 export const isAllowedOrigin = (origin: string | null): boolean =>
   origin !== null &&
