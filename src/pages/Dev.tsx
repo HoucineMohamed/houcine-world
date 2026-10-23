@@ -359,7 +359,7 @@ const DevContent = () => {
         <div className="container mx-auto px-6 max-w-4xl relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
-              Let's Build Your Website
+              Let’s make this happen
             </h2>
             <p className="text-xl text-muted-foreground">
               Ready to bring your vision online? Let's discuss your project today.
