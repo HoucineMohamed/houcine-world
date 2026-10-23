@@ -14,29 +14,31 @@ import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { devServicePackages } from "@/data/devServicePackages";
 import { useFormSubmission } from "@/hooks/useFormSubmission";
 import { toast } from "sonner";
 import { PAYMENT_POLICY_TEXT } from "@/config/contact";
-
-// The broader technology direction (program: master redesign, section 10) -- intended scope, not
-// proof every capability is already a shipped product. The five devServicePackages entries below
-// remain the concrete, delivered project types.
-const SERVICE_CATEGORIES = [
-  "Website development", "Web applications", "E-commerce", "CMS development and integration",
-  "API development and integrations", "Workflow automation", "AI integration",
-  "Database integration and architecture", "Technical consulting", "Performance optimization",
-  "Technical maintenance", "Booking and management systems",
-] as const;
+import TechCatalogue from "@/components/tech/TechCatalogue";
+import {
+  PRICE_EXCLUSIONS,
+  SERVICE_FAMILIES,
+  budgetOptionsFor,
+  isBudgetAllowed,
+  priceLabel,
+  serviceByName,
+  servicesInFamily,
+  type FamilySlug,
+} from "@/content/techCatalogue";
 
 const DevContent = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    family: "" as FamilySlug | "",
     service: "",
     budget: "",
     message: ""
   });
+  const [budgetNotice, setBudgetNotice] = useState("");
 
   const heroAnimation = useScrollAnimation();
   const servicesAnimation = useScrollAnimation();
@@ -54,10 +56,41 @@ const DevContent = () => {
 
   const { submitForm, isSubmitting } = useFormSubmission();
 
+  const selectedService = formData.service ? serviceByName(formData.service) : undefined;
+  const budgetOptions = selectedService ? budgetOptionsFor(selectedService) : [];
+
+  // Changing the service recalculates the budget ranges; a budget that no longer fits is cleared, never kept.
+  const selectService = (name: string, family?: FamilySlug) => {
+    const service = serviceByName(name);
+    setFormData((prev) => {
+      const keep = prev.budget !== "" && isBudgetAllowed(name, prev.budget);
+      setBudgetNotice(prev.budget !== "" && !keep && service
+        ? `Your budget was cleared: ${service.name} starts ${priceLabel(service).replace(/^From/, "from")}.`
+        : "");
+      return { ...prev, family: family ?? service?.family ?? prev.family, service: name, budget: keep ? prev.budget : "" };
+    });
+  };
+
+  const selectFamily = (family: FamilySlug) => {
+    if (family === formData.family) return;
+    setBudgetNotice(formData.budget ? "Your budget was cleared: choose a service, then a budget." : "");
+    setFormData({ ...formData, family, service: "", budget: "" });
+  };
+
+  const requestQuote = (name: string) => {
+    selectService(name);
+    scrollToSection("contact");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.service || !formData.message) {
       toast.error("Please fill in all required fields");
+      return;
+    }
+    if (formData.budget && !isBudgetAllowed(formData.service, formData.budget)) {
+      setFormData({ ...formData, budget: "" });
+      toast.error("That budget is below the starting price of the selected service. Please choose another range.");
       return;
     }
     
@@ -72,18 +105,10 @@ const DevContent = () => {
     });
 
     if (success) {
-      setFormData({ name: "", email: "", service: "", budget: "", message: "" });
+      setFormData({ name: "", email: "", family: "", service: "", budget: "", message: "" });
+      setBudgetNotice("");
     }
   };
-
-  // Budget brackets start at the €699 / $699 floor (section 10); the same numbers serve both
-  // currencies since prices are not live-converted.
-  const BUDGET_RANGES = [
-    { value: "699-1500", label: "€699 – 1,500 / $699 – 1,500" },
-    { value: "1500-3000", label: "€1,500 – 3,000 / $1,500 – 3,000" },
-    { value: "3000-6000", label: "€3,000 – 6,000 / $3,000 – 6,000" },
-    { value: "over-6000", label: "Over €6,000 / $6,000" },
-  ];
 
   const skills = [
     { category: "Frontend", items: ["React", "Tailwind", "HTML/CSS", "JavaScript"] },
