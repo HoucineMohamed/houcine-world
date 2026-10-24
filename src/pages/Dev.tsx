@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,6 +17,7 @@ import { useFormSubmission } from "@/hooks/useFormSubmission";
 import { toast } from "sonner";
 import { PAYMENT_POLICY_TEXT } from "@/config/contact";
 import TechCatalogue from "@/components/tech/TechCatalogue";
+import TechStack from "@/components/tech/TechStack";
 import {
   PRICE_EXCLUSIONS,
   SERVICE_FAMILIES,
@@ -110,11 +110,6 @@ const DevContent = () => {
     }
   };
 
-  const skills = [
-    { category: "Frontend", items: ["React", "Tailwind", "HTML/CSS", "JavaScript"] },
-    { category: "Backend Basics", items: ["Firebase", "Flask", "APIs"] },
-    { category: "Automation & FinTech", items: ["Python", "Pandas", "Google Sheets API"] }
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -331,33 +326,15 @@ const DevContent = () => {
       >
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
+            <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-4">The technology behind the work</p>
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">What I Use to Build</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              I use modern web technologies to create fast, reliable, and scalable digital products.
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+              Every project requires the right tools, architecture, and technologies. From modern web applications
+              to intelligent systems and automated workflows, I combine technologies across the stack to build
+              digital products that are functional, scalable, secure, and ready to grow.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {skills.map((skillGroup, index) => (
-              <Card key={index} className="border-border/50 bg-card/50 backdrop-blur hover:border-accent/30 transition-all duration-300">
-                <CardHeader>
-                  <CardTitle className="text-lg text-accent">{skillGroup.category}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {skillGroup.items.map((skill, skillIndex) => (
-                      <Badge 
-                        key={skillIndex} 
-                        variant="secondary"
-                        className="hover:bg-accent/20 hover:border-accent/50 transition-colors cursor-default hover:scale-105"
-                      >
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <TechStack />
         </div>
       </section>
 
