@@ -414,7 +414,7 @@ const DevContent = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label htmlFor="dev-contact-family" className="text-sm font-medium">Service Area *</label>
-                    <Select value={formData.family} onValueChange={(value) => selectFamily(value as FamilySlug)}>
+                    <Select value={formData.family} onValueChange={(value) => value && selectFamily(value as FamilySlug)}>
                       <SelectTrigger id="dev-contact-family">
                         <SelectValue placeholder="Select a service area" />
                       </SelectTrigger>
@@ -427,7 +427,7 @@ const DevContent = () => {
                   </div>
                   <div className="space-y-2">
                     <label htmlFor="dev-contact-service" className="text-sm font-medium">Service Interest *</label>
-                    <Select value={formData.service} onValueChange={(value) => selectService(value)} disabled={!formData.family}>
+                    <Select value={formData.service} onValueChange={(value) => value && selectService(value)} disabled={!formData.family}>
                       <SelectTrigger id="dev-contact-service">
                         <SelectValue placeholder={formData.family ? "Select a service" : "Select a service area first"} />
                       </SelectTrigger>
@@ -446,7 +446,7 @@ const DevContent = () => {
                   <label htmlFor="dev-contact-budget" className="text-sm font-medium">Budget Range</label>
                   <Select
                     value={formData.budget}
-                    onValueChange={(value) => { setBudgetNotice(""); setFormData({ ...formData, budget: value }); }}
+                    onValueChange={(value) => { if (!value) return; setBudgetNotice(""); setFormData((prev) => ({ ...prev, budget: value })); }}
                     disabled={!selectedService}
                   >
                     <SelectTrigger id="dev-contact-budget" aria-describedby="dev-contact-budget-help">
