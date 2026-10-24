@@ -64,9 +64,9 @@ const DevContent = () => {
     const service = serviceByName(name);
     setFormData((prev) => {
       const keep = prev.budget !== "" && isBudgetAllowed(name, prev.budget);
-      setBudgetNotice(prev.budget !== "" && !keep && service
-        ? `Your budget was cleared: ${service.name} starts ${priceLabel(service).replace(/^From/, "from")}.`
-        : "");
+      if (prev.budget !== "" && !keep && service) {
+        setBudgetNotice(`Your budget was cleared: ${service.name} starts ${priceLabel(service).replace(/^From/, "from")}.`);
+      }
       return { ...prev, family: family ?? service?.family ?? prev.family, service: name, budget: keep ? prev.budget : "" };
     });
   };
@@ -248,6 +248,7 @@ const DevContent = () => {
               </ul>
             </CardContent>
           </Card>
+          </div>
         </div>
       </section>
 
@@ -412,38 +413,58 @@ const DevContent = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="dev-contact-service" className="text-sm font-medium">Service Interest *</label>
-                    <Select value={formData.service} onValueChange={(value) => setFormData({ ...formData, service: value })}>
-                      <SelectTrigger id="dev-contact-service">
-                        <SelectValue placeholder="Select a service" />
+                    <label htmlFor="dev-contact-family" className="text-sm font-medium">Service Area *</label>
+                    <Select value={formData.family} onValueChange={(value) => value && selectFamily(value as FamilySlug)}>
+                      <SelectTrigger id="dev-contact-family">
+                        <SelectValue placeholder="Select a service area" />
                       </SelectTrigger>
                       <SelectContent>
-                        {devServicePackages.map((service) => (
-                          <SelectItem key={service.name} value={service.name}>
-                            {service.name}
-                          </SelectItem>
+                        {SERVICE_FAMILIES.map((f) => (
+                          <SelectItem key={f.slug} value={f.slug}>{f.name}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="dev-contact-budget" className="text-sm font-medium">Budget Range</label>
-                    <Select 
-                      value={formData.budget} 
-                      onValueChange={(value) => setFormData({ ...formData, budget: value })}
-                    >
-                      <SelectTrigger id="dev-contact-budget">
-                        <SelectValue placeholder="Select currency first in pricing section" />
+                    <label htmlFor="dev-contact-service" className="text-sm font-medium">Service Interest *</label>
+                    <Select value={formData.service} onValueChange={(value) => value && selectService(value)} disabled={!formData.family}>
+                      <SelectTrigger id="dev-contact-service">
+                        <SelectValue placeholder={formData.family ? "Select a service" : "Select a service area first"} />
                       </SelectTrigger>
                       <SelectContent>
-                        {BUDGET_RANGES.map((range) => (
-                          <SelectItem key={range.value} value={range.value}>
-                            {range.label}
+                        {formData.family && servicesInFamily(formData.family).map((service) => (
+                          <SelectItem key={service.slug} value={service.name}>
+                            {service.name} — {priceLabel(service).replace(/^From/, "from")}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="dev-contact-budget" className="text-sm font-medium">Budget Range</label>
+                  <Select
+                    value={formData.budget}
+                    onValueChange={(value) => { if (!value) return; setBudgetNotice(""); setFormData((prev) => ({ ...prev, budget: value })); }}
+                    disabled={!selectedService}
+                  >
+                    <SelectTrigger id="dev-contact-budget" aria-describedby="dev-contact-budget-help">
+                      <SelectValue placeholder={selectedService ? "Select a budget range" : "Select a service first"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {budgetOptions.map((range) => (
+                        <SelectItem key={range.value} value={range.value}>
+                          {range.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p id="dev-contact-budget-help" className="text-sm text-muted-foreground" aria-live="polite">
+                    {budgetNotice || (selectedService
+                      ? `${selectedService.name} starts ${priceLabel(selectedService).replace(/^From/, "from")}, so ranges start there. The final quote depends on scope.`
+                      : "Budget ranges adapt to the starting price of the service you choose.")}
+                  </p>
                 </div>
 
                 <div className="space-y-2">
