@@ -64,9 +64,9 @@ const DevContent = () => {
     const service = serviceByName(name);
     setFormData((prev) => {
       const keep = prev.budget !== "" && isBudgetAllowed(name, prev.budget);
-      setBudgetNotice(prev.budget !== "" && !keep && service
-        ? `Your budget was cleared: ${service.name} starts ${priceLabel(service).replace(/^From/, "from")}.`
-        : "");
+      if (prev.budget !== "" && !keep && service) {
+        setBudgetNotice(`Your budget was cleared: ${service.name} starts ${priceLabel(service).replace(/^From/, "from")}.`);
+      }
       return { ...prev, family: family ?? service?.family ?? prev.family, service: name, budget: keep ? prev.budget : "" };
     });
   };
