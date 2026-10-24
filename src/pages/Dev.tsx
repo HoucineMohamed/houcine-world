@@ -7,8 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Linkedin, Github, DollarSign, User, Instagram, Send, Loader2 } from "lucide-react";
 import logoH from "@/assets/logo-h.png";
-import pytunisiaLogo from "@/assets/pytunisia-logo.png";
-import houcineTechProfile from "@/assets/images/houcine-tech-profile.jpg";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import CustomCursor from "@/components/CustomCursor";
@@ -256,63 +254,71 @@ const DevContent = () => {
         }`}
       >
         <div className="container mx-auto px-6 max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">About Me</h2>
-            <p className="text-xl text-muted-foreground">The developer behind Houcine.tech</p>
-          </div>
-          
-          <Card className="border-accent/30 bg-card/50 backdrop-blur hover:border-accent/50 transition-all duration-300">
-            <CardContent className="p-8 md:p-12">
-              <div className="grid md:grid-cols-2 gap-8 items-center">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-primary/10 rounded-xl blur-xl" />
-                  <div className="relative aspect-square bg-gradient-to-br from-accent/10 to-primary/10 rounded-xl flex flex-col items-center justify-center gap-4 overflow-hidden">
-                    <img
-                      src={houcineTechProfile}
-                      alt="Houcine Mohamed, developer behind Houcine.tech"
-                      className="absolute inset-0 w-full h-full object-cover rounded-xl"
-                      loading="lazy"
-                    />
-
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-card/90 to-transparent p-4">
-                      <div className="flex items-center justify-center gap-2">
-                        <img loading="lazy" decoding="async" width={607} height={600} 
-                          src={pytunisiaLogo}
-                          alt="PyTunisia Logo"
-                          className="w-12 h-12 object-contain"
-                        />
-                        <span className="text-sm font-semibold text-accent">PyTunisia</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-3xl font-display font-bold mb-4">Houcine Mohamed</h3>
-                  <p className="text-lg text-muted-foreground mb-6">
-                    I'm a web developer and tech enthusiast from Tunisia, passionate about building fast, scalable, and beautifully coded websites. I specialize in React, Tailwind CSS, and modern web technologies.
-                  </p>
-                  <p className="text-lg text-muted-foreground mb-6">
-                    Beyond development, I'm the founder of <strong className="text-accent">PyTunisia</strong> — an Instagram initiative where I create and share educational content about programming and technology. It's part of my identity as a tech educator and my way of giving back to the community.
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    <Button 
-                      onClick={() => window.open('https://www.instagram.com/pytunisia/', '_blank')}
-                    >
-                      <Instagram className="w-5 h-5 mr-2" />
-                      PyTunisia on Instagram
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      onClick={() => window.open('https://github.com/HoucineMohamed', '_blank')}
-                    >
-                      <Github className="w-5 h-5 mr-2" />
-                      GitHub
-                    </Button>
-                  </div>
-                </div>
+          <div className="grid md:grid-cols-[2fr_3fr] lg:grid-cols-[5fr_7fr] gap-12 lg:gap-20 items-start">
+            {/* Left: identity */}
+            <div>
+              <div
+                className="w-14 h-14 mb-8 rounded-md border border-border/60 bg-card flex items-center justify-center font-display font-bold text-lg tracking-tight text-foreground"
+                aria-hidden="true"
+              >
+                HM
               </div>
-            </CardContent>
-          </Card>
+              <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-4">The developer behind the ecosystem</p>
+              <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Houcine Mohamed</h2>
+              <p className="text-lg md:text-xl text-muted-foreground mb-10">
+                Building digital products. Connecting ideas with technology.
+              </p>
+
+              <dl className="rounded-lg border border-border/60 bg-card/50 p-5 font-mono text-sm space-y-2 break-words">
+                <dt className="sr-only">Contact</dt>
+                <dd className="text-foreground">houcine@houcine.tech</dd>
+                <div className="flex flex-wrap gap-x-2 pt-2 border-t border-border/40">
+                  <dt className="text-muted-foreground">Role:</dt>
+                  <dd className="text-foreground">Developer &amp; Founder</dd>
+                </div>
+                <div className="flex flex-wrap gap-x-2">
+                  <dt className="text-muted-foreground">Focus:</dt>
+                  <dd className="text-foreground">Software · AI · Automation</dd>
+                </div>
+              </dl>
+            </div>
+
+            {/* Right: biography */}
+            <div className="md:pt-[5.5rem]">
+              <div className="space-y-6 text-lg text-muted-foreground">
+                <p>
+                  I'm a developer, technology enthusiast, and founder of Houcine.tech, passionate about turning
+                  complex ideas into practical digital solutions. From modern websites and custom applications to
+                  AI-powered systems, intelligent automation, and connected platforms, I build technology designed to
+                  solve real problems and help businesses grow.
+                </p>
+                <p>
+                  My approach combines engineering, problem-solving, and thoughtful design to create digital
+                  experiences that are functional, scalable, and built with purpose.
+                </p>
+                <p>
+                  Beyond development, I'm the founder of <strong className="text-foreground font-semibold">PyTunisia</strong>,
+                  an educational initiative where I share programming knowledge and technology content with the
+                  community. I believe technology should be accessible, useful, and continuously evolving—and that
+                  sharing knowledge is an essential part of building a stronger developer community.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 mt-10">
+                <Button asChild size="lg">
+                  <a href="https://www.instagram.com/pytunisia/" target="_blank" rel="noopener noreferrer">
+                    <Instagram className="w-5 h-5 mr-2" aria-hidden="true" />
+                    PyTunisia on Instagram
+                  </a>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <a href="https://github.com/HoucineMohamed" target="_blank" rel="noopener noreferrer">
+                    <Github className="w-5 h-5 mr-2" aria-hidden="true" />
+                    GitHub
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
