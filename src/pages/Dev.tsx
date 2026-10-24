@@ -270,8 +270,10 @@ const DevContent = () => {
               </p>
 
               <dl className="rounded-lg border border-border/60 bg-card/50 p-5 font-mono text-sm space-y-2 break-words">
-                <dt className="sr-only">Contact</dt>
-                <dd className="text-foreground">houcine@houcine.tech</dd>
+                <div>
+                  <dt className="sr-only">Contact</dt>
+                  <dd className="text-foreground">houcine@houcine.tech</dd>
+                </div>
                 <div className="flex flex-wrap gap-x-2 pt-2 border-t border-border/40">
                   <dt className="text-muted-foreground">Role:</dt>
                   <dd className="text-foreground">Developer &amp; Founder</dd>
