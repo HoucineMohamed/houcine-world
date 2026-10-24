@@ -16,10 +16,10 @@ const TechStack = () => (
         {CORE_STACK.map((tool, i) => (
           <li
             key={tool.name}
-            className="bg-card p-5 sm:p-6 flex flex-col gap-3 min-h-[7.5rem] motion-safe:transition-colors motion-safe:duration-300 hover:bg-secondary"
+            className="bg-card p-5 sm:p-6 flex flex-col gap-3 motion-safe:transition-colors motion-safe:duration-300 hover:bg-secondary"
           >
             <span className="font-mono text-xs text-muted-foreground" aria-hidden="true">{pad(i + 1)}</span>
-            <span className="mt-auto">
+            <span>
               <span className="block text-lg font-display font-semibold text-foreground">{tool.name}</span>
               <span className="block text-sm text-muted-foreground">{tool.role}</span>
             </span>
@@ -55,7 +55,7 @@ const TechStack = () => (
         const core = c.tools.filter(isCoreTool);
         const perProject = c.tools.filter((t) => !isCoreTool(t));
         return (
-          <TabsContent key={c.slug} value={c.slug} className="mt-0 rounded-lg border border-border/60 bg-card/50 p-6 sm:p-8">
+          <TabsContent key={c.slug} value={c.slug} className="mt-0 self-start rounded-lg border border-border/60 bg-card/50 p-6 sm:p-8">
             <p className="font-mono text-xs text-muted-foreground mb-2" aria-hidden="true">{pad(i + 1)} / {pad(STACK_CATEGORIES.length)}</p>
             <h4 className="text-2xl font-display font-semibold text-foreground mb-2">{c.name}</h4>
             <p className="text-muted-foreground mb-8 max-w-2xl">{c.description}</p>
@@ -69,7 +69,7 @@ const TechStack = () => (
             {c.capabilities.length > 0 && (
               <div>
                 <h5 className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">Capabilities</h5>
-                <ul className="grid sm:grid-cols-2 gap-x-6">
+                <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-0 sm:gap-y-0 md:gap-y-0 lg:gap-y-0">
                   {c.capabilities.map((cap) => (
                     <li key={cap} className="flex items-start gap-3 py-2 border-t border-border/40 text-sm text-foreground">
                       <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-muted-foreground" aria-hidden="true" />
