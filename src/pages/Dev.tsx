@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,6 +17,7 @@ import { useFormSubmission } from "@/hooks/useFormSubmission";
 import { toast } from "sonner";
 import { PAYMENT_POLICY_TEXT } from "@/config/contact";
 import TechCatalogue from "@/components/tech/TechCatalogue";
+import TechStack from "@/components/tech/TechStack";
 import {
   PRICE_EXCLUSIONS,
   SERVICE_FAMILIES,
@@ -110,11 +110,6 @@ const DevContent = () => {
     }
   };
 
-  const skills = [
-    { category: "Frontend", items: ["React", "Tailwind", "HTML/CSS", "JavaScript"] },
-    { category: "Backend Basics", items: ["Firebase", "Flask", "APIs"] },
-    { category: "Automation & FinTech", items: ["Python", "Pandas", "Google Sheets API"] }
-  ];
 
   return (
     <div className="min-h-screen bg-background">
