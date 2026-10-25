@@ -25,9 +25,9 @@ These are placeholders on purpose; no session invents them.
 | What | Where | Today |
 | --- | --- | --- |
 | Legal entity name | `src/data/legal.ts` | **Filled 21 Oct, by the owner's master-redesign brief: "Houcine.management"** |
-| Governing jurisdiction | `src/data/legal.ts` | `[GOVERNING JURISDICTION]` |
+| Governing jurisdiction | `src/data/legal.ts` | **Filled 25 Oct by the owner: French law, including the LCEN (Law No. 2004-575 of 21 June 2004)** |
 | Privacy / legal contact email | `src/data/legal.ts` | now derived from `CONTACT_EMAIL` below (`contact@houcine.world`) instead of a separate placeholder |
-| Postal address | `src/data/legal.ts` | `[POSTAL ADDRESS]` |
+| Postal address | `src/data/legal.ts` | **Removed 25 Oct by the owner: no official postal address; deletion requests go by email only** |
 | Public contact email | `src/config/contact.ts` (`CONTACT_EMAIL`) | **Filled 21 Oct: `contact@houcine.world`, plus a per-service address each (`SERVICE_EMAILS`) and a public phone number** |
 | Selected work (projects you may show) | `src/content/management.ts` | empty: "Coming soon" |
 | Testimonials on /designs | existing page data | already in the code before this program; please confirm they are real, or ask for placeholders. (The /reads page itself was rebuilt 21 October as an honest "under construction" page per the master-redesign brief; it no longer shows testimonials, reviews, or a mock catalog — see the note above.) |
