@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import LegalPageLayout from "@/components/legal/LegalPageLayout";
 import {
-  ECOSYSTEM_NAME, CONNECTED_PLATFORMS, LEGAL_ENTITY_NAME, LEGAL_CONTACT_EMAIL, LEGAL_POSTAL_ADDRESS,
+  ECOSYSTEM_NAME, CONNECTED_PLATFORMS, LEGAL_ENTITY_NAME, LEGAL_CONTACT_EMAIL,
 } from "@/data/legal";
 
 const DataDeletion = () => (
@@ -18,7 +18,7 @@ const DataDeletion = () => (
     <section>
       <h2>2. How to ask for deletion</h2>
       <p>
-        Send your request to {LEGAL_CONTACT_EMAIL}, or in writing to {LEGAL_POSTAL_ADDRESS}. Please include
+        Send your request by email to {LEGAL_CONTACT_EMAIL}. Please include
         the email address you used with us and, if you can, which form or page you used (for example a
         booking request, a contact form or an email-updates sign-up), so we can find the right records. We
         may ask you to confirm that the address is yours before we delete anything.
