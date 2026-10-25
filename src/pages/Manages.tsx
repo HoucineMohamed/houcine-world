@@ -131,8 +131,6 @@ const Manages = () => (
     <ContactCta
       title="Working on a brand, artist or project?"
       text="Get in touch to talk about strategy, creative direction, or operational support."
-      subject="Houcine.management enquiry"
-      email={SERVICE_EMAILS.management}
     />
   </ServicePageLayout>
 );

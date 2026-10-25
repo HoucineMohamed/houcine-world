@@ -13,7 +13,6 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { isInternalHref } from "@/content/format";
-import { CONTACT_EMAIL, contactMailto } from "@/config/contact";
 import type { WorkItem } from "@/content/types";
 
 // Shared building blocks for the public service pages. Same header, footer and tokens as the
@@ -200,31 +199,20 @@ export const SelectedWork = ({ items }: { items: readonly WorkItem[] }) =>
     </>
   );
 
-/** Call to action: a plain mailto from src/config/contact.ts, or a disabled note while it is not set. */
-export const ContactCta = ({
-  title, text, subject, email = CONTACT_EMAIL,
-}: { title: string; text: string; subject: string; email?: string }) => {
-  const href = contactMailto(email, subject);
-  return (
-    <section aria-labelledby="contact-title" className="rounded-lg border border-border/50 bg-card/50 p-8 md:p-12 text-center">
-      <h2 id="contact-title" className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">
-        {title}
-      </h2>
-      <p className="text-muted-foreground max-w-xl mx-auto mb-8">{text}</p>
-      {href ? (
-        <a href={href} className={cn(buttonVariants({ size: "lg" }), focusRing)}>
-          <Mail className="w-4 h-4 mr-2" aria-hidden="true" />
-          Get in touch
-        </a>
-      ) : (
-        <p className="text-sm text-muted-foreground">
-          Contact details coming soon. See the{" "}
-          <Link to="/contact" className={cn("text-accent underline hover:text-accent/80 rounded", focusRing)}>
-            contact page
-          </Link>
-          .
-        </p>
-      )}
-    </section>
-  );
-};
+/**
+ * Call to action: opens the /contact page, which lists every service's address and the phone number.
+ * It used to be a bare mailto link, which does nothing for visitors without an email app set up
+ * (common with webmail) and inside embedded previews; the contact page always loads.
+ */
+export const ContactCta = ({ title, text }: { title: string; text: string }) => (
+  <section aria-labelledby="contact-title" className="rounded-lg border border-border/50 bg-card/50 p-8 md:p-12 text-center">
+    <h2 id="contact-title" className="text-3xl md:text-4xl font-bold font-display text-foreground mb-4">
+      {title}
+    </h2>
+    <p className="text-muted-foreground max-w-xl mx-auto mb-8">{text}</p>
+    <Link to="/contact" className={cn(buttonVariants({ size: "lg" }), focusRing)}>
+      <Mail className="w-4 h-4 mr-2" aria-hidden="true" />
+      Get in touch
+    </Link>
+  </section>
+);
