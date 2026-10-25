@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import LegalPageLayout from "@/components/legal/LegalPageLayout";
 import {
   ECOSYSTEM_NAME, ECOSYSTEM_SERVICES, MANAGED_BRANDS, CONNECTED_PLATFORMS,
-  LEGAL_ENTITY_NAME, GOVERNING_JURISDICTION, LEGAL_CONTACT_EMAIL,
+  LEGAL_ENTITY_NAME, GOVERNING_LAW_STATEMENT, LEGAL_CONTACT_EMAIL,
 } from "@/data/legal";
 
 const Terms = () => (
@@ -120,7 +120,7 @@ const Terms = () => (
 
     <section>
       <h2>10. Governing law</h2>
-      <p>These Terms are governed by the laws of {GOVERNING_JURISDICTION}.</p>
+      <p>{GOVERNING_LAW_STATEMENT}</p>
     </section>
 
     <section>
