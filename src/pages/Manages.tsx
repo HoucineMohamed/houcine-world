@@ -5,7 +5,6 @@ import {
   ServicePageLayout, ServiceHero, ServiceSection, ProcessSteps, SelectedWork, ContactCta,
 } from "@/components/service/ServicePage";
 import { managementWork } from "@/content/management";
-import { SERVICE_EMAILS } from "@/config/contact";
 
 // Houcine.management: the flagship positioning (program: master redesign, section 12). Not an
 // AI-agent service -- management, development and coordination of brands, artists, creative
