@@ -2,7 +2,7 @@ import { BookOpen, Construction } from "lucide-react";
 import {
   ServicePageLayout, ServiceHero, ServiceSection, ContactCta,
 } from "@/components/service/ServicePage";
-import { SERVICE_EMAILS, PAYMENT_POLICY_TEXT } from "@/config/contact";
+import { PAYMENT_POLICY_TEXT } from "@/config/contact";
 
 // Houcine.education, rebuilt as a restrained, honest under-construction page (program: master
 // redesign, section 11). The previous version was a full mock digital-bookstore -- shopping cart,
@@ -38,8 +38,6 @@ const Reads = () => (
     <ContactCta
       title="Want to know when it launches?"
       text="Get in touch and we'll let you know once Houcine.education is ready."
-      subject="Houcine.education enquiry"
-      email={SERVICE_EMAILS.education}
     />
   </ServicePageLayout>
 );
