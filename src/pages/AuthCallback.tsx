@@ -93,6 +93,12 @@ const AuthCallback = () => {
         }
 
         window.history.replaceState({}, "", window.location.pathname);
+        const isRecovery = type === "recovery" || hash.get("type") === "recovery" || q.get("type") === "recovery";
+        if (isRecovery) {
+          const setPw = "/workspace/set-password" + (next && next !== "/workspace" ? "?returnTo=" + encodeURIComponent(next) : "");
+          navigate(setPw, { replace: true });
+          return;
+        }
         navigate(next.startsWith("/") ? next : "/workspace", { replace: true });
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Sign-in failed.";

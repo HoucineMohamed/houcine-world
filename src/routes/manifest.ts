@@ -66,6 +66,7 @@ export const MANIFEST = [
   { path: "/admin/login", ...APP, ownerOnly: false },
   { path: "/auth/callback", ...APP, ownerOnly: false },
   { path: "/workspace/login", ...APP, ownerOnly: false },
+  { path: "/workspace/set-password", ...APP, ownerOnly: false },
 
   // Workspace (signed in; brand pages also need a brand membership)
   { path: "/workspace", ...APP, ownerOnly: false },
