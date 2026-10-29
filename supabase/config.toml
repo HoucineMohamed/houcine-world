@@ -10,6 +10,10 @@ project_id = "pcdkfpardswfwoiclvtm"
 [functions.send-notification]
 verify_jwt = false
 
+# Public chat widget, no sign-in: any site visitor can use it, same reasoning as send-notification.
+[functions.concierge]
+verify_jwt = false
+
 # instagram-oauth serves both the authenticated "start connection" call and
 # Instagram's own unauthenticated callback redirect from one router, so JWT
 # verification happens inside the function instead of at the gateway.
