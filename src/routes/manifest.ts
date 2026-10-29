@@ -30,6 +30,7 @@ export interface RouteEntry {
 
 const SITE = SITE_NAME;
 const APP = { title: `Workspace | ${SITE}`, description: DEFAULT_DESCRIPTION, indexable: false, sitemapPriority: null } as const;
+const STUDIO = { ...APP, title: `Knowledge Studio | ${SITE}` } as const;
 
 export const MANIFEST = [
   // Public pages
@@ -71,6 +72,14 @@ export const MANIFEST = [
   { path: "/workspace/select", ...APP, ownerOnly: false },
   { path: "/workspace/ecosystem", ...APP, ownerOnly: true },
   { path: "/workspace/platform-credentials", ...APP, ownerOnly: true },
+  // Knowledge Studio (docs/knowledge-studio.md): super admins only, enforced by the knowledge-studio Edge Function.
+  { path: "/workspace/knowledge", ...STUDIO, ownerOnly: true },
+  { path: "/workspace/knowledge/notes", ...STUDIO, ownerOnly: true },
+  { path: "/workspace/knowledge/graph", ...STUDIO, ownerOnly: true },
+  { path: "/workspace/knowledge/playground", ...STUDIO, ownerOnly: true },
+  { path: "/workspace/knowledge/review", ...STUDIO, ownerOnly: true },
+  { path: "/workspace/knowledge/activity", ...STUDIO, ownerOnly: true },
+  { path: "/workspace/knowledge/settings", ...STUDIO, ownerOnly: true },
   { path: "/workspace/denied", ...APP, ownerOnly: false },
   { path: "/workspace/:brandId", ...APP, ownerOnly: false },
   { path: "/workspace/:brandId/dashboard", ...APP, ownerOnly: false },

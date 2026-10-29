@@ -3,6 +3,7 @@
 // (plus its own function and widget), not new retrieval or prompt code. docs/knowledge-brain.md, "Adding a brand".
 
 import type { SearchScope } from "./retrieve.ts";
+import type { BrainIndex } from "./types.ts";
 
 export interface AgentProfile {
   id: string;
@@ -25,3 +26,22 @@ export interface AgentProfile {
   /** Languages the agent answers in. */
   languages: string;
 }
+
+/**
+ * The profile with the access configured in the brain (houcine-world-brain/agents/<agent id>.md, compiled into the
+ * index) applied over its code defaults. The index only ever holds public notes, so no access setting can expose an
+ * internal or restricted note.
+ */
+export const withIndexAccess = (profile: AgentProfile, index: BrainIndex): AgentProfile => {
+  const access = index.agents?.[profile.id];
+  if (!access) return profile;
+  return {
+    ...profile,
+    scope: {
+      brands: access.brands,
+      referralBrands: access.referralBrands,
+      ...(access.fallbackNote ? { fallbackNote: access.fallbackNote } : {}),
+    },
+    pinned: access.pinned,
+  };
+};

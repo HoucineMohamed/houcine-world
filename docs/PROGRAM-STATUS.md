@@ -18,6 +18,16 @@ as #60 (no critical path touched). Two rows below changed as a direct result; se
 commit messages (32d3074, 6345f63) for the full list of what changed. This program's own tracking
 below is otherwise unchanged by that session and remains this program's to maintain.
 
+## Knowledge Studio (30 October, branch `claude/dazzling-ramanujan-exif87`): in review
+
+The owner's visual editor for the knowledge brain at `/workspace/knowledge` (super admins only, enforced by the new
+`knowledge-studio` Edge Function): overview, notes explorer and Markdown editor, Teach the AI, graph, AI playground
+with retrieval inspector and feedback, review queue, activity, AI access settings. Publishing commits Markdown + index
+to `main` and reports live only when the concierge serves the new index. Details: `docs/knowledge-studio.md`. New:
+migration `20261030090000_knowledge_studio.sql` (4 tables, RLS, no policy), secret `KNOWLEDGE_GITHUB_TOKEN` (owner
+creates it), outbound host api.github.com (from the Studio function only), `knowledge-studio` in the deploy list. Also
+fixes a role-loading race in `useMemberships` that sent super admins to "denied" when opening an owner page directly.
+
 ## Knowledge brain and the AI concierge (29 October, branch `claude/dazzling-ramanujan-exif87`): in review
 
 The La Rosa View Concierge now runs a real pipeline (interpret with a small model, retrieve from the new knowledge

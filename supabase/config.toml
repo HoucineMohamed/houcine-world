@@ -46,6 +46,11 @@ verify_jwt = true
 [functions.platform-credentials]
 verify_jwt = true
 
+# Knowledge Studio's private backend: the gateway checks the sign-in token, then the function itself requires a
+# super admin (is_super_admin()) before anything is read (docs/knowledge-studio.md).
+[functions.knowledge-studio]
+verify_jwt = true
+
 # meta-business-token/metrics are plain authenticated POST endpoints — no
 # provider calls back to these directly (the token is pasted manually), so
 # unlike the *-oauth functions above there's no unauthenticated callback

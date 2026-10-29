@@ -4,8 +4,9 @@ The single, editable source of truth for what the Houcine.world AI agents may sa
 Markdown notes that link to each other with `[[wiki links]]`, the way an Obsidian vault does: you can open this
 folder in Obsidian (File, Open folder as vault) and browse the graph, or edit the files on GitHub.
 
-The first agent that reads it is the **La Rosa View Concierge** (the chat on `/larosaview`). The full guide, with
-every step, is `docs/knowledge-brain.md`. In short:
+The first agent that reads it is the **La Rosa View Concierge** (the chat on `/larosaview`). The easiest way to edit,
+publish and test it is **Knowledge Studio** in the workspace (`/workspace/knowledge`, `docs/knowledge-studio.md`).
+The full guide is `docs/knowledge-brain.md`. In short:
 
 - **One note, one subject.** A note is a `.md` file with a small header (between two `---` lines) that says which
   brand it belongs to, what kind of note it is, who may see it, how sure we are, where the facts come from and when
@@ -16,10 +17,11 @@ every step, is `docs/knowledge-brain.md`. In short:
   a `> [!pending]` or `> [!incomplete]` marker, or in `internal/open-questions.md`, never as a fact.
 - **Public or not.** Only notes with `visibility: public` ever reach an AI agent. `internal` and `confidential`
   notes stay in this repository and are never compiled into the agents' index.
-- **After an edit**, a session (or you, on a computer with Node) runs
-  `node --experimental-strip-types scripts/brain/build.mjs`, which checks every note and rewrites the agents'
-  index (`supabase/functions/_shared/brain/index.generated.ts`). CI fails if the index is out of date or a note is
-  invalid. Merging to `main` redeploys the concierge with the new knowledge.
+- **After an edit** made outside Knowledge Studio, a session runs
+  `node --experimental-strip-types scripts/brain/build.mjs`, which checks every note and rewrites the agents' index
+  (`supabase/functions/_shared/brain/index.generated.ts`) and the Studio's snapshot. CI fails if they are out of date
+  or a note is invalid. Merging to `main` redeploys the concierge with the new knowledge. Knowledge Studio does all of
+  this itself when you publish.
 
 Folders:
 
@@ -32,3 +34,5 @@ Folders:
 | `sources/` | Where facts come from (each note cites these ids) |
 | `schemas/` | The note format (not indexed) |
 | `internal/` | Notes for the owner and the maintainers only (never sent to an AI agent) |
+| `agents/` | Which brands each AI agent may read (AI access) |
+| `archive/` | Archived notes: kept, never used by an AI |

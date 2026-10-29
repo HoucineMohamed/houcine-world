@@ -9,7 +9,8 @@ import {
   Inbox as InboxIcon,
   BarChart3,
   Loader2,
-  RefreshCw
+  RefreshCw,
+  Brain
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -118,6 +119,11 @@ const Admin = () => {
             <p className="text-sm text-muted-foreground">Houcine.world Control Panel</p>
           </div>
           <div className="flex items-center gap-4">
+            {/* Knowledge Studio lives in the workspace (super admins only, checked on the server). */}
+            <Button variant="outline" size="sm" onClick={() => navigate("/workspace/knowledge")}>
+              <Brain className="w-4 h-4 mr-2" />
+              Knowledge Studio
+            </Button>
             <Button
               variant="ghost"
               size="sm"

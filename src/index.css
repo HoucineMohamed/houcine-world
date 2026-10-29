@@ -568,6 +568,29 @@ All colors MUST be HSL.
   }
 }
 /* ========================================
+   KNOWLEDGE STUDIO (docs/knowledge-studio.md)
+   A dense working tool: the marketing pages' global type scale, section padding and button padding above are
+   reset inside .knowledge-studio only, so its own (Tailwind) sizes apply. No other page changes.
+   ======================================== */
+@layer base {
+  /* :where() keeps these at the specificity of one class, so the Studio's own Tailwind classes still win. */
+  .knowledge-studio :where(h1, h2, h3, h4, p, span, li) {
+    font-size: inherit;
+    line-height: inherit;
+  }
+}
+@layer components {
+  .knowledge-studio :where(section) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .knowledge-studio :where(button, [role="button"]) {
+    font-size: inherit;
+    padding: 0;
+  }
+}
+
+/* ========================================
    BRANDED FALLBACK (docs/fallback.md)
    The React twin of public/maintenance.html: logo, slow orbit, gentle glow. Used by the error boundaries
    (src/components/BrandedFallback.tsx). The cursor is restored because <CustomCursor /> may not be mounted.

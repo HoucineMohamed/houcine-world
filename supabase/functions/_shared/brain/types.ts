@@ -10,7 +10,7 @@ export type Brand =
   | "houcine-education";
 
 export type NoteType =
-  | "overview" | "topic" | "service" | "person" | "policy" | "faq" | "contact" | "relationship" | "index" | "source";
+  | "overview" | "topic" | "service" | "person" | "policy" | "faq" | "contact" | "relationship" | "index" | "source" | "agent";
 
 export type Status = "verified" | "policy" | "incomplete" | "pending" | "outdated";
 
@@ -46,6 +46,18 @@ export interface BrainChunk {
   length: number;
 }
 
+/** What one AI agent may read, from its access note in houcine-world-brain/agents/ (editable in Knowledge Studio). */
+export interface AgentAccess {
+  /** Brands whose public notes the agent may use in full. */
+  brands: Brand[];
+  /** Brands of which only the public `overview` note may be used. */
+  referralBrands: Brand[];
+  /** The note sent when nothing matches. */
+  fallbackNote: string | null;
+  /** Passages always sent (by chunk id). */
+  pinned: string[];
+}
+
 export interface BrainIndex {
   /** A fingerprint of the notes the index was built from. */
   fingerprint: string;
@@ -54,4 +66,6 @@ export interface BrainIndex {
   /** In how many passages each term appears (body or meta). */
   df: Record<string, number>;
   avgLength: number;
+  /** Agent access, by agent id. An agent without an entry uses the defaults of its code profile. */
+  agents?: Record<string, AgentAccess>;
 }

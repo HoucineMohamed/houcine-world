@@ -36,6 +36,8 @@ export interface Passage {
   note: BrainNote;
   score: number;
   via: "match" | "link" | "fallback";
+  /** Why it was chosen: the search terms it matched, whether a query named its note, the note that linked to it. */
+  why?: { matched: string[]; named: boolean; linkedFrom?: string };
 }
 
 const K1 = 1.2;
@@ -101,6 +103,8 @@ export const search = (index: BrainIndex, queries: string[], scope: SearchScope,
   const { notes, vocab } = prepare(index);
   const n = index.chunks.length;
   const scores = new Map<string, number>();
+  const matched = new Map<string, Set<string>>();
+  const namedChunks = new Set<string>();
 
   for (const query of cleaned) {
     const weighted = weightedTerms(index, vocab, query);
@@ -114,10 +118,17 @@ export const search = (index: BrainIndex, queries: string[], scope: SearchScope,
       let s = 0;
       for (const [term, w] of weighted) {
         const df = index.df[term] ?? 0;
-        s += w * bm25(chunk.body[term] ?? 0, df, n, chunk.length, index.avgLength);
-        s += w * META_WEIGHT * bm25(chunk.meta[term] ?? 0, df, n, 8, 8);
+        const add = w * bm25(chunk.body[term] ?? 0, df, n, chunk.length, index.avgLength) + w * META_WEIGHT * bm25(chunk.meta[term] ?? 0, df, n, 8, 8);
+        if (add > 0) {
+          s += add;
+          if (!matched.has(chunk.id)) matched.set(chunk.id, new Set());
+          matched.get(chunk.id)!.add(term);
+        }
       }
-      if (named.has(note.id)) s += NAME_BONUS;
+      if (named.has(note.id)) {
+        s += NAME_BONUS;
+        namedChunks.add(chunk.id);
+      }
       if (s > 0) scores.set(chunk.id, (scores.get(chunk.id) ?? 0) + s);
     }
   }
@@ -130,11 +141,12 @@ export const search = (index: BrainIndex, queries: string[], scope: SearchScope,
   const out: Passage[] = [];
   const perNote = new Map<string, number>();
   let chars = 0;
-  const take = (chunk: BrainChunk, score: number, via: Passage["via"]): boolean => {
+  const take = (chunk: BrainChunk, score: number, via: Passage["via"], linkedFrom?: string): boolean => {
     if (out.some((p) => p.chunk.id === chunk.id)) return false;
     if ((perNote.get(chunk.note) ?? 0) >= 3) return false;
     if (chars + chunk.text.length > maxChars && out.length > 0) return false;
-    out.push({ chunk, note: notes.get(chunk.note)!, score, via });
+    const why = { matched: [...(matched.get(chunk.id) ?? [])].sort(), named: namedChunks.has(chunk.id), ...(linkedFrom ? { linkedFrom } : {}) };
+    out.push({ chunk, note: notes.get(chunk.note)!, score, via, why });
     perNote.set(chunk.note, (perNote.get(chunk.note) ?? 0) + 1);
     chars += chunk.text.length;
     return true;
@@ -157,7 +169,7 @@ export const search = (index: BrainIndex, queries: string[], scope: SearchScope,
       if (!tnote || !allowedNote(tnote, scope) || out.some((p) => p.note.id === target)) continue;
       const candidates = index.chunks.filter((c) => c.note === target);
       const best = candidates.sort((a, b) => (scores.get(b.id) ?? 0) - (scores.get(a.id) ?? 0))[0];
-      if (best && take(best, (scores.get(best.id) ?? 0) * 0.35, "link")) linked++;
+      if (best && take(best, (scores.get(best.id) ?? 0) * 0.35, "link", noteId)) linked++;
     }
   }
 

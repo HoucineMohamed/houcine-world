@@ -103,6 +103,8 @@ export interface RunOptions {
   answerer: LlmProvider | null;
   /** The interpreting model; null to skip that step. */
   interpreter: LlmProvider | null;
+  /** Private inspection (Knowledge Studio's playground only): what was understood and retrieved. Never sent to visitors. */
+  inspect?: (details: { interpretation: Interpretation | null; queries: string[]; passages: Passage[] }) => void;
 }
 
 export const runTurn = async (options: RunOptions, emit: (event: ConciergeEvent) => void): Promise<TurnReport> => {
@@ -110,7 +112,8 @@ export const runTurn = async (options: RunOptions, emit: (event: ConciergeEvent)
   const contact = contactFor(index, agent);
   const fail = (code: ErrorCode) => emit({ type: "error", code, message: MESSAGES[code], contact });
 
-  if (!answerer) {
+  // Without a model there is nothing to answer with. (The private playground still shows what would be retrieved.)
+  if (!answerer && !options.inspect) {
     fail("not_configured");
     return { interpreter: "skipped", passages: 0, answer: "not_configured" };
   }
@@ -152,6 +155,11 @@ export const runTurn = async (options: RunOptions, emit: (event: ConciergeEvent)
     if (chunk && note && !passages.some((p) => p.chunk.id === id)) passages.push({ chunk, note, score: 0, via: "fallback" });
   }
 
+  options.inspect?.({ interpretation, queries, passages });
+  if (!answerer) {
+    fail("not_configured");
+    return { interpreter: interpreterStatus, passages: passages.length, answer: "not_configured" };
+  }
   emit({ type: "meta", language: interpretation?.language ?? null, sources: [...new Set(passages.map((p) => p.note.id))], memory });
 
   // 4. Answer.

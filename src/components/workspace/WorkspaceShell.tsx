@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   LayoutDashboard, CalendarDays, Bell, BarChart3, MessageSquare,
-  Settings as SettingsIcon, LogOut, Globe, ChevronDown, KeyRound, Menu,
-} from "lucide-react";
+  Settings as SettingsIcon, LogOut, Globe, ChevronDown, KeyRound, Menu, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -86,6 +85,11 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
       {isSuperAdmin && (
         <NavLink to="/workspace/platform-credentials" className={navLinkClass} onClick={closeMenu}>
           <KeyRound className="w-4 h-4" aria-hidden="true" /> Platform Credentials
+        </NavLink>
+      )}
+      {isSuperAdmin && (
+        <NavLink to="/workspace/knowledge" className={navLinkClass} onClick={closeMenu}>
+          <Brain className="w-4 h-4" aria-hidden="true" /> Knowledge Studio
         </NavLink>
       )}
       <PrivateWorkspaceEntry variant="sidebar" />

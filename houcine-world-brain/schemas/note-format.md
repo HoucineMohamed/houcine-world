@@ -22,8 +22,8 @@ updated: 2026-10-29
 | --- | --- | --- |
 | `id` | yes | Unique, lower case, letters, digits and dashes. Never reuse an id. |
 | `title` | yes | The note's name; `[[links]]` use it (or an alias). |
-| `brand` | yes | `houcine-world` (shared), `la-rosa-view`, `houcine-tech`, `houcine-studio`, `houcine-management`, `houcine-education`. A new brand is added in `scripts/brain/lib.mjs` (`BRANDS`). |
-| `type` | yes | `overview`, `topic`, `service`, `person`, `policy`, `faq`, `contact`, `relationship`, `index`, `source` (`index` and `source` notes are never searched). |
+| `brand` | yes | `houcine-world` (shared), `la-rosa-view`, `houcine-tech`, `houcine-studio`, `houcine-management`, `houcine-education`. A new brand is added in `supabase/functions/_shared/brain/compile.ts` (`BRANDS`). |
+| `type` | yes | `overview`, `topic`, `service`, `person`, `policy`, `faq`, `contact`, `relationship`, `index`, `source`, `agent` (`index`, `source` and `agent` notes are never searched). |
 | `visibility` | yes | `public` (an agent may use it), `internal` (owner and maintainers only), `confidential` (never leaves the repository). Only `public` is compiled into the agents' index. |
 | `status` | yes | The note's default reliability: `verified`, `policy` (a current rule), `incomplete`, `pending` (awaiting confirmation), `outdated` (kept for history, never stated as current). |
 | `sources` | yes for public notes | Ids from `sources/` (the build checks that each exists). |
@@ -55,3 +55,15 @@ of each note it links to is considered too (only within the brands the agent may
 
 The search works on passages: each `##` section of a note is one passage (with the note's title and header). Keep
 a section about one thing, and give it a heading that says what it is about.
+
+## AI access notes (`agents/`)
+
+A note with `type: agent` says which brands one AI agent may read. Extra header fields: `agent` (the agent's id),
+`brands` (full access to their public notes), `referral_brands` (only their public overview), `fallback_note` and
+`pinned` (passage ids always sent). Edited in Knowledge Studio, Settings, AI access. Only public notes are ever
+compiled, so no access setting can expose an internal or restricted note.
+
+## Archived notes (`archive/`)
+
+A note moved into `archive/` keeps its file and history but is never compiled; an active note may not link to it
+(the build names the link to remove first). Knowledge Studio archives and restores notes by moving them.
