@@ -22,8 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Environment files: never in git. Set the values in Netlify (docs/runbook.md). Only the example file may be committed.
-.env
-.env.*
-!.env.example

@@ -68,10 +68,6 @@ least one problem was found.
    **Details**. This opens the preview site for exactly that pull request.
 3. Look at the pages it changes, signed out and (if relevant) signed in.
 
-## Supabase browser key: set in Netlify, never in the repository
-
-The site reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` (and `VITE_SUPABASE_PROJECT_ID`) at build time. Set them in Netlify (Site configuration, Environment variables), not in a committed file. The publishable key is meant for the browser, but it still identifies the project and belongs in the host's settings. `.env` and `.env.*` are ignored by git (only a `.env.example` with placeholder values may be committed). For local development, keep your own `.env` on your computer. Before merging a change that removes a committed `.env`, check that the three values are present in Netlify, so the next build still finds them.
-
 ## Roll back a bad deploy on Netlify
 
 1. Go to app.netlify.com, open the **houcineworld** site, then **Deploys**.
