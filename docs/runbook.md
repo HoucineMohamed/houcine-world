@@ -72,6 +72,12 @@ least one problem was found.
 
 The site reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` (and `VITE_SUPABASE_PROJECT_ID`) at build time. Set them in Netlify (Site configuration, Environment variables), not in a committed file. The publishable key is meant for the browser, but it still identifies the project and belongs in the host's settings. `.env` and `.env.*` are ignored by git (only a `.env.example` with placeholder values may be committed). For local development, keep your own `.env` on your computer. Before merging a change that removes a committed `.env`, check that the three values are present in Netlify, so the next build still finds them.
 
+## Switch maintenance mode on or off
+
+Ask a session to "switch maintenance mode on" (or off). It changes one line of `public/_redirects`; the pull
+request waits for you; merge it and, about a minute after Netlify publishes, every address shows the branded
+maintenance page (or the normal site again). Details and limits: `docs/fallback.md`.
+
 ## Roll back a bad deploy on Netlify
 
 1. Go to app.netlify.com, open the **houcineworld** site, then **Deploys**.

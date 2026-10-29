@@ -18,6 +18,14 @@ as #60 (no critical path touched). Two rows below changed as a direct result; se
 commit messages (32d3074, 6345f63) for the full list of what changed. This program's own tracking
 below is otherwise unchanged by that session and remains this program's to maintain.
 
+## Branded fallback and maintenance mode (29 October, branch `claude/dazzling-ramanujan-exif87`): in review
+
+A branded page instead of a blank screen when the site cannot be shown, and a maintenance switch (off by
+default). Details and limits in `docs/fallback.md`. It touches critical paths (`index.html`, `public/_redirects`,
+`scripts/ci/site-files.test.mjs`), so its pull request waits for the owner (`needs-owner`). New files:
+`public/maintenance.html` (self-contained, logo embedded as text, no new binary file), `public/boot-watchdog.js`,
+`src/components/BrandedFallback.tsx`, `scripts/dev/fallback.test.mjs`. No new dependency, variable or host.
+
 ## Owner must fill
 
 These are placeholders on purpose; no session invents them.

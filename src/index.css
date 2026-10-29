@@ -567,6 +567,91 @@ All colors MUST be HSL.
     animation: logoDrift 16s ease-in-out infinite;
   }
 }
+/* ========================================
+   BRANDED FALLBACK (docs/fallback.md)
+   The React twin of public/maintenance.html: logo, slow orbit, gentle glow. Used by the error boundaries
+   (src/components/BrandedFallback.tsx). The cursor is restored because <CustomCursor /> may not be mounted.
+   ======================================== */
+.branded-fallback {
+  cursor: auto;
+}
+.branded-fallback__ambient {
+  background:
+    radial-gradient(circle at 50% 42%, hsl(0 0% 100% / 0.07) 0%, hsl(0 0% 100% / 0.025) 25%, transparent 50%),
+    radial-gradient(circle at 100% 100%, hsl(215 25% 70% / 0.06) 0%, transparent 40%);
+}
+.branded-fallback__glow {
+  background: radial-gradient(circle, hsl(0 0% 100% / 0.16) 0%, transparent 70%);
+  animation: brandedFallbackGlow 4.5s ease-in-out infinite;
+}
+.branded-fallback__orbit {
+  transform-origin: 50% 50%;
+  transform-box: view-box;
+  animation: brandedFallbackOrbit 14s linear infinite;
+}
+.branded-fallback__logo {
+  animation: brandedFallbackPulse 4.5s ease-in-out infinite;
+}
+.branded-fallback__pip {
+  animation: brandedFallbackPip 2.4s ease-in-out infinite;
+}
+.branded-fallback__rise {
+  animation: brandedFallbackRise 0.9s ease-out both;
+}
+@keyframes brandedFallbackOrbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes brandedFallbackGlow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+@keyframes brandedFallbackPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.025);
+  }
+}
+@keyframes brandedFallbackPip {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes brandedFallbackRise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .branded-fallback__glow,
+  .branded-fallback__orbit,
+  .branded-fallback__logo,
+  .branded-fallback__pip,
+  .branded-fallback__rise {
+    animation: none;
+  }
+}
+
 
 /* ========================================
    PRINT: the legal pages (/terms, /privacy, /data-deletion) print as plain black text on white, without
@@ -609,3 +694,4 @@ All colors MUST be HSL.
     cursor: auto !important;
   }
 }
+
