@@ -8,5 +8,14 @@
 #
 # https://www.houcine.world/* https://houcine.world/:splat 301!
 # https://houcineworld.netlify.app/* https://houcine.world/:splat 301!
+#
+# MAINTENANCE MODE, OFF: the line starting with "# /*    /maintenance.html" shows the branded maintenance page
+# (public/maintenance.html, one self-contained file) for every address of the site. To switch it on, remove the
+# "# " in front of it in a pull request; to switch it off, put the "# " back. Only the owner can merge either
+# (this file is a critical path). Netlify's own caching of pages revalidates on every visit, so returning visitors
+# see the normal site again as soon as the deploy that switches it off is live. Explained in docs/fallback.md.
+# It must stay ABOVE the last line.
+#
+# /*    /maintenance.html   200!
 
 /*    /index.html   200

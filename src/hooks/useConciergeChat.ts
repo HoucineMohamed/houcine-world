@@ -1,104 +1,280 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { SERVICE_EMAILS } from "@/config/contact";
 
-// Drives the La Rosa View Concierge widget: sends a visitor's message plus the recent turns to
-// the concierge edge function (supabase/functions/concierge), which is the only place that talks
-// to the AI provider and enforces the La Rosa View-only scope. This hook never decides what the
-// assistant may answer -- it only sends, receives, and persists the conversation in the browser
-// for the length of the tab's session (sessionStorage), never to a server.
+// Drives the La Rosa View Concierge widget. Every answer is written by the concierge edge function
+// (supabase/functions/concierge): it interprets the message, searches the Houcine.world knowledge brain and streams
+// the reply. This hook never decides what the assistant says; it sends the message with the recent turns and the
+// conversation memory, shows the answer as it arrives, and handles failures honestly (no saved or invented reply).
+//
+// The conversation stays in this browser tab (sessionStorage), for at most 24 hours, under a random conversation id.
+// Nothing about it is stored on the server, so no other visitor can ever see it.
 
 export type ChatRole = "user" | "assistant";
 export interface ChatMessage {
   id: string;
   role: ChatRole;
   content: string;
+  /** user: the message could not be answered (retry offered). assistant: still arriving. */
   failed?: boolean;
+  streaming?: boolean;
+}
+interface MemoryItem {
+  key: string;
+  value: string;
+}
+export interface ConversationMemory {
+  stated: MemoryItem[];
+  inferred: MemoryItem[];
+  summary: string;
+}
+export interface ConciergeNotice {
+  code: "not_configured" | "busy" | "timeout" | "unavailable" | "declined" | "network";
+  message: string;
+  email: string | null;
+  bookingPath: string | null;
+}
+export type ChatPhase = "idle" | "waiting" | "streaming";
+
+const STORAGE_KEY = "larosaview-concierge-v2";
+const OLD_STORAGE_KEY = "larosaview-concierge-messages";
+const RETENTION_MS = 24 * 60 * 60 * 1000;
+const MAX_HISTORY_MESSAGES = 16;
+const SLOW_AFTER_MS = 12_000;
+const GIVE_UP_AFTER_MS = 90_000;
+const EMPTY_MEMORY: ConversationMemory = { stated: [], inferred: [], summary: "" };
+const FALLBACK_CONTACT = { email: SERVICE_EMAILS.larosaview, bookingPath: "/booking" };
+
+const newId = () =>
+  typeof crypto !== "undefined" && crypto.randomUUID
+    ? crypto.randomUUID()
+    : "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
+        (Number(c) ^ (Math.floor(Math.random() * 256) & (15 >> (Number(c) / 4)))).toString(16),
+      );
+
+interface Stored {
+  conversationId: string;
+  messages: ChatMessage[];
+  memory: ConversationMemory;
+  savedAt: number;
 }
 
-const STORAGE_KEY = "larosaview-concierge-messages";
-const MAX_HISTORY_TURNS = 10;
+const fresh = (): Stored => ({ conversationId: newId(), messages: [], memory: EMPTY_MEMORY, savedAt: Date.now() });
 
-const newId = () => (typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
-
-const loadStored = (): ChatMessage[] => {
+const loadStored = (): Stored => {
   try {
+    sessionStorage.removeItem(OLD_STORAGE_KEY);
     const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!raw) return fresh();
+    const parsed = JSON.parse(raw) as Stored;
+    if (!parsed || !Array.isArray(parsed.messages) || typeof parsed.conversationId !== "string") return fresh();
+    if (Date.now() - Number(parsed.savedAt) > RETENTION_MS) return fresh();
+    // A reply that was still arriving when the tab closed is incomplete: drop it rather than show half an answer.
+    const messages = parsed.messages.filter((m) => !m.streaming);
+    return { ...parsed, messages, memory: parsed.memory ?? EMPTY_MEMORY };
   } catch {
-    return [];
+    return fresh();
   }
 };
 
-const saveStored = (messages: ChatMessage[]) => {
+const save = (state: Stored) => {
   try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, savedAt: Date.now() }));
   } catch {
-    // Private browsing or a full quota: the conversation just won't survive a close/reopen.
+    // Private browsing or a full quota: the conversation just won't survive a reload.
   }
 };
+
+const endpoint = (): { url: string; headers: Record<string, string> } | null => {
+  const base = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+  if (!base) return null;
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (key) {
+    headers.apikey = key;
+    // Legacy keys are JWTs and go in Authorization too, as supabase-js does; the function itself needs no sign-in.
+    if (key.startsWith("eyJ")) headers.Authorization = `Bearer ${key}`;
+  }
+  return { url: `${base.replace(/\/$/, "")}/functions/v1/concierge/chat`, headers };
+};
+
+const notice = (code: ConciergeNotice["code"], message: string, contact?: { email?: string | null; bookingPath?: string | null }): ConciergeNotice => ({
+  code,
+  message,
+  email: contact?.email ?? FALLBACK_CONTACT.email,
+  bookingPath: contact?.bookingPath ?? FALLBACK_CONTACT.bookingPath,
+});
+
+const NETWORK = "The concierge couldn't be reached. Check your connection and try again.";
 
 export const useConciergeChat = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>(() => loadStored());
-  const [isSending, setIsSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const pendingMessageRef = useRef<string | null>(null);
+  const initial = useRef<Stored>(loadStored());
+  const [conversationId, setConversationId] = useState(initial.current.conversationId);
+  const [messages, setMessages] = useState<ChatMessage[]>(initial.current.messages);
+  const [memory, setMemory] = useState<ConversationMemory>(initial.current.memory);
+  const [phase, setPhase] = useState<ChatPhase>("idle");
+  const [isSlow, setIsSlow] = useState(false);
+  const [error, setError] = useState<ConciergeNotice | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+  const memoryRef = useRef(memory);
+  memoryRef.current = memory;
 
   useEffect(() => {
-    saveStored(messages);
-  }, [messages]);
+    save({ conversationId, messages, memory, savedAt: Date.now() });
+  }, [conversationId, messages, memory]);
 
-  const historyFor = (all: ChatMessage[]) =>
-    all
-      .filter((m) => !m.failed)
-      .slice(-MAX_HISTORY_TURNS * 2)
-      .map((m) => ({ role: m.role, content: m.content }));
+  useEffect(() => () => abortRef.current?.abort(), []);
 
-  const send = useCallback(async (text: string) => {
-    const trimmed = text.trim();
-    if (!trimmed || isSending) return;
+  const send = useCallback(
+    async (text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed || abortRef.current) return;
 
-    setError(null);
-    const userMessage: ChatMessage = { id: newId(), role: "user", content: trimmed };
-    let historySnapshot: ReturnType<typeof historyFor> = [];
-    setMessages((prev) => {
-      historySnapshot = historyFor(prev);
-      return [...prev, userMessage];
-    });
-    pendingMessageRef.current = trimmed;
-    setIsSending(true);
+      setError(null);
+      setIsSlow(false);
+      const history = messagesRef.current
+        .filter((m) => !m.failed && !m.streaming && m.content)
+        .slice(-MAX_HISTORY_MESSAGES)
+        .map((m) => ({ role: m.role, content: m.content }));
+      const userMessage: ChatMessage = { id: newId(), role: "user", content: trimmed };
+      const answerId = newId();
+      setMessages((prev) => [...prev, userMessage]);
+      setPhase("waiting");
 
-    try {
-      const { data, error: invokeError } = await supabase.functions.invoke("concierge/chat", {
-        body: { message: trimmed, history: historySnapshot },
-      });
-      if (invokeError || !data?.reply) {
-        throw new Error(invokeError?.message || "No reply");
+      const controller = new AbortController();
+      abortRef.current = controller;
+      const slowTimer = setTimeout(() => setIsSlow(true), SLOW_AFTER_MS);
+      let timedOut = false;
+      const giveUp = setTimeout(() => {
+        timedOut = true;
+        controller.abort();
+      }, GIVE_UP_AFTER_MS);
+      // Started over (reset) while this answer was on its way: drop it silently.
+      const cancelled = () => abortRef.current !== controller;
+
+      let answer = "";
+      const fail = (n: ConciergeNotice) => {
+        if (cancelled()) return;
+        setMessages((prev) =>
+          prev.filter((m) => m.id !== answerId).map((m) => (m.id === userMessage.id ? { ...m, failed: true } : m)),
+        );
+        setError(n);
+      };
+      const showAnswer = (streaming: boolean) => {
+        if (cancelled()) return;
+        setMessages((prev) => {
+          const without = prev.filter((m) => m.id !== answerId);
+          return answer ? [...without, { id: answerId, role: "assistant", content: answer, streaming }] : without;
+        });
+      };
+
+      try {
+        const target = endpoint();
+        if (!target) {
+          fail(notice("unavailable", "The concierge isn't available on this version of the site."));
+          return;
+        }
+        const res = await fetch(target.url, {
+          method: "POST",
+          headers: target.headers,
+          body: JSON.stringify({ message: trimmed, history, memory: memoryRef.current, conversationId, stream: true }),
+          signal: controller.signal,
+        });
+        if (!res.ok || !res.body) {
+          let data: { error?: string; code?: ConciergeNotice["code"]; contact?: { email?: string; bookingPath?: string } } = {};
+          try {
+            data = await res.json();
+          } catch {
+            // not JSON: fall through to the generic message
+          }
+          const code = data.code ?? (res.status === 429 ? "busy" : "unavailable");
+          fail(notice(code, data.error ?? "The concierge can't answer right now. Please try again in a moment.", data.contact));
+          return;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let finished = false;
+        const handle = (line: string) => {
+          if (!line.trim()) return;
+          let event: { type?: string; text?: string; code?: ConciergeNotice["code"]; message?: string; memory?: ConversationMemory; contact?: { email?: string; bookingPath?: string } };
+          try {
+            event = JSON.parse(line);
+          } catch {
+            return;
+          }
+          if (event.type === "delta" && typeof event.text === "string") {
+            if (!answer) {
+              clearTimeout(slowTimer);
+              setIsSlow(false);
+              setPhase("streaming");
+            }
+            answer += event.text;
+            showAnswer(true);
+          } else if (event.type === "reset") {
+            answer = "";
+            showAnswer(true);
+          } else if (event.type === "error") {
+            finished = true;
+            answer = "";
+            fail(notice(event.code ?? "unavailable", event.message ?? "The concierge can't answer right now.", event.contact));
+          } else if (event.type === "done") {
+            finished = true;
+            if (event.memory && !cancelled()) setMemory(event.memory);
+            showAnswer(false);
+          }
+        };
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          let cut: number;
+          while ((cut = buffer.indexOf("\n")) !== -1) {
+            handle(buffer.slice(0, cut));
+            buffer = buffer.slice(cut + 1);
+          }
+        }
+        if (buffer) handle(buffer);
+        if (!finished) {
+          answer = "";
+          fail(notice("unavailable", "The answer was interrupted. Please try again."));
+        }
+      } catch {
+        answer = "";
+        fail(timedOut ? notice("timeout", "The concierge took too long to answer. Please try again.") : notice("network", NETWORK));
+      } finally {
+        clearTimeout(slowTimer);
+        clearTimeout(giveUp);
+        if (!cancelled()) {
+          abortRef.current = null;
+          setIsSlow(false);
+          setPhase("idle");
+        }
       }
-      setMessages((prev) => [...prev, { id: newId(), role: "assistant", content: data.reply as string }]);
-      pendingMessageRef.current = null;
-    } catch {
-      setError("The assistant couldn't answer just now. You can try again, or reach the team directly.");
-      setMessages((prev) =>
-        prev.map((m) => (m.id === userMessage.id ? { ...m, failed: true } : m)),
-      );
-    } finally {
-      setIsSending(false);
-    }
-  }, [isSending]);
+    },
+    [conversationId],
+  );
 
+  /** Sends the failed message again, in the same place in the conversation, without duplicating it. */
   const retry = useCallback(() => {
-    const last = pendingMessageRef.current;
-    if (!last) return;
-    setMessages((prev) => prev.filter((m) => !(m.role === "user" && m.failed)));
-    void send(last);
+    const failed = [...messagesRef.current].reverse().find((m) => m.role === "user" && m.failed);
+    if (!failed || abortRef.current) return;
+    setMessages((prev) => prev.filter((m) => m.id !== failed.id));
+    messagesRef.current = messagesRef.current.filter((m) => m.id !== failed.id);
+    void send(failed.content);
   }, [send]);
 
   const reset = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    const next = fresh();
+    setConversationId(next.conversationId);
     setMessages([]);
+    setMemory(EMPTY_MEMORY);
     setError(null);
-    pendingMessageRef.current = null;
+    setPhase("idle");
     try {
       sessionStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -106,5 +282,5 @@ export const useConciergeChat = () => {
     }
   }, []);
 
-  return { messages, isSending, error, send, retry, reset };
+  return { messages, phase, isSending: phase !== "idle", isSlow, error, send, retry, reset };
 };

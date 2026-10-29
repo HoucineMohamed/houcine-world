@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { Toaster } from "@/components/ui/sonner";
 import { supabaseConfigProblems } from "@/integrations/supabase/configCheck";
+import { AppErrorBoundary } from "@/components/BrandedFallback";
 
 const root = document.getElementById("root")!;
 
@@ -29,8 +30,12 @@ if (problems.length > 0) {
     .then(({ default: App }) => {
       createRoot(root).render(
         <StrictMode>
-          <App />
-          <Toaster />
+          {/* Last line inside the app: a crash outside every route boundary shows the branded fallback, never an
+              empty page. If the app cannot start at all, public/boot-watchdog.js takes over (docs/fallback.md). */}
+          <AppErrorBoundary>
+            <App />
+            <Toaster />
+          </AppErrorBoundary>
         </StrictMode>,
       );
     })

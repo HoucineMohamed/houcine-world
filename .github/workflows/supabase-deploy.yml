@@ -20,9 +20,11 @@ name: Deploy Supabase
 # What it deploys (unchanged by the hardening pull request; listed here so a reader does not have to work it out):
 #   1. Every pending SQL file in supabase/migrations/, in name order, each in its own transaction.
 #   2. These edge functions, and only these: instagram, tiktok, spotify, soundcloud, youtube and facebook
-#      (each an -oauth and a -metrics function), meta-business-token, meta-business-metrics and
-#      platform-credentials. NOT deployed here: send-notification and seed-admins (deployed by hand, from the
-#      Supabase dashboard or by adding their name to the list in the last step; docs/owner-review-guide.md).
+#      (each an -oauth and a -metrics function), meta-business-token, meta-business-metrics,
+#      platform-credentials and concierge (the La Rosa View Concierge: deploying it on every merge is how an
+#      updated knowledge brain reaches the live chat, docs/knowledge-brain.md). NOT deployed here:
+#      send-notification and seed-admins (deployed by hand, from the Supabase dashboard or by adding their name
+#      to the list in the last step; docs/owner-review-guide.md).
 #
 # The first step stops the run with a plain message when SUPABASE_ACCESS_TOKEN is missing, expired or wrong,
 # before anything is linked or deployed.
@@ -174,7 +176,8 @@ jobs:
             youtube-oauth youtube-metrics \
             facebook-oauth facebook-metrics \
             meta-business-token meta-business-metrics \
-            platform-credentials; do
+            platform-credentials \
+            concierge; do
             echo "::group::Deploying $fn"
             supabase functions deploy "$fn" --project-ref "$SUPABASE_PROJECT_REF"
             echo "::endgroup::"

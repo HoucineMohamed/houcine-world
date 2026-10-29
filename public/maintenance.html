@@ -1,0 +1,216 @@
+<!doctype html>
+<!--
+  Houcine.world fallback page (docs/fallback.md). Served:
+  - when the app cannot start in the browser (public/boot-watchdog.js sends the visitor here, with ?return=<path>);
+  - for every address while maintenance mode is switched on (the commented rule in public/_redirects).
+  It is ONE self-contained file on purpose: the styles are inline and the logo (src/assets/logo-h.png, resized to
+  240 px) is embedded, so it needs no other file, no web font, no app code, no Supabase and no outside host.
+  The message is plain HTML and shows even without JavaScript; the small script only adds the "back" check.
+  data-houcine-fallback marks this page, so the check can tell it apart from the real app.
+-->
+<html lang="en" data-houcine-fallback="1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Houcine.world</title>
+    <meta name="description" content="Houcine is working behind the scenes to improve your experience." />
+    <style>
+      :root {
+        /* The site's tokens (src/index.css, src/design/tokens.json): background 0 0% 0%, foreground 0 0% 96%,
+           muted-foreground 0 0% 65%, border 0 0% 14%, accent and ring 0 0% 80%. */
+        --background: hsl(0 0% 0%);
+        --foreground: hsl(0 0% 96%);
+        --muted: hsl(0 0% 65%);
+        --border: hsl(0 0% 14%);
+        --accent: hsl(0 0% 80%);
+        --card: hsl(0 0% 5%);
+        --font-display: "Space Grotesk", "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color-scheme: dark;
+      }
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; background: var(--background); color: var(--foreground); }
+      body {
+        font-family: var(--font-sans);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        position: relative;
+      }
+      /* Ambient light: two very soft radial glows in the site's neutral greys. */
+      .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+      .ambient::before, .ambient::after {
+        content: ""; position: absolute; border-radius: 50%; filter: blur(10px);
+      }
+      .ambient::before {
+        width: 70vmax; height: 70vmax; left: 50%; top: 42%; transform: translate(-50%, -50%);
+        background: radial-gradient(circle, hsl(0 0% 100% / 0.07) 0%, hsl(0 0% 100% / 0.025) 35%, transparent 65%);
+        animation: breathe 9s ease-in-out infinite;
+      }
+      .ambient::after {
+        width: 50vmax; height: 50vmax; right: -15vmax; bottom: -20vmax;
+        background: radial-gradient(circle, hsl(215 25% 70% / 0.06) 0%, transparent 60%);
+      }
+      main {
+        position: relative; z-index: 1; flex: 1;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center; padding: clamp(2.5rem, 8vh, 5rem) 1.25rem 2rem;
+      }
+      /* The logo, a slow orbit and a gentle glow: activity, never a spinner. */
+      .mark { position: relative; width: clamp(9rem, 34vw, 12rem); aspect-ratio: 1; margin-bottom: clamp(1.75rem, 5vh, 2.75rem); }
+      .mark .glow {
+        position: absolute; inset: 12%; border-radius: 50%;
+        background: radial-gradient(circle, hsl(0 0% 100% / 0.16) 0%, transparent 70%);
+        animation: glow 4.5s ease-in-out infinite;
+      }
+      .mark svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+      .mark .ring { fill: none; stroke: var(--border); stroke-width: 1; }
+      .mark .arc { fill: none; stroke: hsl(0 0% 80% / 0.55); stroke-width: 1.25; stroke-linecap: round; stroke-dasharray: 60 254; }
+      .mark .orbit { transform-origin: 50% 50%; transform-box: view-box; animation: orbit 14s linear infinite; }
+      .mark .dot { fill: var(--foreground); }
+      .mark img {
+        position: absolute; inset: 22%; width: 56%; height: 56%; object-fit: contain;
+        animation: pulse 4.5s ease-in-out infinite;
+      }
+      /* If the logo ever fails, the ring and glow keep their place and the alt text is shown and read out. */
+      .mark img { color: var(--muted); font-size: 0.875rem; text-align: center; }
+      h1 {
+        font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.12;
+        font-size: clamp(1.9rem, 6vw, 3.25rem); margin: 0 0 1rem; max-width: 18ch;
+        animation: rise 0.9s ease-out both 0.1s;
+      }
+      .lede {
+        margin: 0 0 1.75rem; max-width: 34rem; color: var(--muted); font-size: clamp(1rem, 2.6vw, 1.125rem);
+        animation: rise 0.9s ease-out both 0.25s;
+      }
+      .status {
+        display: inline-flex; align-items: center; gap: 0.6rem; margin: 0 0 2rem;
+        padding: 0.45rem 1rem; border: 1px solid var(--border); border-radius: 999px; background: hsl(0 0% 5% / 0.7);
+        font-size: 0.875rem; color: var(--foreground); letter-spacing: 0.01em;
+        animation: rise 0.9s ease-out both 0.4s;
+      }
+      .status .pip { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); animation: pip 2.4s ease-in-out infinite; }
+      .actions { animation: rise 0.9s ease-out both 0.55s; }
+      .retry {
+        display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 44px;
+        padding: 0.6rem 1.4rem; border-radius: 0.75rem; border: 1px solid var(--border);
+        color: var(--foreground); background: transparent; text-decoration: none; font: inherit; font-size: 0.9375rem;
+        transition: background-color 0.2s, border-color 0.2s;
+      }
+      .retry:hover { background: hsl(0 0% 100% / 0.06); border-color: hsl(0 0% 30%); }
+      .retry:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .retry[data-ready] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+      footer {
+        position: relative; z-index: 1; text-align: center; padding: 1.5rem 1.25rem 2rem;
+        color: var(--muted); font-size: 0.875rem;
+      }
+      footer p { margin: 0.15rem 0; }
+      footer .brand { font-family: var(--font-display); color: var(--foreground); letter-spacing: 0.04em; }
+      @keyframes orbit { to { transform: rotate(360deg); } }
+      @keyframes glow { 0%, 100% { opacity: 0.55; transform: scale(0.96); } 50% { opacity: 1; transform: scale(1.04); } }
+      @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+      @keyframes breathe { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+      @keyframes pip { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+      @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation: none !important; transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+    <main id="main">
+      <div class="mark">
+        <span class="glow" aria-hidden="true"></span>
+        <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+          <circle class="ring" cx="60" cy="60" r="50" />
+          <g class="orbit">
+            <circle class="arc" cx="60" cy="60" r="50" />
+            <circle class="dot" cx="110" cy="60" r="1.8" />
+          </g>
+        </svg>
+        <img src="data:image/webp;base64,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QWx0PgogICAgPHJkZjpsaSB4bWw6bGFuZz0neC1kZWZhdWx0Jz5Ib3VjaW5lcmVhZHMgLSA0PC9yZGY6bGk+CiAgIDwvcmRmOkFsdD4KICA8L2RjOnRpdGxlPgogPC9yZGY6RGVzY3JpcHRpb24+CgogPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9JycKICB4bWxuczpwZGY9J2h0dHA6Ly9ucy5hZG9iZS5jb20vcGRmLzEuMy8nPgogIDxwZGY6QXV0aG9yPnNhaWYga2VmaTwvcGRmOkF1dGhvcj4KIDwvcmRmOkRlc2NyaXB0aW9uPgoKIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PScnCiAgeG1sbnM6eG1wPSdodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvJz4KICA8eG1wOkNyZWF0b3JUb29sPkNhbnZhIChSZW5kZXJlcikgZG9jPURBRzFZc3BVelJjIHVzZXI9VUFGaFpFVWpIWVUgYnJhbmQ9V2Fzc2ltIEd1ZW1yaSYjMzk7cyBDbGFzcyB0ZW1wbGF0ZT08L3htcDpDcmVhdG9yVG9vbD4KIDwvcmRmOkRlc2NyaXB0aW9uPgo8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSdyJz8+AA==" alt="Houcine logo" width="240" height="240" decoding="async" />
+      </div>
+      <h1>Something Better Is Taking Shape.</h1>
+      <p class="lede">Houcine is currently working behind the scenes to improve your experience. We'll be back shortly with something better.</p>
+      <p class="status"><span class="pip" aria-hidden="true"></span><span id="status-text">Refining the experience</span></p>
+      <p class="actions"><a class="retry" id="retry" href="/">Try again</a></p>
+      <p class="sr-only" id="announce" aria-live="polite"></p>
+    </main>
+    <footer>
+      <p>Thank you for your patience.</p>
+      <p class="brand">Houcine.world</p>
+    </footer>
+    <script>
+      // Progressive enhancement only: without this script the page reads the same and "Try again" opens the home page.
+      (function () {
+        "use strict";
+        var retry = document.getElementById("retry");
+        var statusText = document.getElementById("status-text");
+        var announce = document.getElementById("announce");
+        if (!retry || !window.fetch) return;
+
+        // ?return=<path> comes from the boot watchdog. Only an address on this same site is accepted.
+        var target = "/";
+        try {
+          var ret = new URLSearchParams(location.search).get("return");
+          if (ret && ret.charAt(0) === "/" && ret.charAt(1) !== "/" && ret.charAt(1) !== "\\") {
+            var u = new URL(ret, location.origin);
+            if (u.origin === location.origin && u.pathname.indexOf("/maintenance") !== 0) target = u.pathname + u.search + u.hash;
+          }
+        } catch (e) { target = "/"; }
+        retry.setAttribute("href", target);
+
+        // The "back" check: the real home page (not this page) AND its main script both answer. One check at a
+        // time, spaced out (30 s, doubling to 5 min), only while the tab is visible, at most 12 checks. It never
+        // reloads the page by itself: it only says so and the visitor chooses.
+        var delay = 30000, tries = 0, timer = 0, busy = false, back = false;
+        function schedule() {
+          clearTimeout(timer);
+          if (back || tries >= 12 || document.hidden) return;
+          timer = setTimeout(check, delay);
+          delay = Math.min(delay * 2, 300000);
+        }
+        function get(url) {
+          return fetch(url, { cache: "no-store", credentials: "same-origin", redirect: "follow" });
+        }
+        function check() {
+          if (busy || back) return;
+          busy = true; tries += 1;
+          get("/?houcine-check=" + Date.now())
+            .then(function (r) { return r.ok ? r.text() : ""; })
+            .then(function (html) {
+              if (!html || html.indexOf("data-houcine-fallback") !== -1 || html.indexOf('id="root"') === -1) return false;
+              var m = html.match(/<script[^>]+type="module"[^>]+src="(\/[^"]+\.js)"/);
+              if (!m) return false;
+              return get(m[1]).then(function (r) {
+                var type = r.headers.get("content-type") || "";
+                return r.ok && /javascript/i.test(type);
+              });
+            })
+            .then(function (ok) {
+              if (!ok) return;
+              back = true;
+              statusText.textContent = "Ready again";
+              retry.textContent = "Return to Houcine.world";
+              retry.setAttribute("data-ready", "");
+              announce.textContent = "Houcine.world is ready again.";
+            })
+            .catch(function () { /* still away: try later */ })
+            .then(function () { busy = false; schedule(); });
+        }
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden && !back && !busy) { delay = 30000; schedule(); } else if (document.hidden) clearTimeout(timer);
+        });
+        schedule();
+      })();
+    </script>
+  </body>
+</html>

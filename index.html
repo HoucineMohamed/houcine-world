@@ -48,6 +48,8 @@
 
   <body>
     <div id="root"></div>
+    <!-- If the app cannot start, sends the visitor to the branded fallback page (docs/fallback.md). -->
+    <script src="/boot-watchdog.js"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

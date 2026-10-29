@@ -5,20 +5,20 @@ import { Textarea } from "@/components/ui/textarea";
 import laRosaLogo from "@/assets/images/larosaview-logo.png";
 import { useConciergeChat } from "@/hooks/useConciergeChat";
 
-// The La Rosa View Concierge: a real conversational widget backed by supabase/functions/concierge
-// (see useConciergeChat.ts). Every reply comes from that edge function; nothing here decides what
-// the assistant may answer -- the system prompt and knowledge base live server-side, grounded only
-// in verified La Rosa View information (supabase/functions/concierge/knowledgeBase.ts).
+// The La Rosa View Concierge: a conversational widget backed by supabase/functions/concierge (see
+// useConciergeChat.ts). Every reply is written by a language model from the Houcine.world knowledge brain
+// (houcine-world-brain/, docs/knowledge-brain.md) and streamed in as it is written; nothing here decides what the
+// assistant may answer. The welcome text and the starter questions below are the only fixed text.
 
 const WELCOME_MESSAGE =
-  "Welcome to La Rosa View! 🌹\n\nI'm your virtual concierge, here to help you learn about the property, explore its amenities, and get answers to booking-related questions.\n\nHow can I help you today?";
+  "Welcome to La Rosa View! 🌹\n\nI'm the La Rosa View concierge, an AI assistant. Ask me about DJ La Rosa, the events he plays, how booking works, or anything else about the brand.\n\nYou can write in English, French or Tunisian Arabic.";
 
 const STARTERS = [
   "Tell me about La Rosa View.",
-  "What services do you offer?",
-  "How can I make a reservation?",
-  "I have a question about my booking.",
-  "How can I contact the property?",
+  "What kind of events does DJ La Rosa play?",
+  "How do I book DJ La Rosa for my event?",
+  "What happens after I send a booking request?",
+  "How can I contact the team?",
 ];
 
 const ChatWidget = () => {
@@ -31,7 +31,7 @@ const ChatWidget = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const { messages, isSending, error, send, retry, reset } = useConciergeChat();
+  const { messages, phase, isSending, isSlow, error, send, retry, reset } = useConciergeChat();
 
   useEffect(() => {
     const updatePosition = () => {
@@ -45,7 +45,7 @@ const ChatWidget = () => {
   useEffect(() => {
     if (!scrollRef.current) return;
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages, isSending, isOpen]);
+  }, [messages, isSending, isSlow, error, isOpen]);
 
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
@@ -171,7 +171,7 @@ const ChatWidget = () => {
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4" aria-live="polite">
+            <div ref={scrollRef} className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4" aria-live="polite" aria-busy={phase === "streaming"}>
               {/* Welcome message: always shown first, not part of the AI conversation history */}
               <div className="flex gap-3 animate-fade-in-left">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-rose-600 to-rose-800 flex items-center justify-center shrink-0 shadow-lg shadow-rose-600/30">
@@ -220,17 +220,20 @@ const ChatWidget = () => {
                 </div>
               ))}
 
-              {isSending && (
+              {/* Shown only while the answer has not started arriving: it disappears with the first words. */}
+              {phase === "waiting" && (
                 <div className="flex gap-3 animate-fade-in-left">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-rose-600 to-rose-800 flex items-center justify-center shrink-0 shadow-lg shadow-rose-600/30">
                     <img src={laRosaLogo} alt="" className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
                   </div>
-                  <div className="bg-rose-950/30 backdrop-blur border border-rose-500/20 rounded-2xl rounded-tl-sm p-3 sm:p-4 shadow-lg" aria-label="The concierge is typing">
-                    <div className="flex gap-1">
+                  <div className="bg-rose-950/30 backdrop-blur border border-rose-500/20 rounded-2xl rounded-tl-sm p-3 sm:p-4 shadow-lg" role="status">
+                    <span className="sr-only">The concierge is writing an answer</span>
+                    <div className="flex gap-1" aria-hidden="true">
                       <span className="w-2 h-2 rounded-full bg-rose-400 animate-bounce" style={{ animationDelay: "0ms" }} />
                       <span className="w-2 h-2 rounded-full bg-rose-400 animate-bounce" style={{ animationDelay: "150ms" }} />
                       <span className="w-2 h-2 rounded-full bg-rose-400 animate-bounce" style={{ animationDelay: "300ms" }} />
                     </div>
+                    {isSlow && <p className="text-xs text-muted-foreground mt-2">Still working on it…</p>}
                   </div>
                 </div>
               )}
@@ -238,11 +241,36 @@ const ChatWidget = () => {
               {error && (
                 <div className="flex items-start gap-2 p-3 rounded-xl border border-destructive/40 bg-destructive/10 text-sm" role="alert">
                   <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" aria-hidden="true" />
-                  <div className="flex-1">
-                    <p className="text-foreground">{error}</p>
-                    <button onClick={retry} className="text-rose-400 hover:text-rose-300 underline mt-1 focus:outline-none">
-                      Try again
-                    </button>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-foreground">{error.message}</p>
+                    {(error.email || error.bookingPath) && (
+                      <p className="text-muted-foreground">
+                        You can also reach the team
+                        {error.email && (
+                          <>
+                            {" "}at{" "}
+                            <a href={`mailto:${error.email}`} className="text-rose-400 hover:text-rose-300 underline">
+                              {error.email}
+                            </a>
+                          </>
+                        )}
+                        {error.email && error.bookingPath ? " or" : ""}
+                        {error.bookingPath && (
+                          <>
+                            {" "}send a{" "}
+                            <a href={error.bookingPath} className="text-rose-400 hover:text-rose-300 underline">
+                              booking request
+                            </a>
+                          </>
+                        )}
+                        .
+                      </p>
+                    )}
+                    {error.code !== "not_configured" && (
+                      <button onClick={retry} className="text-rose-400 hover:text-rose-300 underline focus:outline-none focus:ring-2 focus:ring-rose-500 rounded">
+                        Try again
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
