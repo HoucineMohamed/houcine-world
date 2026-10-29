@@ -85,16 +85,14 @@ export const CONNECTED_PLATFORMS = [
 /** The legal entity operating this ecosystem. */
 export const LEGAL_ENTITY_NAME = "Houcine.management";
 
-/** PLACEHOLDER — the jurisdiction whose law governs these Terms and where disputes would be handled.
- *  Not supplied; needs a real answer from the owner before these pages are legally final. */
-export const GOVERNING_JURISDICTION = "[GOVERNING JURISDICTION]";
+/** The governing-law sentence of the Terms (section 10), worded by the owner. */
+export const GOVERNING_LAW_STATEMENT =
+  "These terms are governed by French law, including Law No. 2004-575 of 21 June 2004 on confidence in the digital economy (LCEN), where applicable.";
 
 /** A single contact address for privacy questions, data-access/deletion requests, and general legal/Terms questions. */
 export const LEGAL_CONTACT_EMAIL = CONTACT_EMAIL;
 
-/** PLACEHOLDER — a postal address where written privacy and deletion requests can be sent.
- *  Not supplied; needs a real answer from the owner before these pages are legally final. */
-export const LEGAL_POSTAL_ADDRESS = "[POSTAL ADDRESS]";
+// No postal address: the ecosystem has no official address for written requests, so requests go by email only.
 
 /** Shown on every legal page. Update whenever the copy materially changes. */
-export const LEGAL_LAST_UPDATED = "October 14, 2026";
+export const LEGAL_LAST_UPDATED = "October 25, 2026";

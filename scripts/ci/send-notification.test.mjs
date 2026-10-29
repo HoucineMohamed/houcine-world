@@ -19,7 +19,7 @@ const headers = (h) => ({ get: (k) => h[k.toLowerCase()] ?? null });
 // What each page of the site sends today (src/pages/*.tsx through src/hooks/useFormSubmission.ts).
 const REAL_FORMS = [
   { pageName: "Houcine.world", formType: "Contact", userName: "Ana", userEmail: "ana@example.com", message: "Hello\nthere" },
-  { pageName: "Houcine.tech", formType: "Quote Request", userName: "Ana", userEmail: "ana@example.com", serviceType: "web-app", message: "A site", additionalData: { budget: "5k-10k" } },
+  { pageName: "Houcine.tech", formType: "Quote Request", userName: "Ana", userEmail: "ana@example.com", serviceType: "Business Website Development", message: "A site", additionalData: { budget: "1500-3000" } },
   { pageName: "Houcine.studio", formType: "Quote Request", userName: "Ana", userEmail: "ana@example.com", serviceType: "branding", message: "A logo", additionalData: { paymentPreference: "card" } },
   { pageName: "Houcine.studio", formType: "Quote Request", userName: "Ana", userEmail: "ana@example.com", serviceType: "branding", message: "A logo" },
   { pageName: "Booking", formType: "DJ Booking Request", userName: "Ana", userEmail: "ana@example.com", userPhone: "+216 20 000 000", serviceType: "wedding", message: "Evening set", additionalData: { eventDate: "2026-12-31", eventLocation: "Tunis" } },
@@ -233,4 +233,24 @@ test("recipients come from the secrets only, La Rosa View has its own", () => {
   assert.equal(recipientFor("La Rosa View", { toDefault: "owner@example.com" }), "owner@example.com");
   assert.equal(recipientFor("Houcine.world", {}), null);
   assert.equal(recipientFor("Houcine.world", { toDefault: "not an address" }), null);
+});
+
+// Houcine.tech quote budgets (checkTechBudget): a budget must reach the chosen service's starting price.
+const PRICES = { "Landing Page Development": [699, "one-time"], "SaaS Product Development": [4999, "one-time"], "Website Care": [699, "monthly"] };
+const techQuote = (serviceType, budget) => ({ pageName: "Houcine.tech", formType: "Quote Request", userName: "Ana", userEmail: "ana@example.com", serviceType, additionalData: budget === undefined ? undefined : { budget } });
+
+test("a Houcine.tech budget below the service's starting price is refused", () => {
+  assert.notEqual(core.checkTechBudget(techQuote("SaaS Product Development", "699-1500"), PRICES), null);
+  assert.notEqual(core.checkTechBudget(techQuote("SaaS Product Development", "3000-4999"), PRICES), null);
+  assert.equal(core.checkTechBudget(techQuote("SaaS Product Development", "4999-6000"), PRICES), null);
+  assert.equal(core.checkTechBudget(techQuote("Landing Page Development", "699-1500"), PRICES), null);
+});
+
+test("a Houcine.tech budget must match the service's billing period and a known service", () => {
+  assert.notEqual(core.checkTechBudget(techQuote("Website Care", "699-1000"), PRICES), null);
+  assert.equal(core.checkTechBudget(techQuote("Website Care", "699-1000/month"), PRICES), null);
+  assert.notEqual(core.checkTechBudget(techQuote("Landing Page Development", "699-1000/month"), PRICES), null);
+  assert.notEqual(core.checkTechBudget(techQuote("Unknown service", "699-1500"), PRICES), null);
+  assert.notEqual(core.checkTechBudget(techQuote("Landing Page Development", "5k-10k"), PRICES), null);
+  assert.equal(core.checkTechBudget(techQuote("Landing Page Development", undefined), PRICES), null);
 });

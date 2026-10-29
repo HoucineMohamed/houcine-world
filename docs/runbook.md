@@ -27,8 +27,8 @@ It stays off until the hardened form function (part of the critical bundle) is m
 ## Fill in the legal placeholders
 
 1. Open `src/data/legal.ts`.
-2. Replace each value in square brackets: `[LEGAL ENTITY NAME]`, `[GOVERNING JURISDICTION]`,
-   `[CONTACT EMAIL FOR PRIVACY / LEGAL REQUESTS]`, `[POSTAL ADDRESS]`.
+2. Replace each value in square brackets: `[LEGAL ENTITY NAME]`,
+   `[CONTACT EMAIL FOR PRIVACY / LEGAL REQUESTS]` (the governing law is set to French law and there is no postal address).
 3. Update `LEGAL_LAST_UPDATED` to today's date.
 4. Have the Terms, Privacy and Data Deletion pages reviewed by a professional before relying on them.
 
