@@ -16,6 +16,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { checkChatRequest, clientAddress, createRateLimiter, isAllowedOrigin } from "./core.ts";
 import { runTurn, type ConciergeEvent } from "./pipeline.ts";
 import { LA_ROSA_VIEW_CONCIERGE } from "./agent.ts";
+import { withIndexAccess } from "../_shared/brain/agent.ts";
 import { BRAIN_INDEX } from "../_shared/brain/index.generated.ts";
 import { createAnthropicProvider } from "../_shared/llm/anthropic.ts";
 
@@ -25,6 +26,8 @@ const INTERPRETER_TIMEOUT_MS = 12_000;
 const DEFAULT_MODEL = "claude-opus-5-5";
 const DEFAULT_INTERPRETER = "claude-haiku-5-5";
 const allow = createRateLimiter();
+// The agent with the access configured in the knowledge brain (Knowledge Studio, Settings, AI access).
+const AGENT = withIndexAccess(LA_ROSA_VIEW_CONCIERGE, BRAIN_INDEX);
 
 const cors = (origin: string | null): Record<string, string> =>
   origin ? { "Access-Control-Allow-Origin": origin, Vary: "Origin" } : {};
@@ -52,6 +55,12 @@ const providers = () => {
 const handler = async (req: Request): Promise<Response> => {
   const origin = req.headers.get("origin");
   const allowed = isAllowedOrigin(origin);
+
+  // GET /concierge/status: which knowledge index this deployment serves. Knowledge Studio compares it with the index
+  // it published to confirm the AI really has the new knowledge. Public and harmless: counts and a fingerprint only.
+  if (req.method === "GET" && new URL(req.url).pathname.split("/").pop() === "status") {
+    return json(200, { fingerprint: BRAIN_INDEX.fingerprint, notes: BRAIN_INDEX.notes.length, passages: BRAIN_INDEX.chunks.length }, allowed ? origin : null);
+  }
 
   if (req.method === "OPTIONS") {
     if (!allowed) return new Response(null, { status: 403 });
@@ -92,7 +101,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   const { answerer, interpreter } = providers();
   if (!answerer) console.warn("concierge: ANTHROPIC_API_KEY is not set; answering with the not-available notice");
-  const options = { request: checked.value, agent: LA_ROSA_VIEW_CONCIERGE, index: BRAIN_INDEX, answerer, interpreter };
+  const options = { request: checked.value, agent: AGENT, index: BRAIN_INDEX, answerer, interpreter };
   const log = (r: { interpreter: string; passages: number; answer: string }) =>
     console.log(`concierge: turn interpreter=${r.interpreter} passages=${r.passages} answer=${r.answer}`);
 

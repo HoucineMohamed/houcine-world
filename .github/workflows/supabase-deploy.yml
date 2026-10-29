@@ -21,8 +21,9 @@ name: Deploy Supabase
 #   1. Every pending SQL file in supabase/migrations/, in name order, each in its own transaction.
 #   2. These edge functions, and only these: instagram, tiktok, spotify, soundcloud, youtube and facebook
 #      (each an -oauth and a -metrics function), meta-business-token, meta-business-metrics,
-#      platform-credentials and concierge (the La Rosa View Concierge: deploying it on every merge is how an
-#      updated knowledge brain reaches the live chat, docs/knowledge-brain.md). NOT deployed here:
+#      platform-credentials, concierge (the La Rosa View Concierge: deploying it on every merge is how an
+#      updated knowledge brain reaches the live chat, docs/knowledge-brain.md) and knowledge-studio (the owner's
+#      Knowledge Studio backend, docs/knowledge-studio.md). NOT deployed here:
 #      send-notification and seed-admins (deployed by hand, from the Supabase dashboard or by adding their name
 #      to the list in the last step; docs/owner-review-guide.md).
 #
@@ -177,7 +178,7 @@ jobs:
             facebook-oauth facebook-metrics \
             meta-business-token meta-business-metrics \
             platform-credentials \
-            concierge; do
+            concierge knowledge-studio; do
             echo "::group::Deploying $fn"
             supabase functions deploy "$fn" --project-ref "$SUPABASE_PROJECT_REF"
             echo "::endgroup::"

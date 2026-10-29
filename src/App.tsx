@@ -59,6 +59,7 @@ const BrandSettings = React.lazy(() => import("./pages/workspace/BrandSettings")
 const EcosystemView = React.lazy(() => import("./pages/workspace/EcosystemView"));
 const PlatformCredentials = React.lazy(() => import("./pages/workspace/PlatformCredentials"));
 const WorkspaceDenied = React.lazy(() => import("./pages/workspace/WorkspaceDenied"));
+const KnowledgeStudio = React.lazy(() => import("./pages/workspace/knowledge/KnowledgeStudio"));
 const WorkspaceNotFound = React.lazy(() => import("./pages/workspace/WorkspaceNotFound"));
 
 // Wrapper component to enable page tracking
@@ -122,6 +123,14 @@ const AppRoutes = () => {
         <Route path={route("/workspace/ecosystem")} element={<EcosystemView />} />
         <Route path={route("/workspace/platform-credentials")} element={<PlatformCredentials />} />
         <Route path={route("/workspace/denied")} element={<WorkspaceDenied />} />
+        {/* Knowledge Studio: super admins only (checked again on the server for every request). */}
+        <Route path={route("/workspace/knowledge")} element={<KnowledgeStudio section="overview" />} />
+        <Route path={route("/workspace/knowledge/notes")} element={<KnowledgeStudio section="notes" />} />
+        <Route path={route("/workspace/knowledge/graph")} element={<KnowledgeStudio section="graph" />} />
+        <Route path={route("/workspace/knowledge/playground")} element={<KnowledgeStudio section="playground" />} />
+        <Route path={route("/workspace/knowledge/review")} element={<KnowledgeStudio section="review" />} />
+        <Route path={route("/workspace/knowledge/activity")} element={<KnowledgeStudio section="activity" />} />
+        <Route path={route("/workspace/knowledge/settings")} element={<KnowledgeStudio section="settings" />} />
         <Route path={route("/workspace/:brandId")} element={<BrandGuard />}>
           <Route path="dashboard" element={<BrandDashboard />} />
           <Route path="bookings" element={<BrandBookings />} />

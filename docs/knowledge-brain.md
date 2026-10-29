@@ -1,7 +1,8 @@
 # The Houcine.world knowledge brain and the La Rosa View Concierge
 
-Written 29 October 2026. The owner's page (secrets, checks, costs) is `docs/concierge-setup.md`; this page explains
-how the brain and the concierge work and how to maintain them.
+Written 29 October 2026, updated 30 October 2026. The owner's page (secrets, checks, costs) is
+`docs/concierge-setup.md`; the visual way to edit, publish and test the brain is Knowledge Studio
+(`docs/knowledge-studio.md`); this page explains how the brain and the concierge work and how to maintain them.
 
 ## 1. What it is
 
@@ -27,7 +28,10 @@ houcine-world-brain/*.md ─(scripts/brain/build.mjs)─▶ _shared/brain/index.
 | Path | What |
 | --- | --- |
 | `houcine-world-brain/` | The notes. `README.md` there is the short version of this page; `schemas/note-format.md` the note format. |
-| `scripts/brain/lib.mjs`, `build.mjs` | The compiler: checks every note, compiles the public ones into the index. |
+| `scripts/brain/lib.mjs`, `build.mjs` | The Node build: reads the notes from disk and runs the compiler; writes the index and the Knowledge Studio snapshot. |
+| `supabase/functions/_shared/brain/compile.ts` | The ONE compiler (checks every note, compiles the public, active ones), shared by the Node build, CI and Knowledge Studio. |
+| `houcine-world-brain/agents/` | AI access notes: which brands each agent may read (edited in Knowledge Studio, Settings). |
+| `houcine-world-brain/archive/` | Archived notes: kept, never compiled, never linkable from active notes. |
 | `supabase/functions/_shared/brain/` | Shared by every agent: `text.ts` (normalizing, stemming, typo tolerance), `retrieve.ts` (search), `prompts.ts` (the interpreter and answer prompts), `agent.ts` (the agent profile type), `types.ts`, and the generated `index.generated.ts`. |
 | `supabase/functions/_shared/llm/` | The model interface (`provider.ts`) and the Anthropic adapter (`anthropic.ts`). |
 | `supabase/functions/concierge/` | The La Rosa View agent: `agent.ts` (its profile), `core.ts` (request rules), `pipeline.ts` (one turn), `index.ts` (the HTTP function). |
@@ -69,8 +73,13 @@ houcine-world-brain/*.md ─(scripts/brain/build.mjs)─▶ _shared/brain/index.
 
 ## 4. Updating the knowledge
 
-All of this is a pull request. Because the index lives under `supabase/`, which is a critical path, **every knowledge
-change waits for the owner's merge** (`docs/automation.md`): the AI's knowledge never changes without you.
+There are two ways, and they produce the same files:
+
+- **Knowledge Studio** (`/workspace/knowledge`, `docs/knowledge-studio.md`): the owner edits in the browser and
+  publishes; the Studio validates, commits the notes and the rebuilt index to `main` in one commit, and reports "live"
+  once the concierge serves it. This is the owner's own action, so it needs no pull request.
+- **A session's pull request**, as below. Because the index lives under `supabase/`, a critical path, such a pull
+  request waits for the owner's merge (`docs/automation.md`).
 
 **Add a note.** Create `houcine-world-brain/brands/<brand>/<subject>.md` with the header of
 `schemas/note-format.md` (copy an existing note), one `##` section per sub-subject, and links to related notes.
@@ -87,16 +96,19 @@ constant in the same pull request. When a fact is no longer true but worth keepi
 **Remove knowledge.** Delete the note or section, and the links to it (the build lists them).
 
 **Refresh the index.** A session runs `node --experimental-strip-types scripts/brain/build.mjs` (it prints the
-number of notes and passages and a fingerprint) and commits `supabase/functions/_shared/brain/index.generated.ts`.
+number of notes and passages and a fingerprint) and commits `supabase/functions/_shared/brain/index.generated.ts` and
+`supabase/functions/knowledge-studio/snapshot.generated.ts`.
 `--check` only verifies; CI runs the same check through `scripts/ci/brain.test.mjs`. After the merge, the
 **Deploy Supabase** workflow redeploys the function and the live chat uses the new knowledge at once (no restart,
 no cache to clear: the index is part of the deployed function).
 
 **Add a brand (or a new agent).**
-1. Add the brand id to `BRANDS` in `scripts/brain/lib.mjs` and to the `Brand` type in `_shared/brain/types.ts`.
+1. Add the brand id to `BRANDS` in `supabase/functions/_shared/brain/compile.ts` and to the `Brand` type in
+   `_shared/brain/types.ts` (and its label in `src/lib/knowledge/note.ts` for Knowledge Studio).
 2. Create `houcine-world-brain/brands/<brand>/` with an `overview.md` and its notes.
-3. For a new chat agent: an `AgentProfile` like `concierge/agent.ts` (its brands, its contact note, its pinned
-   passages) and a function like `concierge/index.ts` that uses it, plus its own widget. Retrieval, prompts, the model
+3. For a new chat agent: an `AgentProfile` like `concierge/agent.ts` (its contact note, its defaults), an access note
+   in `houcine-world-brain/agents/` (`type: agent`, `agent: <id>`, `brands`, `referral_brands`, `fallback_note`,
+   `pinned`), and a function like `concierge/index.ts` that uses it (`withIndexAccess`), plus its own widget. Retrieval, prompts, the model
    adapter and the tests are reused as they are. A new function must also be added to the deploy workflow's list.
 
 ## 5. How retrieval works
@@ -113,7 +125,8 @@ and no extra service:
    passage text and, weighted higher, on its title, aliases, tags and heading; unknown words are matched to known
    ones within one or two typos. A query that names a note (its title or an alias) adds a bonus.
 3. **Brand filter.** Only the agent's brands (La Rosa View and the shared Houcine.world notes), plus the overview of
-   the other brands so it can point visitors elsewhere. Nothing else can be retrieved, whatever is asked.
+   the other brands so it can point visitors elsewhere, as set in its access note
+   (`houcine-world-brain/agents/la-rosa-view-concierge.md`). Nothing else can be retrieved, whatever is asked.
 4. **Graph step.** The best passage of each note linked from the top notes comes along (bookings bring the shared
    booking-request rule and the contact note).
 5. **Budget.** At most 6 matched passages (3 per note) and 2 linked ones, about 7,000 characters, plus the pinned
