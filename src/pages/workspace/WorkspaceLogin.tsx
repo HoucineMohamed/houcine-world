@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { Loader2, Mail, LogIn } from "lucide-react";
+import { Loader2, Mail, LogIn, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabaseClient";
@@ -26,7 +26,14 @@ const WorkspaceLogin = () => {
     setBusy(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      // Generic message that covers wrong password and no password set (magic-link account).
+      // Does not reveal whether the account exists.
+      if (error.message?.toLowerCase().includes("invalid login credentials")) {
+        return toast.error("Could not sign in. Check the password, or use the magic link, or set a password below.");
+      }
+      return toast.error(error.message);
+    }
     navigate(returnTo, { replace: true });
   };
 
@@ -43,6 +50,17 @@ const WorkspaceLogin = () => {
     if (error) return toast.error(error.message);
     setLinkSent(true);
     toast.success("Magic link sent — check your inbox.");
+  };
+
+  const setOrResetPassword = async () => {
+    if (!email) return toast.error("Enter your email first");
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(returnTo)}`,
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success("Password set/reset email sent — check your inbox. Use it to choose a password, then sign in.");
   };
 
   return (
@@ -69,10 +87,17 @@ const WorkspaceLogin = () => {
             </Button>
           </form>
           <div className="my-4 text-center text-xs text-muted-foreground">or</div>
-          <Button variant="outline" className="w-full" onClick={magicLink} disabled={busy}>
+          <Button variant="outline" className="w-full mb-2" onClick={magicLink} disabled={busy}>
             <Mail className="w-4 h-4 mr-2" />
             {linkSent ? "Resend magic link" : "Email me a magic link"}
           </Button>
+          <Button variant="outline" className="w-full" onClick={setOrResetPassword} disabled={busy}>
+            <KeyRound className="w-4 h-4 mr-2" />
+            Set or reset password
+          </Button>
+          <p className="text-xs text-muted-foreground mt-2 text-center">
+            If your account was created with a magic link, set a password here before using email + password.
+          </p>
         </div>
         <p className="text-center text-muted-foreground text-xs mt-6">
           Access is granted per brand. Nothing is selected at login.
