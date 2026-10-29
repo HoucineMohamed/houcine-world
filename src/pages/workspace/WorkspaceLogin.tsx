@@ -56,7 +56,7 @@ const WorkspaceLogin = () => {
     if (!email) return toast.error("Enter your email first");
     setBusy(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(returnTo)}`,
+      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent("/workspace/set-password?returnTo=" + encodeURIComponent(returnTo))}`,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
@@ -96,7 +96,7 @@ const WorkspaceLogin = () => {
             Set or reset password
           </Button>
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            If your account was created with a magic link, set a password here before using email + password.
+            We email you a link; it opens a page where you choose a new password.
           </p>
         </div>
         <p className="text-center text-muted-foreground text-xs mt-6">
