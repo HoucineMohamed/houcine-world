@@ -4,7 +4,7 @@
 //   repo:  supabase/config.toml must name the expected project; a `.env` that is still present must too; and no tracked file
 //          (tests aside) may name the host of any other project.
 //   build: the values the build receives (on Netlify: the site's environment variables) must name the expected project. On
-//          Netlify a missing URL fails the build; elsewhere (CI, previews) it is only a warning.
+//          Netlify's production build a missing URL fails the build; elsewhere (CI, deploy previews) it is only a warning.
 // FAIL CLOSED: an unreadable config file, a missing project id or any other project means failure.
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
@@ -51,15 +51,16 @@ export function checkTrackedFile(name, text, expected = EXPECTED_REF) {
     .map((r) => `${name} names the Supabase project '${r}', expected '${expected}'`);
 }
 
-/** The values a build receives. On Netlify (NETLIFY=true) a missing URL fails; elsewhere it is a warning. */
+/** The values a build receives. On a Netlify production build (CONTEXT=production) a missing URL fails; elsewhere it is a warning. */
 export function checkBuildEnv(env, expected = EXPECTED_REF) {
   const errors = [];
   const warnings = [];
   const url = env.VITE_SUPABASE_URL ?? "";
   const id = env.VITE_SUPABASE_PROJECT_ID ?? "";
   if (url === "") {
-    if (env.NETLIFY === "true") errors.push("VITE_SUPABASE_URL is not set in Netlify");
-    else warnings.push("VITE_SUPABASE_URL is not set (not a Netlify build: allowed)");
+    if (env.NETLIFY === "true" && env.CONTEXT === "production")
+      errors.push("VITE_SUPABASE_URL is not set for Netlify's production builds");
+    else warnings.push("VITE_SUPABASE_URL is not set (not a Netlify production build: allowed)");
   } else if (!refsIn(url).includes(expected) || refsIn(url).length !== 1) {
     errors.push(`VITE_SUPABASE_URL does not point at '${expected}'`);
   }

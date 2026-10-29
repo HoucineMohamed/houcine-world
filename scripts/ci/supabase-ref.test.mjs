@@ -31,11 +31,19 @@ test("tracked files: another project's host fails, the expected one passes, test
   assert.deepEqual(G.checkTrackedFile("docs/x.md", `the old project ${OTHER} broke the site`), []);
 });
 
-test("build: on Netlify the URL must be set and point at the project; elsewhere a missing URL is only a warning", () => {
+test("build: on a Netlify production build the URL must be set and point at the project; elsewhere a missing URL is only a warning", () => {
   const url = `https://${OK}.supabase.co`;
-  assert.deepEqual(G.checkBuildEnv({ NETLIFY: "true", VITE_SUPABASE_URL: url, VITE_SUPABASE_PROJECT_ID: OK }).errors, []);
-  assert.equal(G.checkBuildEnv({ NETLIFY: "true" }).errors.length, 1);
-  assert.equal(G.checkBuildEnv({ NETLIFY: "true", VITE_SUPABASE_URL: `https://${OTHER}.supabase.co` }).errors.length, 1);
+  const prod = { NETLIFY: "true", CONTEXT: "production" };
+  assert.deepEqual(G.checkBuildEnv({ ...prod, VITE_SUPABASE_URL: url, VITE_SUPABASE_PROJECT_ID: OK }).errors, []);
+  assert.equal(G.checkBuildEnv(prod).errors.length, 1);
+  assert.equal(G.checkBuildEnv({ ...prod, VITE_SUPABASE_URL: `https://${OTHER}.supabase.co` }).errors.length, 1);
+  const preview = G.checkBuildEnv({ NETLIFY: "true", CONTEXT: "deploy-preview" });
+  assert.deepEqual(preview.errors, []);
+  assert.equal(preview.warnings.length, 1);
+  assert.equal(
+    G.checkBuildEnv({ NETLIFY: "true", CONTEXT: "deploy-preview", VITE_SUPABASE_URL: `https://${OTHER}.supabase.co` }).errors.length,
+    1,
+  );
   assert.equal(G.checkBuildEnv({ VITE_SUPABASE_URL: `https://${OTHER}.supabase.co` }).errors.length, 1);
   assert.equal(G.checkBuildEnv({ VITE_SUPABASE_URL: url, VITE_SUPABASE_PROJECT_ID: OTHER }).errors.length, 1);
   assert.equal(G.checkBuildEnv({ VITE_SUPABASE_URL: `https://${OK}.supabase.co.${OTHER}.supabase.co` }).errors.length, 1);
