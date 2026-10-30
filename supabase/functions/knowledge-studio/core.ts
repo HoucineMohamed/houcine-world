@@ -21,6 +21,8 @@ import {
 } from "../_shared/brain/compile.ts";
 import { search, type Passage } from "../_shared/brain/retrieve.ts";
 import { withIndexAccess, type AgentProfile } from "../_shared/brain/agent.ts";
+import { coverageSummary, scoreCoverage } from "../_shared/brain/coverage.ts";
+import { COVERAGE_QUESTIONS } from "../_shared/brain/coverage-questions.ts";
 import type { BrainIndex, Brand, Status } from "../_shared/brain/types.ts";
 import type { LlmProvider } from "../_shared/llm/provider.ts";
 import { checkChatRequest } from "../concierge/core.ts";
@@ -575,7 +577,10 @@ export const createStudio = (deps: StudioDeps) => {
         });
         await store.addEvent({
           actor: r.actor, kind: "published_commit", publication_id: publication.id,
-          detail: { commit: committed.commit, fingerprint: compiled.index.fingerprint, paths: publication.paths, operations: selected.map((d) => ({ path: d.path, op: d.operation, to: d.target_path })) },
+          detail: {
+            commit: committed.commit, fingerprint: compiled.index.fingerprint, paths: publication.paths, operations: selected.map((d) => ({ path: d.path, op: d.operation, to: d.target_path })),
+            coverage: coverageSummary(scoreCoverage(compiled.index, COVERAGE_QUESTIONS, BRANDS)),
+          },
         });
         return ok({ publication: deploying ?? publication, expectedFingerprint: compiled.index.fingerprint });
       }
@@ -647,6 +652,28 @@ export const createStudio = (deps: StudioDeps) => {
           score: Math.round(p.score * 100) / 100, via: p.via, why: p.why ?? null,
         })),
       });
+    },
+
+    /**
+     * Coverage: the fixed visitor questions per brand (coverage-questions.ts), searched without any AI call against
+     * the published index (what visitors get) or the drafts (a preview), plus the score kept with each publication.
+     */
+    "GET coverage": async (r) => {
+      const source = r.query.source === "preview" ? "preview" : "live";
+      let index = deps.liveIndex;
+      if (source === "preview") {
+        const loaded = await loadRepo();
+        const files = loaded.ok ? loaded.files : deps.snapshot.map((f) => ({ ...f, sha: "" }));
+        const compiled = compileBrain(applyDrafts(files, await store.drafts()));
+        if (!compiled.index) return fail(422, "validation_failed", "The drafts do not validate, so a preview index cannot be built.", { errors: compiled.errors });
+        index = compiled.index;
+      }
+      const report = scoreCoverage(index, COVERAGE_QUESTIONS, BRANDS);
+      const trend = (await store.events({ limit: 200 }))
+        .filter((e) => e.kind === "published_commit" && isRecord(e.detail.coverage))
+        .slice(0, 10)
+        .map((e) => ({ at: e.at, by: e.actor_email, fingerprint: typeof e.detail.fingerprint === "string" ? e.detail.fingerprint : null, coverage: e.detail.coverage }));
+      return ok({ source, ...report, trend });
     },
 
     /** Formatting help for "Teach the AI": suggestions only, shown next to the owner's own words. */

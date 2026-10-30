@@ -154,6 +154,30 @@ export interface AssistResult {
   } | null;
 }
 
+export type CoverageResult = "answered" | "awaiting" | "gap" | "not_found";
+
+/** The coverage score (supabase/functions/_shared/brain/coverage.ts): search only, no AI call. */
+export interface CoverageReport {
+  source: "live" | "preview";
+  fingerprint: string;
+  brands: { brand: string; total: number; answered: number; awaiting: number; gap: number; not_found: number; concierge: number }[];
+  questions: {
+    id: string;
+    brand: string;
+    question: string;
+    kind: "answered" | "awaiting" | "gap";
+    expect: string[];
+    gap: string | null;
+    brand_view: CoverageResult;
+    concierge_view: CoverageResult;
+    found: string[];
+    top: { note: string; section: string; via: string }[];
+    unknown: string[];
+  }[];
+  /** The score kept with each publication, newest first: per brand [answered, awaiting, gap, not found]. */
+  trend: { at: string; by: string | null; fingerprint: string | null; coverage: Record<string, [number, number, number, number]> }[];
+}
+
 export interface ReviewItem {
   kind: string;
   title: string;
@@ -223,6 +247,7 @@ export const studioApi = {
   retry: (id: string) => call<{ publication: Publication }>("POST", "retry", { body: { id } }),
   playground: (body: { message: string; history: { role: "user" | "assistant"; content: string }[]; memory?: unknown; source: "live" | "preview" }) =>
     call<PlaygroundResult>("POST", "playground", { body }),
+  coverage: (source: "live" | "preview") => call<CoverageReport>("GET", "coverage", { query: { source } }),
   assist: (text: string, brand: string | null) => call<AssistResult>("POST", "assist", { body: { text, brand } }),
   search: (q: string) => call<{ results: { path: string; id: string; title: string; brand: string; visibility: string; snippet: string; matchedIn: string }[] }>("GET", "search", { query: { q } }),
   feedback: (body: { rating: string; question: string; answer: string; comment: string; sources: string[] }) => call<{ feedback: Feedback }>("POST", "feedback", { body }),
