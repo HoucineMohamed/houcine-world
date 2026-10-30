@@ -394,6 +394,17 @@ test("coverage: search only, works read-only, previews drafts, and each publicat
   assert.deepEqual(after.body.trend[0].coverage, commitEvent.detail.coverage);
 });
 
+test("the Studio refuses a public note that names a page the site does not have, as the Node build does", async () => {
+  const { call } = setup();
+  const bad = NEW_NOTE.replace("are discussed individually.", "are discussed individually. Details on `/international`.");
+  const saved = await call("POST", "draft", { body: { path: "brands/la-rosa-view/international-bookings.md", content: bad, expectedVersion: null } });
+  assert.equal(saved.status, 200);
+  assert.ok(saved.body.errors.some((e) => e.includes('"/international" is not a public page of the site')), JSON.stringify(saved.body.errors));
+  const published = await call("POST", "publish", { body: {} });
+  assert.equal(published.status, 422);
+  assert.equal(published.body.code, "validation_failed");
+});
+
 test("the function checks a signed-in super admin on the server before doing anything", () => {
   const src = readFileSync(join(root, "supabase/functions/knowledge-studio/index.ts"), "utf8");
   const auth = src.indexOf("await authenticateRequest(req)");
