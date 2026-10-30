@@ -48,6 +48,7 @@ const Admin = React.lazy(() => import("./pages/Admin"));
 const AdminLogin = React.lazy(() => import("./pages/AdminLogin"));
 const AuthCallback = React.lazy(() => import("./pages/AuthCallback"));
 const WorkspaceLogin = React.lazy(() => import("./pages/workspace/WorkspaceLogin"));
+const SetPassword = React.lazy(() => import("./pages/workspace/SetPassword"));
 const WorkspaceResolver = React.lazy(() => import("./pages/workspace/WorkspaceResolver"));
 const BrandSelect = React.lazy(() => import("./pages/workspace/BrandSelect"));
 const BrandDashboard = React.lazy(() => import("./pages/workspace/BrandDashboard"));
@@ -117,6 +118,7 @@ const AppRoutes = () => {
 
       {/* Workspace: login is public, everything else is auth + membership guarded */}
       <Route path={route("/workspace/login")} element={<WorkspaceLogin />} />
+      <Route path={route("/workspace/set-password")} element={<SetPassword />} />
       <Route element={<AuthGuard />}>
         <Route path={route("/workspace")} element={<WorkspaceResolver />} />
         <Route path={route("/workspace/select")} element={<BrandSelect />} />
