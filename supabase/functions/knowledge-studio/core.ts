@@ -64,6 +64,8 @@ export interface Repo {
   /** The deploy workflow's run for a commit (the newest run started at or after `since`, ISO time). */
   deployRun(commit: string, since: string): Promise<"none" | "queued" | "in_progress" | "success" | "failure" | "unknown">;
   dispatchDeploy(): Promise<boolean>;
+  /** When the token expires, as GitHub last reported it (a response header), or null if it never said. */
+  tokenExpiry?(): string | null;
 }
 
 export interface Draft {
@@ -303,6 +305,32 @@ export const sourceIdsOf = (result: CompileResult): { id: string; label: string 
   return out;
 };
 
+// ---------- the publishing token's expiry ----------
+
+/** Days left before the token expires at which the Studio starts warning. */
+export const TOKEN_WARNING_DAYS = 14;
+
+/**
+ * GitHub's "github-authentication-token-expiration" value ("2026-12-31 23:59:59 UTC", or with a "+0000"-style
+ * offset) as an ISO time, or null when it is missing or unreadable: an unknown expiry is said, never guessed.
+ */
+export const parseTokenExpiry = (raw: string | null): string | null => {
+  if (!raw) return null;
+  const m = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})\s*(UTC|Z|[+-]\d{2}:?\d{2})$/.exec(raw.trim());
+  if (!m) return null;
+  const zone = m[3] === "UTC" || m[3] === "Z" ? "Z" : m[3]!.replace(/^([+-]\d{2})(\d{2})$/, "$1:$2");
+  const t = Date.parse(`${m[1]}T${m[2]}${zone}`);
+  return Number.isFinite(t) ? new Date(t).toISOString() : null;
+};
+
+/** What the Studio shows about the token: its expiry (or null if unknown), whole days left, and whether to warn. */
+export const tokenStatus = (raw: string | null, now: number): { expiresAt: string | null; daysLeft: number | null; warn: boolean } => {
+  const expiresAt = parseTokenExpiry(raw);
+  if (!expiresAt) return { expiresAt: null, daysLeft: null, warn: false };
+  const daysLeft = Math.floor((Date.parse(expiresAt) - now) / 86_400_000);
+  return { expiresAt, daysLeft, warn: daysLeft <= TOKEN_WARNING_DAYS };
+};
+
 // ---------- the handler ----------
 
 export const createStudio = (deps: StudioDeps) => {
@@ -389,6 +417,7 @@ export const createStudio = (deps: StudioDeps) => {
         validation: { published: published.errors, working: working.errors },
         stats: brainStats(published),
         index: { expected, live: liveFingerprint, sync, notes: published.index?.notes.length ?? null, passages: published.index?.chunks.length ?? null, bundled: deps.liveIndex.fingerprint },
+        token: repo.mode === "github" ? tokenStatus(repo.tokenExpiry?.() ?? null, deps.now()) : null,
         agents: published.index?.agents ?? {},
         publication: current ?? pubs[0] ?? null,
         lastLive,
