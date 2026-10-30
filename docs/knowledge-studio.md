@@ -41,7 +41,11 @@ confirmation**, **Outdated**; a section can differ from its note by starting wit
 
 ## 4. Teaching the AI something new
 
-1. Click **+ Teach the AI**. Write the information in your own words.
+1. Click **+ Teach the AI**. Write the information in your own words, or choose **Answer questions (guided)**: the
+   Studio asks the questions a note of the chosen category answers (a service: what it is, who it is for, what is
+   included, prices and quotes, how to ask). A question you leave empty is saved as "not confirmed yet" with the
+   question, so the AI says the detail is not published instead of guessing. The questions are in
+   `src/lib/knowledge/templates.ts`.
 2. Optional: **Help me organize it**. The AI suggests a title, sections, tags and related notes, lists details that
    seem to be missing (they are marked "not confirmed yet", never invented) and possible conflicts with existing
    notes (with links). These are suggestions only. If a suggested section adds a number, address or price you did not
