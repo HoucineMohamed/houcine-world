@@ -61,7 +61,8 @@ test("the dashboard state comes from the notes themselves, and says whether the 
   const { call, setLive } = setup();
   const r = await call("GET", "state");
   assert.equal(r.status, 200);
-  const notes = brainFiles.filter((f) => f.path.endsWith(".md") && f.path !== "README.md" && !f.path.startsWith("schemas/"));
+  const { isNotePath } = await import(join(root, "supabase/functions/_shared/brain/compile.ts"));
+  const notes = brainFiles.filter((f) => isNotePath(f.path));
   assert.equal(r.body.stats.total, notes.length);
   assert.equal(r.body.stats.public, BRAIN_INDEX.notes.length);
   assert.ok(r.body.stats.internal >= 2);
@@ -102,6 +103,11 @@ test("teach -> draft -> publish -> live: the AI retrieves the new knowledge only
   const compiled = compileBrain(after);
   assert.equal(tree.get(INDEX_PATH), renderIndexModule(compiled.index));
   assert.equal(tree.get(SNAPSHOT_PATH), renderSnapshotModule(after));
+  // ...and the generated maps, exactly as the Node build writes them.
+  const { buildMaps, DASHBOARD_PATH, CANVAS_PATH } = await import("../brain/lib.mjs");
+  const maps = buildMaps(after, compiled.index);
+  assert.equal(tree.get(`${BRAIN_DIR}/${DASHBOARD_PATH}`), maps.dashboard);
+  assert.equal(tree.get(`${BRAIN_DIR}/${CANVAS_PATH}`), maps.canvas);
   assert.equal(pub.expected_fingerprint, compiled.index.fingerprint);
   assert.equal(await store.draft(path), null, "the draft is done once the notes are committed");
 
