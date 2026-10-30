@@ -93,11 +93,16 @@ fails the build.
 constant in the same pull request. When a fact is no longer true but worth keeping, move it under a heading with
 `> [!outdated]` rather than deleting history.
 
+**Site pages in a note.** A page written as code in a public note (`` `/booking` ``) must be a public, indexable page
+of the route manifest: the build and Knowledge Studio refuse any other (a typo, a removed page, an owner-only page such
+as the workspace). Internal notes may name any page.
+
 **Remove knowledge.** Delete the note or section, and the links to it (the build lists them).
 
 **Refresh the index.** A session runs `node --experimental-strip-types scripts/brain/build.mjs` (it prints the
 number of notes and passages and a fingerprint) and commits `supabase/functions/_shared/brain/index.generated.ts` and
-`supabase/functions/knowledge-studio/snapshot.generated.ts`.
+`supabase/functions/knowledge-studio/snapshot.generated.ts` (and `supabase/functions/_shared/brain/site-paths.generated.ts`,
+the site's public pages from `src/routes/manifest.ts`, when the site's pages changed).
 `--check` only verifies; CI runs the same check through `scripts/ci/brain.test.mjs`. After the merge, the
 **Deploy Supabase** workflow redeploys the function and the live chat uses the new knowledge at once (no restart,
 no cache to clear: the index is part of the deployed function).
