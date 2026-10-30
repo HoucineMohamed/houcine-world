@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabaseClient";
 import { useSession } from "@/hooks/useSession";
 import { toast } from "sonner";
+import logoH from "@/assets/logo-h.png";
 
 const WorkspaceLogin = () => {
   const [email, setEmail] = useState("");
@@ -56,18 +57,20 @@ const WorkspaceLogin = () => {
     if (!email) return toast.error("Enter your email first");
     setBusy(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(returnTo)}`,
+      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(`/workspace/set-password?returnTo=${encodeURIComponent(returnTo)}`)}`,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success("Password set/reset email sent — check your inbox. Use it to choose a password, then sign in.");
+    toast.success("Email sent — check your inbox. The link opens a page where you choose a new password, then you can sign in.");
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link to="/" className="text-3xl font-bold text-foreground">H</Link>
+          <Link to="/" className="inline-block">
+            <img src={logoH} alt="Houcine.world" className="h-12 w-auto mx-auto" />
+          </Link>
           <h1 className="text-2xl font-bold text-foreground mt-4">Workspace</h1>
           <p className="text-muted-foreground text-sm">Houcine.world multi-brand admin</p>
         </div>
