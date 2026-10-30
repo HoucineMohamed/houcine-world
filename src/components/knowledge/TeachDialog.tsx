@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { studioApi, StudioError, type AssistResult } from "@/services/knowledgeStudio";
 import { BRAND_LABELS, STATUS_INFO, TYPE_LABELS, VISIBILITY_INFO, defaultPathFor, idFor, parseList, today, writeNote } from "@/lib/knowledge/note";
+import { TEMPLATES, answersText, templateSections } from "@/lib/knowledge/templates";
 import { useStudio } from "./StudioContext";
 
 // "+ Teach the AI": write information in ordinary words; optionally let the AI suggest a structure; save it as a DRAFT
@@ -15,15 +16,20 @@ import { useStudio } from "./StudioContext";
 //   - AI suggestions are shown as suggestions, next to your text; a suggested section that adds a number, address or
 //     price you did not write is removed by the server and listed here;
 //   - nothing becomes "verified" unless you tick the confirmation: otherwise the note is "awaiting confirmation";
-//   - nothing is published from here: the draft goes to the editor, and you publish when you are ready.
+//   - nothing is published from here: the draft goes to the editor, and you publish when you are ready;
+//   - guided mode asks the questions a note of the chosen category answers (src/lib/knowledge/templates.ts); a
+//     question left empty becomes a section "awaiting confirmation", never a guess.
 
 const TeachDialog = () => {
   const { teachOpen, setTeachOpen, state, reload } = useStudio();
   const navigate = useNavigate();
-  const [text, setText] = useState("");
+  const [mode, setMode] = useState<"free" | "guided">("free");
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [freeText, setText] = useState("");
   const [title, setTitle] = useState("");
   const [brand, setBrand] = useState("la-rosa-view");
   const [type, setType] = useState("topic");
+  const text = mode === "guided" ? answersText(type, answers) : freeText;
   const [visibility, setVisibility] = useState("public");
   const [tags, setTags] = useState("");
   const [sources, setSources] = useState<string[]>([]);
@@ -36,7 +42,7 @@ const TeachDialog = () => {
   const [error, setError] = useState<string | null>(null);
 
   const reset = () => {
-    setText(""); setTitle(""); setBrand("la-rosa-view"); setType("topic"); setVisibility("public"); setTags(""); setSources([]);
+    setText(""); setMode("free"); setAnswers({}); setTitle(""); setBrand("la-rosa-view"); setType("topic"); setVisibility("public"); setTags(""); setSources([]);
     setRelated([]); setContext(""); setConfirmed(false); setAssist(null); setUseSuggestion(false); setError(null);
   };
   const close = (open: boolean) => {
@@ -68,23 +74,25 @@ const TeachDialog = () => {
   const buildBody = (): string => {
     const heading = `# ${title.trim()}`;
     const status = confirmed ? null : "> [!pending] Awaiting the owner's confirmation.";
-    const sections = useSuggestion && assist?.suggestion?.sections.length
-      ? assist.suggestion.sections.map((s) => `## ${s.heading}\n${s.text.trim()}`)
-      : [`## ${title.trim()}\n${text.trim()}`];
+    const sections = mode === "guided"
+      ? [templateSections(type, answers)]
+      : useSuggestion && assist?.suggestion?.sections.length
+        ? assist.suggestion.sections.map((s) => `## ${s.heading}\n${s.text.trim()}`)
+        : [`## ${title.trim()}\n${freeText.trim()}`];
     const relatedLine = related.length ? `\n## Related\n${related.map((r) => `- [[${r}]]`).join("\n")}` : "";
     const missing = assist?.suggestion?.missingDetails.length
       ? `\n## Not confirmed yet\n> [!incomplete] Questions to settle: ${assist.suggestion.missingDetails.join(" ")}`
       : "";
     const comment = (label: string, value: string) => `\n<!-- ${label} (kept in the note, never shown to the AI): ${value.trim().replace(/-->/g, "—>")} -->`;
     // When the suggested structure is used, the owner's exact words stay in the note (and in the repository's history).
-    const original = useSuggestion && assist?.suggestion?.sections.length ? comment("Original words of the owner", text) : "";
+    const original = mode === "free" && useSuggestion && assist?.suggestion?.sections.length ? comment("Original words of the owner", text) : "";
     const contextNote = context.trim() ? comment("Context from the owner", context) : "";
     return [heading, "", ...(status ? [status, ""] : []), sections.join("\n\n"), relatedLine, missing, original, contextNote].join("\n").replace(/\n{3,}/g, "\n\n");
   };
 
   const save = async () => {
     if (!title.trim() || !text.trim()) {
-      setError("A title and the information itself are needed.");
+      setError(mode === "guided" ? "A title and at least one answer are needed." : "A title and the information itself are needed.");
       return;
     }
     if (visibility === "public" && sources.length === 0) {
@@ -123,9 +131,26 @@ const TeachDialog = () => {
 
         <div className="grid gap-4 md:grid-cols-[1fr_260px]">
           <div className="space-y-3">
+            <div className="flex rounded-md border border-border p-0.5 text-xs" role="radiogroup" aria-label="How to write it">
+              {([["free", "In my own words"], ["guided", "Answer questions (guided)"]] as const).map(([m, label]) => (
+                <button key={m} type="button" role="radio" aria-checked={mode === m} onClick={() => setMode(m)} className={`flex-1 rounded px-2.5 py-1 ${mode === m ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}>{label}</button>
+              ))}
+            </div>
+            {mode === "guided" ? (
+              <fieldset className="space-y-2">
+                <legend className="mb-1 text-xs text-muted-foreground">Questions for a {TYPE_LABELS[type]?.toLowerCase() ?? "topic"} note (change the category on the right). Leave a question empty if it is not settled: it is saved as “not confirmed yet”, and the AI will say so.</legend>
+                {(TEMPLATES[type] ?? TEMPLATES.topic!).map((q) => (
+                  <label key={q.heading} className="block text-sm">
+                    <span className="mb-1 block font-medium">{q.prompt}</span>
+                    <Textarea value={answers[q.heading] ?? ""} onChange={(e) => setAnswers((a) => ({ ...a, [q.heading]: e.target.value }))} rows={2} maxLength={2000} placeholder={q.hint} />
+                  </label>
+                ))}
+              </fieldset>
+            ) : (
+            <>
             <label className="block text-sm">
               <span className="mb-1 block font-medium">The information</span>
-              <Textarea value={text} onChange={(e) => setText(e.target.value)} rows={7} maxLength={8000} placeholder="For example: DJ Hajri is available for private corporate events. For international bookings, organizers should contact the management team directly." />
+              <Textarea value={freeText} onChange={(e) => setText(e.target.value)} rows={7} maxLength={8000} placeholder="For example: DJ Hajri is available for private corporate events. For international bookings, organizers should contact the management team directly." />
             </label>
             <div className="flex flex-wrap items-center gap-2">
               <Button type="button" variant="outline" size="sm" onClick={() => void runAssist()} disabled={!text.trim() || working !== null} className="gap-1.5">
@@ -178,6 +203,9 @@ const TeachDialog = () => {
                   </details>
                 )}
               </div>
+            )}
+
+            </>
             )}
 
             <label className="block text-sm">
