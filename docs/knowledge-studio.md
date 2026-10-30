@@ -20,7 +20,7 @@ public site never see any of it.
 | **Notes** | The explorer. Left: search (Enter searches all text and related words), folders, filters (brand, category, visibility, status, tag, archived), unpublished changes, New note. Middle: the note, with Edit, Side by side, Preview, Markdown (the whole file), Compare (with the published version) and History (published versions: view, compare, restore). Right: its properties (title, brand, category, visibility, confidence, tags, other names, sources, last checked), whether the AI can use it, its links and the notes linking to it. |
 | **+ Teach the AI** | Write information in ordinary words, optionally "Help me organize it", then save it as a draft note (section 4). |
 | **Graph** | The notes as a network: one dot per note, one line per real `[[link]]`, coloured by brand; people are squares. Zoom, drag, search, filter, click to see connections, double-click to open. |
-| **AI Playground** | A private chat with the concierge: with the published knowledge (what visitors get) or with your drafts (a preview). Each answer has a retrieval inspector (what was understood, which passages were read and why, their brand, visibility, status and sources) and feedback buttons. |
+| **AI Playground** | A private chat with the concierge: with the published knowledge (what visitors get) or with your drafts (a preview). Each answer has a retrieval inspector (what was understood, which passages were read and why, their brand, visibility, status and sources) and feedback buttons. Its **Coverage** tab scores a fixed list of visitor questions per brand (section 7b). |
 | **Review** | What needs your attention: playground feedback, failed publications, note problems, drafts out of date, sections awaiting confirmation or outdated, notes without tags, notes not checked for six months. |
 | **Activity** | Every operation with who and when: drafts, publications, AI index updates, failures, feedback, access changes. |
 | **Settings** | AI access (which brands the concierge may read) and the publishing setup. |
@@ -89,6 +89,28 @@ In the Playground, mark an answer Correct, Incomplete, Incorrect, Missing knowle
 note). It becomes an item in **Review**. Feedback never changes knowledge and never trains the model: it tells you
 what to add or correct. Close the item once handled.
 
+## 7b. Coverage
+
+**AI Playground, Coverage** shows, for each brand, how many real visitor questions the knowledge answers. The questions
+are fixed (`supabase/functions/_shared/brain/coverage-questions.ts`, written from the site's own pages) and each names
+the note section that should answer it. The Studio runs only the search, with the visitor's words, exactly as the
+concierge's search does: **no AI call, no cost**, so it works before the Anthropic key or the GitHub token exist, and
+with the published knowledge or a preview with your drafts.
+
+| Result | Meaning |
+| --- | --- |
+| **Answered** | The search finds the passage that states the answer. |
+| **Awaiting confirmation** | The search finds the passage that says this is not published yet; that is the honest answer until you confirm the fact. |
+| **Known gap** | No note answers it yet; the line says where the fact would come from (the site, or you). |
+| **Not found** | A note should answer it, but the search does not find it from the visitor's words: improve the note (tags, other names, a clearer heading). |
+
+"Concierge reaches" counts the questions the public La Rosa View Concierge can reach with its own access: other brands
+are overview only, so most of their questions are not reached on purpose. The real concierge also rewrites a question
+before searching, so it usually finds a little more than this score. Each publication from the Studio keeps the
+score of the new knowledge in Activity, shown under the table as a trend. A session adds or changes questions (a
+pull request the owner confirms); the test `scripts/ci/coverage.test.mjs` checks them against the notes and fails if
+a question the notes answer stops being found.
+
 ## 8. Setup (once, by you, in the browser)
 
 Knowledge Studio reads and publishes the notes through GitHub. Until this is done it is **read-only** (it shows the
@@ -131,6 +153,9 @@ secret.
 - Frontend: `src/pages/workspace/knowledge/KnowledgeStudio.tsx`, `src/components/knowledge/*`,
   `src/services/knowledgeStudio.ts`, `src/lib/knowledge/*` (a safe Markdown preview that builds React elements, never
   HTML; a line diff; the note header form using the compiler's own reader and writer).
+- Coverage: `supabase/functions/_shared/brain/coverage.ts` (the pure scorer) and `coverage-questions.ts` (the
+  questions); the read-only action `GET coverage`; `src/components/knowledge/Coverage.tsx`; test
+  `scripts/ci/coverage.test.mjs`.
 - Tests: `scripts/ci/knowledge-studio.test.mjs` (the full workflow with an in-memory git repository and database,
   `scripts/brain/studio-fakes.mjs`), plus the brain, concierge and pipeline tests.
 

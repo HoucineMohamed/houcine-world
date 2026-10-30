@@ -359,6 +359,41 @@ test("without a GitHub token the Studio is read-only, and says why", async () =>
   assert.equal(write.body.code, "repo_not_configured");
 });
 
+test("coverage: search only, works read-only, previews drafts, and each publication keeps its score", async () => {
+  const { COVERAGE_QUESTIONS } = await import(join(root, "supabase/functions/_shared/brain/coverage-questions.ts"));
+  const { createSnapshotRepo } = await import(join(root, "supabase/functions/knowledge-studio/github.ts"));
+  // Read-only (no GitHub token) and no model: the published knowledge is still scored.
+  const ro = setup({ repo: createSnapshotRepo(brainFiles) });
+  const live = await ro.call("GET", "coverage", { query: { source: "live" } });
+  assert.equal(live.status, 200);
+  assert.equal(live.body.source, "live");
+  assert.equal(live.body.fingerprint, BRAIN_INDEX.fingerprint);
+  assert.equal(live.body.questions.length, COVERAGE_QUESTIONS.length);
+  assert.deepEqual(live.body.trend, []);
+  assert.equal(ro.store.eventLog.length, 0, "scoring writes nothing");
+
+  // With a draft, the preview is scored on the drafts; the live score is unchanged.
+  const { call, store, setLive } = setup();
+  await call("POST", "draft", { body: { path: "brands/la-rosa-view/international-bookings.md", content: NEW_NOTE, expectedVersion: null } });
+  const preview = await call("GET", "coverage", { query: { source: "preview" } });
+  assert.equal(preview.status, 200);
+  assert.notEqual(preview.body.fingerprint, BRAIN_INDEX.fingerprint);
+  assert.equal((await call("GET", "coverage")).body.fingerprint, BRAIN_INDEX.fingerprint);
+
+  // Publishing keeps the score of the new index with the commit, shown as the trend.
+  const published = await call("POST", "publish", { body: {} });
+  assert.equal(published.status, 200, JSON.stringify(published.body));
+  const commitEvent = store.eventLog.find((e) => e.kind === "published_commit");
+  const { BRANDS } = await import(join(root, "supabase/functions/_shared/brain/compile.ts"));
+  assert.deepEqual(Object.keys(commitEvent.detail.coverage), [...BRANDS]);
+  for (const counts of Object.values(commitEvent.detail.coverage)) assert.equal(counts.length, 4);
+  setLive(published.body.expectedFingerprint);
+  const after = await call("GET", "coverage");
+  assert.equal(after.body.trend.length, 1);
+  assert.equal(after.body.trend[0].fingerprint, published.body.expectedFingerprint);
+  assert.deepEqual(after.body.trend[0].coverage, commitEvent.detail.coverage);
+});
+
 test("the function checks a signed-in super admin on the server before doing anything", () => {
   const src = readFileSync(join(root, "supabase/functions/knowledge-studio/index.ts"), "utf8");
   const auth = src.indexOf("await authenticateRequest(req)");
