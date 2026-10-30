@@ -394,6 +394,25 @@ test("coverage: search only, works read-only, previews drafts, and each publicat
   assert.deepEqual(after.body.trend[0].coverage, commitEvent.detail.coverage);
 });
 
+test("feedback is counted per brand and rating, numbers only, never its text", async () => {
+  const { call } = setup();
+  const send = (rating, sources) => call("POST", "feedback", { body: { rating, question: `secret question ${rating}`, answer: "secret answer", comment: "secret comment", sources } });
+  await send("incorrect", ["lrv-bookings", "lrv-faq", "hw-contact"]);
+  await send("missing", ["tech-services"]);
+  const correct = await send("correct", ["lrv-faq"]);
+  await send("outdated", []);
+  await call("POST", "resolve", { body: { id: correct.body.feedback.id, status: "resolved", resolution: "" } });
+  const r = await call("GET", "review");
+  assert.equal(r.status, 200);
+  const rows = Object.fromEntries(r.body.feedbackSummary.map((x) => [x.brand, x.ratings]));
+  assert.deepEqual(Object.keys(rows), ["la-rosa-view", "houcine-tech", "unknown"], "brands in the usual order, 'unknown' last");
+  assert.deepEqual(rows["la-rosa-view"].incorrect, { open: 1, total: 1 });
+  assert.deepEqual(rows["la-rosa-view"].correct, { open: 0, total: 1 });
+  assert.deepEqual(rows["houcine-tech"].missing, { open: 1, total: 1 });
+  assert.deepEqual(rows.unknown.outdated, { open: 1, total: 1 });
+  assert.ok(!JSON.stringify(r.body.feedbackSummary).includes("secret"), "the summary holds no text");
+});
+
 test("the function checks a signed-in super admin on the server before doing anything", () => {
   const src = readFileSync(join(root, "supabase/functions/knowledge-studio/index.ts"), "utf8");
   const auth = src.indexOf("await authenticateRequest(req)");
