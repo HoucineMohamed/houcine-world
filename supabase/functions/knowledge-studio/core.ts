@@ -21,6 +21,7 @@ import {
 } from "../_shared/brain/compile.ts";
 import { search, type Passage } from "../_shared/brain/retrieve.ts";
 import { withIndexAccess, type AgentProfile } from "../_shared/brain/agent.ts";
+import { findConflicts } from "../_shared/brain/conflicts.ts";
 import { coverageSummary, scoreCoverage } from "../_shared/brain/coverage.ts";
 import { COVERAGE_QUESTIONS } from "../_shared/brain/coverage-questions.ts";
 import type { BrainIndex, Brand, Status } from "../_shared/brain/types.ts";
@@ -773,6 +774,16 @@ export const createStudio = (deps: StudioDeps) => {
         if (n.fields.visibility === "public" && !listField(n.fields.tags).length) items.push({ kind: "missing_metadata", title, detail: "No tags: search finds it less easily.", path: n.file });
         const updated = Date.parse(String(n.fields.updated ?? ""));
         if (Number.isFinite(updated) && today - updated > 180 * 86_400_000) items.push({ kind: "stale", title, detail: `Not checked since ${n.fields.updated}.`, path: n.file });
+      }
+      // Possible duplicates and contact details that disagree, over every active note with the drafts (admin view).
+      const admin = compileBrain(applyDrafts(files, drafts), { audience: "admin" });
+      if (admin.index) {
+        const fileOf = new Map(admin.notes.map((n) => [String(n.fields.id ?? ""), n.file]));
+        const titleOf = new Map(admin.index.notes.map((n) => [n.id, n.title]));
+        for (const f of findConflicts(admin.index)) {
+          const where = f.notes.map((id, i) => `${titleOf.get(id) ?? id} › ${f.sections[i]}`).join(" and ");
+          items.push({ kind: f.kind, title: f.kind === "possible_duplicate" ? `Possible duplicate: ${where}` : `Contact detail to check: ${where}`, detail: f.detail, path: fileOf.get(f.notes[0]!) });
+        }
       }
       return ok({ items });
     },
