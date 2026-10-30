@@ -63,7 +63,7 @@ const Inspector = ({ result }: { result: PlaygroundResult }) => {
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="tabular-nums text-muted-foreground">#{i + 1}</span>
               <BrandDot brand={p.brand} />
-              <button type="button" onClick={() => open(p.noteId)} className="font-medium text-violet-300 hover:underline">{p.title}</button>
+              <button type="button" onClick={() => open(p.noteId)} className="font-medium text-accent hover:underline">{p.title}</button>
               <span className="text-muted-foreground">› {p.section}</span>
               <span className="ml-auto flex gap-1"><Pill tone="published">{p.visibility}</Pill><Pill tone={p.status === "verified" || p.status === "policy" ? "published" : "pending"}>{STATUS_INFO[p.status]?.label}</Pill></span>
             </div>
@@ -170,7 +170,7 @@ const Playground = () => {
         )}
         {turns.map((t, i) => (
           <div key={i} className="space-y-2">
-            <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-violet-500/20 px-3 py-2 text-sm">{t.question}</div>
+            <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-accent/20 px-3 py-2 text-sm">{t.question}</div>
             <div className="max-w-[90%] rounded-2xl rounded-tl-sm border border-border bg-card/40 px-3 py-2 text-sm">
               {!t.result && !t.error && <span className="flex items-center gap-2 text-muted-foreground" role="status"><Loader2 className="h-4 w-4 animate-spin" /> Interpreting, retrieving, answering…</span>}
               {t.error && <span className="text-rose-300">{t.error}</span>}
@@ -184,7 +184,7 @@ const Playground = () => {
               <div className="space-y-2 pl-1">
                 <div className="flex flex-wrap items-center gap-1.5">
                   {RATINGS.map(({ rating, label, icon: Icon }) => (
-                    <button key={rating} type="button" disabled={Boolean(t.feedback)} onClick={() => void sendFeedback(i, rating)} className={cn("flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs disabled:opacity-60", t.feedback === rating ? "border-violet-400 bg-violet-500/20" : "border-border text-muted-foreground hover:text-foreground")}>
+                    <button key={rating} type="button" disabled={Boolean(t.feedback)} onClick={() => void sendFeedback(i, rating)} className={cn("flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs disabled:opacity-60", t.feedback === rating ? "border-accent bg-accent/20" : "border-border text-muted-foreground hover:text-foreground")}>
                       <Icon className="h-3 w-3" aria-hidden="true" /> {label}
                     </button>
                   ))}

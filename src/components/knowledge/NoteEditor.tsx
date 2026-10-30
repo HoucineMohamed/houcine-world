@@ -474,7 +474,7 @@ const NoteEditor = ({ path, onOpen, onClose }: Props) => {
                 const target = state?.notes.find((n) => n.id === o.noteId);
                 return (
                   <li key={`${o.noteId}-${o.section}`}>
-                    <button type="button" className="font-medium text-violet-300 hover:underline" onClick={() => target && onOpen(target.path)}>{o.title} › {o.section}</button>
+                    <button type="button" className="font-medium text-accent hover:underline" onClick={() => target && onOpen(target.path)}>{o.title} › {o.section}</button>
                     <span className="ml-1 text-muted-foreground">({STATUS_INFO[o.status]?.label}) {o.text.slice(0, 160)}…</span>
                   </li>
                 );
@@ -513,7 +513,7 @@ const NoteEditor = ({ path, onOpen, onClose }: Props) => {
             <div className="space-y-1">
               {Object.entries(VISIBILITY_INFO).map(([v, info]) => (
                 <label key={v} className="flex cursor-pointer items-start gap-2 rounded-md px-1 py-0.5 hover:bg-muted/40">
-                  <input type="radio" name="visibility" value={v} checked={visibility === v} onChange={() => setField("visibility", v)} className="mt-1 accent-violet-400" />
+                  <input type="radio" name="visibility" value={v} checked={visibility === v} onChange={() => setField("visibility", v)} className="mt-1 accent-primary" />
                   <span><span className="text-xs font-medium">{info.label}</span><span className="block text-[0.7rem] text-muted-foreground">{info.help}</span></span>
                 </label>
               ))}
@@ -532,7 +532,7 @@ const NoteEditor = ({ path, onOpen, onClose }: Props) => {
             <div className="max-h-32 space-y-0.5 overflow-auto rounded-md border border-border p-1.5">
               {(state?.sources ?? []).map((s) => (
                 <label key={s.id} className="flex items-start gap-1.5 text-[0.7rem]" title={s.label}>
-                  <input type="checkbox" checked={listOf(fields, "sources").includes(s.id)} onChange={(e) => setField("sources", e.target.checked ? [...listOf(fields, "sources"), s.id] : listOf(fields, "sources").filter((x) => x !== s.id))} className="mt-0.5 accent-violet-400" />
+                  <input type="checkbox" checked={listOf(fields, "sources").includes(s.id)} onChange={(e) => setField("sources", e.target.checked ? [...listOf(fields, "sources"), s.id] : listOf(fields, "sources").filter((x) => x !== s.id))} className="mt-0.5 accent-primary" />
                   <span className="font-mono">{s.id}</span>
                 </label>
               ))}
@@ -558,9 +558,9 @@ const NoteEditor = ({ path, onOpen, onClose }: Props) => {
           <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Related notes</h3>
           {outgoing.length === 0 && backlinks.length === 0 && <p className="text-xs text-muted-foreground">No links yet. Use [[ ]] in the text to connect notes.</p>}
           {outgoing.length > 0 && <p className="text-[0.7rem] text-muted-foreground">Links to</p>}
-          <ul className="space-y-0.5">{outgoing.map((o) => <li key={o.path}><button type="button" onClick={() => onOpen(o.path)} className="text-xs text-violet-300 hover:underline">{o.title}</button></li>)}</ul>
+          <ul className="space-y-0.5">{outgoing.map((o) => <li key={o.path}><button type="button" onClick={() => onOpen(o.path)} className="text-xs text-accent hover:underline">{o.title}</button></li>)}</ul>
           {backlinks.length > 0 && <p className="pt-1 text-[0.7rem] text-muted-foreground">Linked from</p>}
-          <ul className="space-y-0.5">{backlinks.map((b) => <li key={b.path}><button type="button" onClick={() => onOpen(b.path)} className="text-xs text-violet-300 hover:underline">{b.title}</button></li>)}</ul>
+          <ul className="space-y-0.5">{backlinks.map((b) => <li key={b.path}><button type="button" onClick={() => onOpen(b.path)} className="text-xs text-accent hover:underline">{b.title}</button></li>)}</ul>
         </div>
 
         {draft && (
