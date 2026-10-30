@@ -558,9 +558,9 @@ const NoteEditor = ({ path, onOpen, onClose }: Props) => {
           <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Related notes</h3>
           {outgoing.length === 0 && backlinks.length === 0 && <p className="text-xs text-muted-foreground">No links yet. Use [[ ]] in the text to connect notes.</p>}
           {outgoing.length > 0 && <p className="text-[0.7rem] text-muted-foreground">Links to</p>}
-          <ul className="space-y-0.5">{outgoing.map((o) => <li key={o.path}><button type="button" onClick={() => onOpen(o.path)} className="text-xs text-violet-300 hover:underline">{o.title}</button></li>)}</ul>
+          <ul className="space-y-0.5">{outgoing.map((o) => <li key={o.path}><button type="button" onClick={() => onOpen(o.path)} className="min-h-6 text-left text-xs text-violet-300 hover:underline">{o.title}</button></li>)}</ul>
           {backlinks.length > 0 && <p className="pt-1 text-[0.7rem] text-muted-foreground">Linked from</p>}
-          <ul className="space-y-0.5">{backlinks.map((b) => <li key={b.path}><button type="button" onClick={() => onOpen(b.path)} className="text-xs text-violet-300 hover:underline">{b.title}</button></li>)}</ul>
+          <ul className="space-y-0.5">{backlinks.map((b) => <li key={b.path}><button type="button" onClick={() => onOpen(b.path)} className="min-h-6 text-left text-xs text-violet-300 hover:underline">{b.title}</button></li>)}</ul>
         </div>
 
         {draft && (
