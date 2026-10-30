@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/components/workspace/WorkspaceContext";
 import { StudioProvider, useStudio } from "@/components/knowledge/StudioContext";
+import { timeAgo } from "@/components/knowledge/ui";
 import Overview from "@/components/knowledge/Overview";
 import Explorer from "@/components/knowledge/Explorer";
 import TeachDialog from "@/components/knowledge/TeachDialog";
@@ -56,7 +57,13 @@ const PublishBar = () => {
             </li>
           ))}
         </ol>
-        <p className="flex-1 min-w-[200px]">{publishMessage}</p>
+        {busy && current >= 0 && <p className="text-xs text-muted-foreground md:hidden">Step {current + 1} of {STEPS.length}: {STEPS[current]!.label}</p>}
+        <p className="flex-1 min-w-[200px]">
+          {publishMessage}
+          {phase === "deploying" && publication?.deploy_started_at && (
+            <span className="ml-1 text-xs text-muted-foreground">Started {timeAgo(publication.deploy_started_at)}; it usually takes 2 to 5 minutes, and the Studio says "Live" only once the AI really uses it.</span>
+          )}
+        </p>
         {phase === "failed" && publication?.commit_sha && publication.status === "failed" && (
           <Button size="sm" variant="outline" onClick={() => void retrySync()} className="gap-1.5"><RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> Retry synchronization</Button>
         )}
