@@ -159,6 +159,11 @@ secret.
 - Tests: `scripts/ci/knowledge-studio.test.mjs` (the full workflow with an in-memory git repository and database,
   `scripts/brain/studio-fakes.mjs`), plus the brain, concierge and pipeline tests.
 
+- Look: the site's design tokens (`src/design/tokens.json`, `docs/ecosystem-design-tokens.md`): black, white and greys,
+  the one light-grey accent for links, selections and focus, the primary button for "Teach the AI". Two colour sets
+  are kept on purpose and always come with words: the status colours (green published or live, amber awaiting
+  confirmation, red failed or problem, blue in progress) and one dot colour per brand, for recognition.
+
 **Known limitations.**
 - The playground's "published knowledge" mode uses the index deployed with the Studio function. It is deployed by the
   same workflow run as the concierge, so they match; the inspector shows both fingerprints if they ever differ.

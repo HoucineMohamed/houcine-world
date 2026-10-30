@@ -64,7 +64,7 @@ const Activity = () => {
               <span className="w-28 shrink-0 text-xs text-muted-foreground" title={new Date(e.at).toLocaleString()}>{timeAgo(e.at)}</span>
               <Pill tone={tone(e.kind)}>{LABEL[e.kind] ?? e.kind}</Pill>
               <span className="min-w-0 flex-1">
-                {e.path && <Link to={`/workspace/knowledge/notes?path=${encodeURIComponent(e.path)}`} className="text-violet-300 hover:underline">{e.path}</Link>}
+                {e.path && <Link to={`/workspace/knowledge/notes?path=${encodeURIComponent(e.path)}`} className="text-accent hover:underline">{e.path}</Link>}
                 {Array.isArray(e.detail.paths) && <span className="text-muted-foreground"> {(e.detail.paths as string[]).join(", ")}</span>}
                 {typeof e.detail.code === "string" && <span className="text-rose-300"> ({e.detail.code})</span>}
                 {typeof e.detail.commit === "string" && <code className="ml-1 text-xs text-muted-foreground">{(e.detail.commit as string).slice(0, 7)}</code>}
