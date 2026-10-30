@@ -394,6 +394,18 @@ test("coverage: search only, works read-only, previews drafts, and each publicat
   assert.deepEqual(after.body.trend[0].coverage, commitEvent.detail.coverage);
 });
 
+test("the review queue lists possible duplicates and contact details no contact note lists, with the note to open", async () => {
+  const { call } = setup();
+  const before = (await call("GET", "review")).body.items.filter((i) => i.kind === "possible_duplicate");
+  assert.ok(before.some((i) => i.path === "brands/la-rosa-view/bookings.md" && /Deposits, payment, cancellation/.test(i.title)), JSON.stringify(before));
+  const content = NEW_NOTE.replace("are discussed individually.", "are discussed individually. Write to abroad@larosaview.example.");
+  await call("POST", "draft", { body: { path: "brands/la-rosa-view/international-bookings.md", content, expectedVersion: null } });
+  const items = (await call("GET", "review")).body.items.filter((i) => i.kind === "contact_mismatch");
+  assert.equal(items.length, 1, "the draft is checked too");
+  assert.equal(items[0].path, "brands/la-rosa-view/international-bookings.md");
+  assert.match(items[0].detail, /abroad@larosaview\.example/);
+});
+
 test("the function checks a signed-in super admin on the server before doing anything", () => {
   const src = readFileSync(join(root, "supabase/functions/knowledge-studio/index.ts"), "utf8");
   const auth = src.indexOf("await authenticateRequest(req)");
