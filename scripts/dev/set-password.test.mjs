@@ -22,8 +22,10 @@ test("the page saves the password with updateUser and needs a live session", () 
 
 test("the page never logs or echoes the password", () => {
   assert.doesNotMatch(page, /console\./);
-  assert.doesNotMatch(page, /toast\.[a-z]+\([^)]*\bpassword\b[^)]*\)/);
-  assert.doesNotMatch(page, /navigate\([^)]*password/);
+  // the typed value (the variables password and confirm) is never a message or URL argument
+  assert.doesNotMatch(page, /toast\.[a-z]+\(\s*(password|confirm)\b/);
+  assert.doesNotMatch(page, /\$\{(password|confirm)\}/);
+  assert.doesNotMatch(page, /navigate\([^)]*\b(password|confirm)\b/);
 });
 
 test("the page sends only same-site return paths", () => {
