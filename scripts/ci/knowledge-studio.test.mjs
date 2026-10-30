@@ -71,6 +71,11 @@ test("the dashboard state comes from the notes themselves, and says whether the 
   assert.equal(r.body.canPublish, true);
   setLive("0000000000000000");
   assert.equal((await call("GET", "state")).body.index.sync, "out_of_sync");
+  // The dashboard's visitor-question summary is the coverage of the knowledge visitors get (the deployed index).
+  const { scoreCoverage } = await import(join(root, "supabase/functions/_shared/brain/coverage.ts"));
+  const { COVERAGE_QUESTIONS } = await import(join(root, "supabase/functions/_shared/brain/coverage-questions.ts"));
+  const { BRANDS } = await import(join(root, "supabase/functions/_shared/brain/compile.ts"));
+  assert.deepEqual(r.body.coverage, scoreCoverage(BRAIN_INDEX, COVERAGE_QUESTIONS, BRANDS).brands);
 });
 
 test("teach -> draft -> publish -> live: the AI retrieves the new knowledge only once it is published and live", async () => {

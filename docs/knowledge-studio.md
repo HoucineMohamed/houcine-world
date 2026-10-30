@@ -16,7 +16,7 @@ public site never see any of it.
 
 | Section | What it is for |
 | --- | --- |
-| **Overview** | Whether the AI uses the published knowledge (in sync / out of sync / publishing), the number of notes (public, internal, restricted, archived), notes by brand, links between notes, sections awaiting confirmation, unpublished changes with a Publish button, problems found in the notes. Every number is counted from the notes themselves. |
+| **Overview** | Whether the AI uses the published knowledge (in sync / out of sync / publishing), the number of notes (public, internal, restricted, archived), notes by brand, links between notes, sections awaiting confirmation, unpublished changes with a Publish button, problems found in the notes, and how many visitor questions each brand answers (section 7b; click a brand to see its questions). Every number is counted from the notes themselves. |
 | **Notes** | The explorer. Left: search (Enter searches all text and related words), folders, filters (brand, category, visibility, status, tag, archived), unpublished changes, New note. Middle: the note, with Edit, Side by side, Preview, Markdown (the whole file), Compare (with the published version) and History (published versions: view, compare, restore). Right: its properties (title, brand, category, visibility, confidence, tags, other names, sources, last checked), whether the AI can use it, its links and the notes linking to it. |
 | **+ Teach the AI** | Write information in ordinary words, optionally "Help me organize it", then save it as a draft note (section 4). |
 | **Graph** | The notes as a network: one dot per note, one line per real `[[link]]`, coloured by brand; people are squares. Zoom, drag, search, filter, click to see connections, double-click to open. |
@@ -104,7 +104,7 @@ with the published knowledge or a preview with your drafts.
 | **Known gap** | No note answers it yet; the line says where the fact would come from (the site, or you). |
 | **Not found** | A note should answer it, but the search does not find it from the visitor's words: improve the note (tags, other names, a clearer heading). |
 
-"Concierge reaches" counts the questions the public La Rosa View Concierge can reach with its own access: other brands
+The same counts, for the published knowledge, are on **Overview** under "Visitor questions". "Concierge reaches" counts the questions the public La Rosa View Concierge can reach with its own access: other brands
 are overview only, so most of their questions are not reached on purpose. The real concierge also rewrites a question
 before searching, so it usually finds a little more than this score. Each publication from the Studio keeps the
 score of the new knowledge in Activity, shown under the table as a trend. A session adds or changes questions (a
