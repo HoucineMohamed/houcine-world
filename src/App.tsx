@@ -63,6 +63,8 @@ const WorkspaceDenied = React.lazy(() => import("./pages/workspace/WorkspaceDeni
 const KnowledgeStudio = React.lazy(() => import("./pages/workspace/knowledge/KnowledgeStudio"));
 const GlobalCommandCenter = React.lazy(() => import("./pages/workspace/command/CommandCenter").then((m) => ({ default: m.GlobalCommandCenter })));
 const BrandCommandCenter = React.lazy(() => import("./pages/workspace/command/CommandCenter").then((m) => ({ default: m.BrandCommandCenter })));
+const GlobalAutopilot = React.lazy(() => import("./pages/workspace/autopilot/Autopilot").then((m) => ({ default: m.GlobalAutopilot })));
+const BrandAutopilot = React.lazy(() => import("./pages/workspace/autopilot/Autopilot").then((m) => ({ default: m.BrandAutopilot })));
 const WorkspaceNotFound = React.lazy(() => import("./pages/workspace/WorkspaceNotFound"));
 
 // Wrapper component to enable page tracking
@@ -138,6 +140,9 @@ const AppRoutes = () => {
         {/* Command Center: global for super admins (checked again by the database for every record). */}
         <Route path={route("/workspace/command")} element={<GlobalCommandCenter />} />
         <Route path={route("/workspace/command/:section")} element={<GlobalCommandCenter />} />
+        {/* Autopilot: global for super admins (the database checks every record and every action again). */}
+        <Route path={route("/workspace/autopilot")} element={<GlobalAutopilot />} />
+        <Route path={route("/workspace/autopilot/:section")} element={<GlobalAutopilot />} />
         <Route path={route("/workspace/:brandId")} element={<BrandGuard />}>
           <Route path="dashboard" element={<BrandDashboard />} />
           <Route path="bookings" element={<BrandBookings />} />
@@ -147,6 +152,8 @@ const AppRoutes = () => {
           <Route path="settings" element={<BrandSettings />} />
           <Route path="command" element={<BrandCommandCenter />} />
           <Route path="command/:section" element={<BrandCommandCenter />} />
+          <Route path="autopilot" element={<BrandAutopilot />} />
+          <Route path="autopilot/:section" element={<BrandAutopilot />} />
         </Route>
       </Route>
       <Route path={route("/workspace/*")} element={<WorkspaceNotFound />} />
