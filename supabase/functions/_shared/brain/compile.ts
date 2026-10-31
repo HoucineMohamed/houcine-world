@@ -22,7 +22,8 @@ export const FIELD_ORDER = [
   "brands", "referral_brands", "fallback_note", "pinned", "updated",
 ];
 /** Folders of the brain that hold no notes (documentation, editor settings, evaluations). */
-const NOT_NOTE_DIRS = new Set(["schemas", ".obsidian", "evals"]);
+// "generated": maps/generated/, the dashboard and canvas written from the notes (dashboard.ts), never notes themselves.
+const NOT_NOTE_DIRS = new Set(["schemas", ".obsidian", "evals", "generated"]);
 /** Archived notes live here: listed by the Studio, never compiled, never linkable from active notes. */
 export const ARCHIVE_DIR = "archive";
 
@@ -304,7 +305,7 @@ export const renderSnapshotModule = (files: SourceFile[]): string =>
     "// Every Markdown file of houcine-world-brain/, for the Knowledge Studio function (admin only).",
     "",
     `export const BRAIN_SNAPSHOT: { path: string; text: string }[] = ${JSON.stringify(
-      [...files].filter((f) => f.path.endsWith(".md")).sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0)).map((f) => ({ path: f.path, text: f.text })),
+      [...files].filter((f) => f.path.endsWith(".md") && !f.path.split("/").includes("generated")).sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0)).map((f) => ({ path: f.path, text: f.text })),
       null,
       1,
     )};`,

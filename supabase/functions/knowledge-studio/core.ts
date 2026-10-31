@@ -22,6 +22,7 @@ import {
 import { search, type Passage } from "../_shared/brain/retrieve.ts";
 import { withIndexAccess, type AgentProfile } from "../_shared/brain/agent.ts";
 import { coverageSummary, scoreCoverage } from "../_shared/brain/coverage.ts";
+import { CANVAS_PATH, DASHBOARD_PATH, renderMaps } from "../_shared/brain/dashboard.ts";
 import { COVERAGE_QUESTIONS } from "../_shared/brain/coverage-questions.ts";
 import type { BrainIndex, Brand, Status } from "../_shared/brain/types.ts";
 import type { LlmProvider } from "../_shared/llm/provider.ts";
@@ -31,7 +32,7 @@ import { runTurn, type ConciergeEvent } from "../concierge/pipeline.ts";
 export const BRAIN_DIR = "houcine-world-brain";
 export const INDEX_PATH = "supabase/functions/_shared/brain/index.generated.ts";
 export const SNAPSHOT_PATH = "supabase/functions/knowledge-studio/snapshot.generated.ts";
-const NEW_NOTE_DIRS = ["brands", "people", "projects", "policies", "relationships", "sources", "internal", "agents"];
+const NEW_NOTE_DIRS = ["brands", "people", "projects", "policies", "relationships", "sources", "internal", "agents", "maps"];
 const WRITE_ACTIONS = new Set(["draft", "discard", "archive", "restore", "publish", "retry"]);
 export const DEPLOY_TIMEOUT_MS = 25 * 60_000;
 export const RUN_APPEAR_TIMEOUT_MS = 10 * 60_000;
@@ -555,6 +556,10 @@ export const createStudio = (deps: StudioDeps) => {
         }
         changes.push({ path: INDEX_PATH, content: renderIndexModule(compiled.index) });
         changes.push({ path: SNAPSHOT_PATH, content: renderSnapshotModule(next) });
+        // The generated maps (dashboard and canvas), exactly as scripts/brain/build.mjs writes them.
+        const maps = renderMaps(compileBrain(next, { audience: "admin" }), compiled.index, scoreCoverage(compiled.index, COVERAGE_QUESTIONS, BRANDS));
+        changes.push({ path: `${BRAIN_DIR}/${DASHBOARD_PATH}`, content: maps.dashboard });
+        changes.push({ path: `${BRAIN_DIR}/${CANVAS_PATH}`, content: maps.canvas });
         const titles = selected.map((d) => d.path).join(", ");
         const message = `Knowledge Studio: publish ${selected.length} note change(s)\n\n${titles}\n\nPublished by ${r.actor.email ?? r.actor.id} from Knowledge Studio. Index fingerprint ${compiled.index.fingerprint}.`;
         const committed = await repo.commit({ parent: loaded.commit, message, changes });
