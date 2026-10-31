@@ -21,7 +21,7 @@ public site never see any of it.
 | **+ Teach the AI** | Write information in ordinary words, optionally "Help me organize it", then save it as a draft note (section 4). |
 | **Graph** | The notes as a network: one dot per note, one line per real `[[link]]`, coloured by brand; people are squares. Zoom, drag, search, filter, click to see connections, double-click to open. |
 | **AI Playground** | A private chat with the concierge: with the published knowledge (what visitors get) or with your drafts (a preview). Each answer has a retrieval inspector (what was understood, which passages were read and why, their brand, visibility, status and sources) and feedback buttons. Its **Coverage** tab scores a fixed list of visitor questions per brand (section 7b). |
-| **Review** | What needs your attention: playground feedback, failed publications, note problems, drafts out of date, sections awaiting confirmation or outdated, notes without tags, notes not checked for six months. |
+| **Review** | What needs your attention: playground feedback, failed publications, note problems, drafts out of date, sections awaiting confirmation or outdated, notes without tags, notes not checked for six months, possible duplicates (two sections of different notes that use mostly the same words: keep the fact in one note and link to it) and contact details to check (an email or phone number no contact note lists). The Studio only points; you decide which text is right. |
 | **Activity** | Every operation with who and when: drafts, publications, AI index updates, failures, feedback, access changes. |
 | **Settings** | AI access (which brands the concierge may read) and the publishing setup. |
 
@@ -156,6 +156,8 @@ secret.
 - Coverage: `supabase/functions/_shared/brain/coverage.ts` (the pure scorer) and `coverage-questions.ts` (the
   questions); the read-only action `GET coverage`; `src/components/knowledge/Coverage.tsx`; test
   `scripts/ci/coverage.test.mjs`.
+- Duplicates and contact details: `supabase/functions/_shared/brain/conflicts.ts` (pure), listed by `GET review`; test
+  `scripts/ci/conflicts.test.mjs`.
 - Tests: `scripts/ci/knowledge-studio.test.mjs` (the full workflow with an in-memory git repository and database,
   `scripts/brain/studio-fakes.mjs`), plus the brain, concierge and pipeline tests.
 
