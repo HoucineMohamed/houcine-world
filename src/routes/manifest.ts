@@ -31,6 +31,7 @@ export interface RouteEntry {
 const SITE = SITE_NAME;
 const APP = { title: `Workspace | ${SITE}`, description: DEFAULT_DESCRIPTION, indexable: false, sitemapPriority: null } as const;
 const STUDIO = { ...APP, title: `Knowledge Studio | ${SITE}` } as const;
+const COMMAND = { ...APP, title: `Command Center | ${SITE}` } as const;
 
 export const MANIFEST = [
   // Public pages
@@ -81,6 +82,8 @@ export const MANIFEST = [
   { path: "/workspace/knowledge/review", ...STUDIO, ownerOnly: true },
   { path: "/workspace/knowledge/activity", ...STUDIO, ownerOnly: true },
   { path: "/workspace/knowledge/settings", ...STUDIO, ownerOnly: true },
+  { path: "/workspace/command", ...COMMAND, ownerOnly: true },
+  { path: "/workspace/command/:section", ...COMMAND, ownerOnly: true },
   { path: "/workspace/denied", ...APP, ownerOnly: false },
   { path: "/workspace/:brandId", ...APP, ownerOnly: false },
   { path: "/workspace/:brandId/dashboard", ...APP, ownerOnly: false },
@@ -89,6 +92,8 @@ export const MANIFEST = [
   { path: "/workspace/:brandId/analytics", ...APP, ownerOnly: false },
   { path: "/workspace/:brandId/messages", ...APP, ownerOnly: false },
   { path: "/workspace/:brandId/settings", ...APP, ownerOnly: false },
+  { path: "/workspace/:brandId/command", ...COMMAND, ownerOnly: false },
+  { path: "/workspace/:brandId/command/:section", ...COMMAND, ownerOnly: false },
   { path: "/workspace/*", ...APP, ownerOnly: false },
 
   // Anything else: the designed 404 page
