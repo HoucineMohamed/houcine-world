@@ -129,7 +129,7 @@ const Explorer = () => {
           {select("Status", "status", ["Published", "Draft", "Pending publication", "Needs review", "Archive pending"].map((s) => [s, s]))}
           {select("Tag", "tag", tags.map((t) => [t, t]))}
           <label className="flex items-end gap-2 pb-1.5 text-xs">
-            <input type="checkbox" checked={filters.archived} onChange={(e) => setParam("archived", e.target.checked ? "1" : "")} className="h-4 w-4 accent-violet-400" />
+            <input type="checkbox" checked={filters.archived} onChange={(e) => setParam("archived", e.target.checked ? "1" : "")} className="h-4 w-4 accent-primary" />
             Archived notes
           </label>
           {activeFilters > 0 && (

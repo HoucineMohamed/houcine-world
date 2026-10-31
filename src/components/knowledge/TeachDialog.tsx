@@ -117,7 +117,7 @@ const TeachDialog = () => {
     <Dialog open={teachOpen} onOpenChange={close}>
       <DialogContent className="knowledge-studio max-h-[92vh] max-w-4xl overflow-y-auto text-sm">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2"><Brain className="h-5 w-5 text-violet-300" aria-hidden="true" /> Teach the AI</DialogTitle>
+          <DialogTitle className="flex items-center gap-2"><Brain className="h-5 w-5 text-accent" aria-hidden="true" /> Teach the AI</DialogTitle>
           <DialogDescription>Write what the AI should know, in your own words. It becomes a draft note: nothing reaches the AI until you publish it.</DialogDescription>
         </DialogHeader>
 
@@ -135,17 +135,17 @@ const TeachDialog = () => {
             </div>
 
             {assist && (
-              <div className="space-y-3 rounded-lg border border-violet-500/30 bg-violet-500/5 p-3 text-sm">
+              <div className="space-y-3 rounded-lg border border-accent/30 bg-accent/5 p-3 text-sm">
                 {!assist.aiAvailable && <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><Info className="h-3.5 w-3.5" /> The AI formatting help is not configured (ANTHROPIC_API_KEY); the checks against existing knowledge below still ran.</p>}
                 {assist.aiError && <p className="text-xs text-amber-200">The AI could not answer this time ({assist.aiError}). Your text is unchanged.</p>}
                 {s && (
                   <>
-                    <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-violet-300">AI suggestion (not saved unless you choose it)</p>
+                    <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-accent">AI suggestion (not saved unless you choose it)</p>
                     {s.sections.length > 0 && (
                       <div className="space-y-2">
                         {s.sections.map((sec) => <div key={sec.heading}><p className="font-medium">{sec.heading}</p><p className="whitespace-pre-wrap text-muted-foreground">{sec.text}</p></div>)}
                         <label className="flex items-center gap-2 text-xs">
-                          <input type="checkbox" checked={useSuggestion} onChange={(e) => setUseSuggestion(e.target.checked)} className="accent-violet-400" />
+                          <input type="checkbox" checked={useSuggestion} onChange={(e) => setUseSuggestion(e.target.checked)} className="accent-primary" />
                           Use this structure (otherwise your text is kept exactly as written)
                         </label>
                       </div>
@@ -164,7 +164,7 @@ const TeachDialog = () => {
                         <p className="flex items-center gap-1.5 font-medium"><AlertTriangle className="h-3.5 w-3.5" /> Possible conflicts with existing notes</p>
                         <ul className="mt-1 list-disc pl-4">{s.possibleConflicts.map((c) => {
                           const n = state?.notes.find((x) => x.id === c.note_id);
-                          return <li key={c.note_id}>{n ? <a className="text-violet-300 underline" href={`/workspace/knowledge/notes?path=${encodeURIComponent(n.path)}`} target="_blank" rel="noreferrer">{n.title}</a> : c.note_id}: {c.explanation}</li>;
+                          return <li key={c.note_id}>{n ? <a className="text-accent underline" href={`/workspace/knowledge/notes?path=${encodeURIComponent(n.path)}`} target="_blank" rel="noreferrer">{n.title}</a> : c.note_id}: {c.explanation}</li>;
                         })}</ul>
                         <p className="mt-1 text-muted-foreground">Nothing is changed automatically: open those notes and correct whichever is wrong.</p>
                       </div>
@@ -204,7 +204,7 @@ const TeachDialog = () => {
               <div className="max-h-28 space-y-0.5 overflow-auto rounded-md border border-border p-1.5">
                 {(state?.sources ?? []).map((src) => (
                   <label key={src.id} className="flex items-start gap-1.5 text-[0.7rem]" title={src.label}>
-                    <input type="checkbox" checked={sources.includes(src.id)} onChange={(e) => setSources((cur) => (e.target.checked ? [...cur, src.id] : cur.filter((x) => x !== src.id)))} className="mt-0.5 accent-violet-400" />
+                    <input type="checkbox" checked={sources.includes(src.id)} onChange={(e) => setSources((cur) => (e.target.checked ? [...cur, src.id] : cur.filter((x) => x !== src.id)))} className="mt-0.5 accent-primary" />
                     <span><span className="font-mono">{src.id}</span></span>
                   </label>
                 ))}

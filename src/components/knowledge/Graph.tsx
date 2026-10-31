@@ -191,7 +191,7 @@ const Graph = () => {
               const t = byId.get(b);
               if (!s || !t) return null;
               const lit = neighbours ? neighbours.has(a) && neighbours.has(b) && (a === selected || b === selected) : false;
-              return <line key={`${a}>${b}`} x1={s.x} y1={s.y} x2={t.x} y2={t.y} stroke={lit ? "#c4b5fd" : "rgba(255,255,255,0.12)"} strokeWidth={lit ? 1.6 : 0.8} />;
+              return <line key={`${a}>${b}`} x1={s.x} y1={s.y} x2={t.x} y2={t.y} className={lit ? "stroke-accent" : undefined} stroke={lit ? undefined : "rgba(255,255,255,0.12)"} strokeWidth={lit ? 1.6 : 0.8} />;
             })}
             {nodes.map((n) => {
               const dim = (neighbours && !neighbours.has(n.id)) || (matches && !matches.has(n.id));
@@ -242,7 +242,7 @@ const Graph = () => {
             <ul className="space-y-0.5">
               {[...(neighbours ?? [])].filter((id) => id !== selected).map((id) => {
                 const n = byId.get(id);
-                return n ? <li key={id}><button type="button" onClick={() => setSelected(id)} className="text-xs text-violet-300 hover:underline">{n.title}</button></li> : null;
+                return n ? <li key={id}><button type="button" onClick={() => setSelected(id)} className="text-xs text-accent hover:underline">{n.title}</button></li> : null;
               })}
             </ul>
             <Button size="sm" className="w-full gap-1.5" onClick={() => open(selectedNote.path)}><ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /> Open the note</Button>
