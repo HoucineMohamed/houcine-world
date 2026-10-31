@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Send, RotateCcw, Loader2, ThumbsUp, CircleDashed, XCircle, HelpCircle, Clock, ChevronDown, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -89,7 +89,8 @@ const Inspector = ({ result }: { result: PlaygroundResult }) => {
 const Playground = () => {
   const { state } = useStudio();
   const [source, setSource] = useState<"live" | "preview">("live");
-  const [view, setView] = useState<"chat" | "coverage">("chat");
+  const [params] = useSearchParams();
+  const [view, setView] = useState<"chat" | "coverage">(params.get("view") === "coverage" ? "coverage" : "chat");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -137,7 +138,7 @@ const Playground = () => {
   };
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-4">
+    <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)] gap-4">
       <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card/30 p-3 text-sm">
         <div className="flex rounded-md border border-border p-0.5" role="tablist" aria-label="Playground view">
           {(["chat", "coverage"] as const).map((v) => (
@@ -160,7 +161,7 @@ const Playground = () => {
         {view === "chat" && <Button size="sm" variant="ghost" onClick={reset} className="gap-1.5"><RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> New conversation</Button>}
       </div>
 
-      {view === "coverage" ? <Coverage source={source} /> : (<>
+      {view === "coverage" ? <Coverage source={source} initialBrand={params.get("brand")} /> : (<>
 
       <div className="space-y-4">
         {turns.length === 0 && (

@@ -392,6 +392,8 @@ export const createStudio = (deps: StudioDeps) => {
         stats: brainStats(published),
         index: { expected, live: liveFingerprint, sync, notes: published.index?.notes.length ?? null, passages: published.index?.chunks.length ?? null, bundled: deps.liveIndex.fingerprint },
         agents: published.index?.agents ?? {},
+        // What visitors get: the fixed visitor questions scored on the deployed index (search only, no AI call).
+        coverage: scoreCoverage(deps.liveIndex, COVERAGE_QUESTIONS, BRANDS).brands,
         publication: current ?? pubs[0] ?? null,
         lastLive,
         lastChange: events[0] ?? null,

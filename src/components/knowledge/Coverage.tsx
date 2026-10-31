@@ -20,13 +20,13 @@ const RESULT: Record<CoverageResult, { tone: "published" | "pending" | "neutral"
 
 const ResultPill = ({ result }: { result: CoverageResult }) => <Pill tone={RESULT[result].tone} title={RESULT[result].help}>{RESULT[result].label}</Pill>;
 
-const Coverage = ({ source }: { source: "live" | "preview" }) => {
+const Coverage = ({ source, initialBrand = null }: { source: "live" | "preview"; initialBrand?: string | null }) => {
   const navigate = useNavigate();
   const { state } = useStudio();
   const [report, setReport] = useState<CoverageReport | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [brand, setBrand] = useState<string | null>(null);
+  const [brand, setBrand] = useState<string | null>(initialBrand);
 
   const load = async () => {
     setBusy(true);
