@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { AlertTriangle, CheckCircle2, CircleHelp, Send, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStudio } from "./StudioContext";
-import { BrandDot, brandLabel, noteStatus, Pill, Section, timeAgo } from "./ui";
+import { BrandDot, brandLabel, noteStatus, Pill, Section, timeAgo, TokenWarning } from "./ui";
 
 // The knowledge dashboard: every number is derived by the server from the notes themselves (no stored statistics),
 // and the top card says plainly whether the AI serves the published knowledge.
@@ -68,6 +68,7 @@ const Overview = () => {
           </div>
           <Button size="sm" variant="ghost" onClick={() => void reload()} aria-label="Refresh"><RefreshCw className="h-4 w-4" /></Button>
         </div>
+        {state.canPublish && <div className="mt-3"><TokenWarning token={state.token} /></div>}
         {!state.canPublish && (
           <p className="mt-3 rounded-md border border-amber-500/30 bg-amber-500/10 p-2 text-xs text-amber-200">
             Read-only: publishing is not set up ({state.repoProblem === "not_configured" || state.mode === "snapshot" ? "the KNOWLEDGE_GITHUB_TOKEN secret is missing" : `the repository answered "${state.repoProblem}"`}). See <Link to="/workspace/knowledge/settings" className="underline">Settings</Link>.

@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { studioApi, StudioError } from "@/services/knowledgeStudio";
 import { BRAND_LABELS, readNote, writeNote, listOf, today } from "@/lib/knowledge/note";
 import { useStudio } from "./StudioContext";
-import { Section } from "./ui";
+import { Section, TokenWarning } from "./ui";
+
+/** Matches TOKEN_WARNING_DAYS in supabase/functions/knowledge-studio/core.ts (the server decides when to warn). */
+const TOKEN_WARNING_DAYS = 14;
 
 // Settings: what each AI agent may read (AI access) and the state of the publishing setup. AI access is itself a note
 // (houcine-world-brain/agents/<agent>.md): changing it here saves a draft of that note, published like any other
@@ -93,6 +96,25 @@ const StudioSettings = () => {
         <div className="space-y-2 text-sm">
           <p className="flex items-center gap-2"><Github className="h-4 w-4" aria-hidden="true" /> {state.mode === "github" ? (state.canPublish ? "Connected to the knowledge repository: publishing works." : `The repository could not be read (${state.repoProblem}).`) : "Read-only: the KNOWLEDGE_GITHUB_TOKEN secret is not set."}</p>
           {state.head && <p className="text-xs text-muted-foreground">Branch head <code>{state.head.slice(0, 7)}</code></p>}
+          {state.token && (
+            <>
+              <TokenWarning token={state.token} />
+              <p className="text-xs text-muted-foreground">
+                {state.token.expiresAt
+                  ? `The token expires on ${new Date(state.token.expiresAt).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}. The Studio warns ${TOKEN_WARNING_DAYS} days before.`
+                  : "GitHub did not say when the token expires: check the date you noted when you created it."}
+              </p>
+              <details className="text-xs text-muted-foreground">
+                <summary className="cursor-pointer text-foreground/80">How to replace the token</summary>
+                <ol className="mt-1 list-decimal space-y-0.5 pl-5">
+                  <li>On GitHub: your picture, Settings, Developer settings, Personal access tokens, Fine-grained tokens, Generate new token.</li>
+                  <li>Only the houcine-world repository; Contents: Read and write; Actions: Read and write. Note the expiry date.</li>
+                  <li>In supabase.com/dashboard: the project, Edge Functions, Secrets, edit KNOWLEDGE_GITHUB_TOKEN and paste the new token.</li>
+                  <li>Delete the old token on GitHub. Reload this page: it should say "publishing works".</li>
+                </ol>
+              </details>
+            </>
+          )}
           <p className="text-xs text-muted-foreground">Publishing commits the notes and the rebuilt index to the main branch; the “Deploy Supabase” workflow then updates the AI. Setup steps: docs/knowledge-studio.md.</p>
         </div>
       </Section>

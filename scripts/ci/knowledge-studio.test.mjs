@@ -424,6 +424,36 @@ test("feedback is counted per brand and rating, numbers only, never its text", a
   assert.ok(!JSON.stringify(r.body.feedbackSummary).includes("secret"), "the summary holds no text");
 });
 
+test("the publishing token's expiry: read from GitHub's header when it is there, never guessed", async () => {
+  const { parseTokenExpiry, tokenStatus, TOKEN_WARNING_DAYS } = studioCore;
+  assert.equal(parseTokenExpiry("2026-12-31 23:59:59 UTC"), "2026-12-31T23:59:59.000Z");
+  assert.equal(parseTokenExpiry("2026-12-31 23:59:59 +0100"), "2026-12-31T22:59:59.000Z");
+  for (const bad of [null, "", "soon", "2026-13-45 99:99:99 UTC", "31/12/2026"]) assert.equal(parseTokenExpiry(bad), null, String(bad));
+  const now = Date.parse("2026-10-30T10:00:00Z");
+  assert.deepEqual(tokenStatus(null, now), { expiresAt: null, daysLeft: null, warn: false });
+  assert.equal(tokenStatus("2027-01-30 10:00:00 UTC", now).warn, false);
+  assert.deepEqual(tokenStatus("2026-11-13 10:00:00 UTC", now), { expiresAt: "2026-11-13T10:00:00.000Z", daysLeft: TOKEN_WARNING_DAYS, warn: true });
+  assert.equal(tokenStatus("2026-10-29 10:00:00 UTC", now).daysLeft, -1, "an expired token is said");
+
+  // The dashboard says it in GitHub mode only; read-only mode has no token to speak of.
+  const g = fakeRepo();
+  const { call } = setup({ repo: { ...g.repo, tokenExpiry: () => "2026-11-05 00:00:00 UTC" } });
+  const state = (await call("GET", "state")).body;
+  assert.equal(state.token.expiresAt, "2026-11-05T00:00:00.000Z");
+  assert.equal(state.token.warn, true);
+  const { createSnapshotRepo } = await import(join(root, "supabase/functions/knowledge-studio/github.ts"));
+  assert.equal((await setup({ repo: createSnapshotRepo(brainFiles) }).call("GET", "state")).body.token, null);
+
+  // The adapter keeps the header's date (only the date, never the token) from GitHub's answers.
+  const token = ["fake", "token", Date.now()].join("-");
+  const fetch = async () => new Response(JSON.stringify({ object: { sha: "a".repeat(40) } }), { status: 200, headers: { "github-authentication-token-expiration": "2026-12-01 08:00:00 UTC" } });
+  const repo = createGithubRepo({ token, owner: "o", repo: "r", branch: "main", workflow: "supabase-deploy.yml", brainDir: "houcine-world-brain", fetch });
+  assert.equal(repo.tokenExpiry(), null, "unknown before any answer");
+  await repo.head();
+  assert.equal(repo.tokenExpiry(), "2026-12-01 08:00:00 UTC");
+  assert.ok(!repo.tokenExpiry().includes(token));
+});
+
 test("the Studio refuses a public note that names a page the site does not have, as the Node build does", async () => {
   const { call } = setup();
   const bad = NEW_NOTE.replace("are discussed individually.", "are discussed individually. Details on `/international`.");
