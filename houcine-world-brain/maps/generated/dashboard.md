@@ -2,7 +2,7 @@
 
 > [!info] Generated from the notes by `scripts/brain/build.mjs` and by every Knowledge Studio publication. Do not edit:
 > it is rewritten each time. Charts are Mermaid diagrams, which Obsidian and GitHub draw without any plugin.
-> AI index fingerprint `dde65f925c572593`.
+> AI index fingerprint `cf797ad84357a0f6`.
 
 ## At a glance
 
@@ -10,9 +10,9 @@
 | --- | --- |
 | Active notes | 34 (24 public, 10 internal, 0 restricted) |
 | Archived notes | 0 |
-| Passages the public AI can read | 62 |
+| Passages the public AI can read | 64 |
 | Links between notes | 52 |
-| Sections waiting for the owner | 8 |
+| Sections waiting for the owner | 7 |
 
 ## Notes by brand
 
@@ -32,9 +32,9 @@ Every passage the public AI can read, by its confidence. The AI never states an 
 
 ```mermaid
 pie showData title Public passages by confidence
-  "Verified" : 48
+  "Verified" : 51
   "Current policy" : 6
-  "Incomplete" : 8
+  "Incomplete" : 7
 ```
 
 ## Passages per brand in the AI's index
@@ -46,7 +46,7 @@ pie showData title Public passages by confidence
 | Houcine.tech | 4 | ██ |
 | Houcine.studio | 2 | █ |
 | Houcine.management | 1 | ▏ |
-| Houcine.education | 1 | ▏ |
+| Houcine.education | 3 | █ |
 
 ## Visitor questions answered
 
@@ -59,7 +59,7 @@ The fixed visitor questions of `supabase/functions/_shared/brain/coverage-questi
 | Houcine.tech | 6 | 0 | 3 | 0 | ███████░░░ 6/9 |
 | Houcine.studio | 3 | 0 | 3 | 0 | █████░░░░░ 3/6 |
 | Houcine.management | 2 | 1 | 3 | 0 | ███░░░░░░░ 2/6 |
-| Houcine.education | 1 | 1 | 2 | 0 | ███░░░░░░░ 1/4 |
+| Houcine.education | 4 | 0 | 0 | 0 | ██████████ 4/4 |
 
 ## What each public AI may read
 
@@ -178,7 +178,6 @@ Public sections the AI must not state as facts until the owner confirms them (th
 
 | Note | Section | Status |
 | --- | --- | --- |
-| [[Houcine.education]] | What it is | Incomplete |
 | [[Booking La Rosa View]] | Availability | Incomplete |
 | [[Booking La Rosa View]] | Prices and quotes | Incomplete |
 | [[Booking La Rosa View]] | Deposits, payment, cancellation | Incomplete |

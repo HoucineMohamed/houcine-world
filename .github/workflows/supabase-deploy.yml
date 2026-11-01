@@ -23,7 +23,8 @@ name: Deploy Supabase
 #      (each an -oauth and a -metrics function), meta-business-token, meta-business-metrics,
 #      platform-credentials, concierge (the La Rosa View Concierge: deploying it on every merge is how an
 #      updated knowledge brain reaches the live chat, docs/knowledge-brain.md) and knowledge-studio (the owner's
-#      Knowledge Studio backend, docs/knowledge-studio.md). NOT deployed here:
+#      Knowledge Studio backend, docs/knowledge-studio.md) and command-analyst (the Command Center's read-only AI
+#      management analyst, docs/command-center.md). NOT deployed here:
 #      send-notification and seed-admins (deployed by hand, from the Supabase dashboard or by adding their name
 #      to the list in the last step; docs/owner-review-guide.md).
 #
@@ -178,7 +179,7 @@ jobs:
             facebook-oauth facebook-metrics \
             meta-business-token meta-business-metrics \
             platform-credentials \
-            concierge knowledge-studio; do
+            concierge knowledge-studio command-analyst; do
             echo "::group::Deploying $fn"
             supabase functions deploy "$fn" --project-ref "$SUPABASE_PROJECT_REF"
             echo "::endgroup::"

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   LayoutDashboard, CalendarDays, Bell, BarChart3, MessageSquare,
-  Settings as SettingsIcon, LogOut, Globe, ChevronDown, KeyRound, Menu, Brain } from "lucide-react";
+  Settings as SettingsIcon, LogOut, Globe, ChevronDown, KeyRound, Menu, Brain, Gauge, Radar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -23,6 +23,7 @@ const NAV = [
   { to: "notifications", label: "Notifications", icon: Bell },
   { to: "analytics", label: "Analytics", icon: BarChart3 },
   { to: "messages", label: "Messages", icon: MessageSquare },
+  { to: "command", label: "Command Center", icon: Gauge },
   { to: "settings", label: "Settings", icon: SettingsIcon },
 ];
 
@@ -85,6 +86,11 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
       {isSuperAdmin && (
         <NavLink to="/workspace/platform-credentials" className={navLinkClass} onClick={closeMenu}>
           <KeyRound className="w-4 h-4" aria-hidden="true" /> Platform Credentials
+        </NavLink>
+      )}
+      {isSuperAdmin && (
+        <NavLink to="/workspace/command" className={navLinkClass} onClick={closeMenu}>
+          <Radar className="w-4 h-4" aria-hidden="true" /> Global Command Center
         </NavLink>
       )}
       {isSuperAdmin && (

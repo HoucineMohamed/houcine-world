@@ -61,6 +61,8 @@ const EcosystemView = React.lazy(() => import("./pages/workspace/EcosystemView")
 const PlatformCredentials = React.lazy(() => import("./pages/workspace/PlatformCredentials"));
 const WorkspaceDenied = React.lazy(() => import("./pages/workspace/WorkspaceDenied"));
 const KnowledgeStudio = React.lazy(() => import("./pages/workspace/knowledge/KnowledgeStudio"));
+const GlobalCommandCenter = React.lazy(() => import("./pages/workspace/command/CommandCenter").then((m) => ({ default: m.GlobalCommandCenter })));
+const BrandCommandCenter = React.lazy(() => import("./pages/workspace/command/CommandCenter").then((m) => ({ default: m.BrandCommandCenter })));
 const WorkspaceNotFound = React.lazy(() => import("./pages/workspace/WorkspaceNotFound"));
 
 // Wrapper component to enable page tracking
@@ -133,6 +135,9 @@ const AppRoutes = () => {
         <Route path={route("/workspace/knowledge/review")} element={<KnowledgeStudio section="review" />} />
         <Route path={route("/workspace/knowledge/activity")} element={<KnowledgeStudio section="activity" />} />
         <Route path={route("/workspace/knowledge/settings")} element={<KnowledgeStudio section="settings" />} />
+        {/* Command Center: global for super admins (checked again by the database for every record). */}
+        <Route path={route("/workspace/command")} element={<GlobalCommandCenter />} />
+        <Route path={route("/workspace/command/:section")} element={<GlobalCommandCenter />} />
         <Route path={route("/workspace/:brandId")} element={<BrandGuard />}>
           <Route path="dashboard" element={<BrandDashboard />} />
           <Route path="bookings" element={<BrandBookings />} />
@@ -140,6 +145,8 @@ const AppRoutes = () => {
           <Route path="analytics" element={<BrandAnalytics />} />
           <Route path="messages" element={<BrandMessages />} />
           <Route path="settings" element={<BrandSettings />} />
+          <Route path="command" element={<BrandCommandCenter />} />
+          <Route path="command/:section" element={<BrandCommandCenter />} />
         </Route>
       </Route>
       <Route path={route("/workspace/*")} element={<WorkspaceNotFound />} />
