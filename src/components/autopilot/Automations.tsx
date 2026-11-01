@@ -21,6 +21,12 @@ const TEMPLATES: { name: string; description: string; definition: Definition }[]
     definition: { trigger: "invoice.overdue", match: "all", conditions: [{ field: "outstanding", op: "gt", value: "0" }], actions: [{ type: "create_alert", title: "Overdue invoice {name}: {outstanding} {currency}", severity: "high", category: "finance" }, { type: "notify_admins", title: "Invoice overdue: {name}", category: "finance", priority: "high" }, { type: "followup_draft" }] } },
   { name: "Project budget", description: "When a project's costs reach 90% of its budget (same currency only): a financial warning to the owner and central management.",
     definition: { trigger: "project.budget_threshold", match: "all", conditions: [{ field: "budget_use_pct", op: "gte", value: "90" }], actions: [{ type: "create_alert", title: "Budget at {budget_use_pct}%: {name}", severity: "high", category: "finance" }, { type: "notify_owner", title: "Budget at {budget_use_pct}%: {name}", category: "finance", priority: "high" }, { type: "notify_admins", title: "Budget at {budget_use_pct}%: {name}", category: "finance", priority: "high", include_central: true }] } },
+  { name: "Client revision request", description: "When a client asks for a revision: the project manager is told and a task is created.",
+    definition: { trigger: "deliverable.revision_requested", match: "all", conditions: [], actions: [{ type: "notify_owner", title: "Revision requested: {title}", category: "projects", priority: "high" }, { type: "create_task", title: "Handle the revision: {title}", priority: "high", due_in_days: 2, assign: "owner" }] } },
+  { name: "Proposal accepted", description: "When a client accepts a proposal: the admins are told (the project is created by an admin, once).",
+    definition: { trigger: "proposal.accepted", match: "all", conditions: [], actions: [{ type: "notify_admins", title: "Proposal accepted: {title}", category: "finance", priority: "high" }] } },
+  { name: "Client onboarding", description: "When a client joins a project: an onboarding task for the project owner.",
+    definition: { trigger: "project.client_added", match: "all", conditions: [], actions: [{ type: "create_task", title: "Onboard the client on {name}", priority: "medium", due_in_days: 3, assign: "owner" }] } },
 ];
 
 /** The visual workflow: one card per step, joined top to bottom. */
