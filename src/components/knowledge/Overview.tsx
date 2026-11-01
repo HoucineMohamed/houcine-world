@@ -105,7 +105,7 @@ const Overview = () => {
         <ul className="space-y-2">
           {state.brands.map((b) => (
             <li key={b} className="grid grid-cols-[minmax(120px,190px)_1fr_auto] items-center gap-3 text-sm">
-              <Link to={`/workspace/knowledge/notes?brand=${b}`} className="flex items-center gap-2 truncate hover:underline"><BrandDot brand={b} /> {brandLabel(b)}</Link>
+              <Link to={`/workspace/knowledge/notes?brand=${b}`} className="flex min-h-6 items-center gap-2 truncate hover:underline"><BrandDot brand={b} /> {brandLabel(b)}</Link>
               <div className="h-1.5 rounded-full bg-muted" aria-hidden="true">
                 <div className="h-1.5 rounded-full bg-foreground/50" style={{ width: `${(100 * (stats.byBrand[b] ?? 0)) / brandMax}%` }} />
               </div>

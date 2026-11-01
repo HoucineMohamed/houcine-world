@@ -61,7 +61,8 @@ To correct a fact: open the note, edit, **Save draft**, then **Publish**. **Undo
 ## 5. What "Publish" does (and why "Published successfully" takes a few minutes)
 
 1. **Validating**: the whole brain is checked with your drafts applied: headers, links, sources, ids, that no public
-   note links to an internal one. If anything fails, nothing is published and the problems are listed.
+   note links to an internal one, and that every site page a public note names (written like `/booking`) is a real
+   public page. If anything fails, nothing is published and the problems are listed.
 2. **Saving to the repository**: one commit on the main branch with the changed notes, the rebuilt AI index and the
    Studio's snapshot, all together (or nothing). The Markdown notes in the repository stay the source of truth.
 3. **Updating the AI's index**: that commit starts the **Deploy Supabase** workflow, which redeploys the concierge
