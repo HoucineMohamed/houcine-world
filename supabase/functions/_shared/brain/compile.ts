@@ -148,11 +148,27 @@ const sourceIds = (notes: ParsedNote[]): Set<string> => {
   return ids;
 };
 
+/** `/path` written as code in a note (`` `/booking` ``): a page of the site the note sends visitors to. */
+const SITE_PATH = /`(\/[^`\s]*)`/g;
+
+/** Whether `path` is one of the site's public pages; a manifest pattern segment (":slug") matches one plain segment. */
+export const isSitePath = (path: string, sitePaths: readonly string[]): boolean => {
+  const clean = path.replace(/[?#].*$/, "");
+  const parts = clean.split("/");
+  return sitePaths.some((p) => {
+    if (p === clean) return true;
+    const q = p.split("/");
+    return q.length === parts.length && q.every((seg, i) => (seg.startsWith(":") ? /^[a-z0-9][a-z0-9-]*$/.test(parts[i]!) : seg === parts[i]));
+  });
+};
+
 /**
  * Reads and checks every note, then compiles the public, active ones into the agents' index.
  * `index` is null when there is any error: a broken brain is never published.
+ * `sitePaths` (the site's public pages, site-paths.generated.ts) turns on the check that every page a public note
+ * names exists and is public; the Node build and Knowledge Studio always pass it.
  */
-export const compileBrain = (files: SourceFile[], options: { audience?: "public" | "admin" } = {}): CompileResult => {
+export const compileBrain = (files: SourceFile[], options: { audience?: "public" | "admin"; sitePaths?: readonly string[] } = {}): CompileResult => {
   const audience = options.audience ?? "public";
   const errors: string[] = [];
   const notes: ParsedNote[] = [];
@@ -215,6 +231,11 @@ export const compileBrain = (files: SourceFile[], options: { audience?: "public"
     }
     for (const sec of sections(n.body, strOf(n.fields.title), strOf(n.fields.status) as Status)) {
       if (/^>\s*\[!/.test(sec.raw) && !SECTION_STATUS.test(sec.raw)) errors.push(`${n.file}: unknown status callout in "${sec.heading}"`);
+    }
+    if (options.sitePaths && n.fields.visibility === "public") {
+      for (const m of n.body.matchAll(SITE_PATH)) {
+        if (!isSitePath(m[1]!, options.sitePaths)) errors.push(`${n.file}: "${m[1]}" is not a public page of the site (src/routes/manifest.ts)`);
+      }
     }
   }
 

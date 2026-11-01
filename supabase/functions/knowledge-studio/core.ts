@@ -16,10 +16,11 @@
 // The caller is already authenticated as a super admin (index.ts); this module never sees a token.
 
 import {
-  ARCHIVE_DIR, BRANDS, compileBrain, isArchivedPath, isNotePath, parseFrontmatter, renderIndexModule, renderSnapshotModule,
+  ARCHIVE_DIR, BRANDS, compileBrain as compileNotes, isArchivedPath, isNotePath, parseFrontmatter, renderIndexModule, renderSnapshotModule,
   sections, type CompileResult, type SourceFile,
 } from "../_shared/brain/compile.ts";
 import { search, type Passage } from "../_shared/brain/retrieve.ts";
+import { SITE_PATHS } from "../_shared/brain/site-paths.generated.ts";
 import { withIndexAccess, type AgentProfile } from "../_shared/brain/agent.ts";
 import { findConflicts } from "../_shared/brain/conflicts.ts";
 import { coverageSummary, scoreCoverage } from "../_shared/brain/coverage.ts";
@@ -29,6 +30,10 @@ import type { BrainIndex, Brand, Status } from "../_shared/brain/types.ts";
 import type { LlmProvider } from "../_shared/llm/provider.ts";
 import { checkChatRequest } from "../concierge/core.ts";
 import { runTurn, type ConciergeEvent } from "../concierge/pipeline.ts";
+
+/** The one compiler, always with the check that the pages a public note names exist (as in the Node build). */
+const compileBrain = (files: SourceFile[], options: { audience?: "public" | "admin" } = {}): CompileResult =>
+  compileNotes(files, { ...options, sitePaths: SITE_PATHS });
 
 export const BRAIN_DIR = "houcine-world-brain";
 export const INDEX_PATH = "supabase/functions/_shared/brain/index.generated.ts";

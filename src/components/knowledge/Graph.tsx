@@ -38,6 +38,17 @@ const Graph = () => {
   const [, setTick] = useState(0);
   const drag = useRef<{ x: number; y: number; vx: number; vy: number } | null>(null);
   const svg = useRef<SVGSVGElement>(null);
+  // Screen pixels per graph unit (the drawing is scaled to fit its box), so touch targets can be sized in pixels.
+  const [pxPerUnit, setPxPerUnit] = useState(1);
+  useEffect(() => {
+    const el = svg.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const measure = () => setPxPerUnit(Math.min(el.clientWidth / W, el.clientHeight / H) || 1);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const notes = useMemo(
     () => (state?.notes ?? []).filter((n) => !n.archived && n.id && n.type !== "index" && n.type !== "source").filter((n) => !brand || n.brand === brand).filter((n) => !type || n.type === type),
@@ -218,6 +229,8 @@ const Graph = () => {
                   ) : (
                     <circle r={r} fill={colour} stroke={n.id === selected ? "#fff" : "rgba(0,0,0,0.6)"} strokeWidth={n.id === selected ? 2 : 1} />
                   )}
+                  {/* A larger, invisible target: at least 24 px across on screen (the dots are a few pixels wide on a phone). */}
+                  <circle r={Math.max(r, Math.min(40, 12 / (pxPerUnit * view.k)))} fill="transparent" />
                   {showLabel && <text x={r + 4} y={4} fontSize={11 / Math.max(1, view.k * 0.8)} fill="rgba(255,255,255,0.85)" className="pointer-events-none">{n.title}</text>}
                 </g>
               );
@@ -242,7 +255,7 @@ const Graph = () => {
             <ul className="space-y-0.5">
               {[...(neighbours ?? [])].filter((id) => id !== selected).map((id) => {
                 const n = byId.get(id);
-                return n ? <li key={id}><button type="button" onClick={() => setSelected(id)} className="text-xs text-accent hover:underline">{n.title}</button></li> : null;
+                return n ? <li key={id}><button type="button" onClick={() => setSelected(id)} className="min-h-6 text-left text-xs text-accent hover:underline">{n.title}</button></li> : null;
               })}
             </ul>
             <Button size="sm" className="w-full gap-1.5" onClick={() => open(selectedNote.path)}><ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /> Open the note</Button>
