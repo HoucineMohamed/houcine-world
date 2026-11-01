@@ -81,6 +81,9 @@ export const MANIFEST = [
   // Knowledge Studio (docs/knowledge-studio.md): super admins only, enforced by the knowledge-studio Edge Function.
   { path: "/workspace/knowledge", ...STUDIO, ownerOnly: true },
   { path: "/workspace/knowledge/notes", ...STUDIO, ownerOnly: true },
+  { path: "/workspace/knowledge/library", ...STUDIO, ownerOnly: false },
+  { path: "/workspace/knowledge/insights", ...STUDIO, ownerOnly: false },
+  { path: "/workspace/knowledge/access", ...STUDIO, ownerOnly: false },
   { path: "/workspace/knowledge/graph", ...STUDIO, ownerOnly: true },
   { path: "/workspace/knowledge/playground", ...STUDIO, ownerOnly: true },
   { path: "/workspace/knowledge/review", ...STUDIO, ownerOnly: true },
