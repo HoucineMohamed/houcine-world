@@ -279,6 +279,22 @@ export const clientOsApi = {
   },
   brandAdmins: (brandIds: string[] | null) => rows<{ user_id: string; brand_id: string; role: string; profile: { full_name: string | null; email: string | null } | null }>(scoped(db.from("brand_admins").select("user_id, brand_id, role, profile:profiles(full_name, email)"), brandIds)),
 
+  // ── AI assistants (docs/client-os-ai.md) ───────────────────────────────────────────────────────────────────────
+  aiConversations: (kind: "client" | "internal") => rows<AiConversation>(db.from("ai_conversations").select("id, kind, title, created_at, updated_at").eq("kind", kind).order("updated_at", { ascending: false }).limit(100)),
+  aiMessages: (conversationId: string) => rows<AiMessage>(db.from("ai_messages").select("id, role, content, meta, created_at").eq("conversation_id", conversationId).order("created_at")),
+  aiDeleteConversation: async (id: string) => { const { error } = await db.from("ai_conversations").delete().eq("id", id); fail(error); },
+  aiProposals: (ids: string[]) => (ids.length ? rows<{ id: string; status: string; result: Record<string, unknown> | null; error: string | null }>(db.from("ai_action_proposals").select("id, status, result, error").in("id", ids)) : Promise.resolve([])),
+  aiConfirm: (id: string, approve: boolean) => rpc<{ status: string; link?: string; error?: string }>("cai_confirm_action", { p_id: id, p_approve: approve }),
+  aiAsk: async (body: { mode: "client" | "internal"; question: string; conversationId?: string | null; brandId?: string | null }) => {
+    const { data, error } = await supabase.functions.invoke("client-os-ai/ask", { body });
+    if (error) {
+      let message = "The assistant could not be reached. Everything else in Client OS works as usual.";
+      try { const ctx = (error as { context?: Response }).context; const payload = ctx ? await ctx.json() : null; if (payload?.error) message = payload.error; } catch { /* plain message */ }
+      throw new Error(message);
+    }
+    return data as { conversationId: string; message: AiMessage };
+  },
+
   // ── Portals ─────────────────────────────────────────────────────────────────────────────────────────────────────
   clientHome: () => rpc<ClientHome>("portal_client_home"),
   partnerHome: () => rpc<PartnerHome>("portal_partner_home"),
@@ -286,6 +302,13 @@ export const clientOsApi = {
   partnerAgreement: (id: string) => rpc<{ id: string; title: string; body: string; version: number; status: string; body_sha256: string } | null>("portal_partner_agreement", { p_contract: id }),
 };
 
+export interface AiConversation { id: string; kind: string; title: string; created_at: string; updated_at: string }
+export interface AiProposalView { id: string; action_type: string; summary: string; preview: string[]; status: string }
+export interface AiMessage {
+  id: string; role: "user" | "assistant"; content: string; created_at: string;
+  meta: { error?: string; links?: { label: string; path: string }[]; observations?: string[]; recommendations?: string[]; missing?: string[]; proposals?: AiProposalView[]; unverified?: string[]; rejected?: number;
+    knowledge?: { title: string; section: string; brand: string; status: string; updated: string; source: string }[] } | null;
+}
 export interface Analytics {
   scope_brands: number;
   clients: { total: number; active: number; new_by_month: { month: string; count: number }[]; by_brand: { brand_id: string; brand: string; count: number }[]; with_project: number; repeat: number; retained: number; eligible_for_retention: number };

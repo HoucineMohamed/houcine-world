@@ -70,3 +70,8 @@ verify_jwt = true
 # function acts as the signed-in user (row-level security), docs/autopilot.md.
 [functions.autopilot]
 verify_jwt = true
+
+# Client OS AI (client assistant in /portal, intelligence assistant in /workspace/clients): signed-in users only;
+# the function acts as the signed-in user (row-level security), docs/client-os-ai.md.
+[functions.client-os-ai]
+verify_jwt = true
