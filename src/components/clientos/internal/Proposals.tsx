@@ -140,7 +140,7 @@ const Proposals = () => {
         )}
       </Panel>
       {editing ? <Editor key={editing.id ?? "new"} initial={editing} onDone={(id) => { setEditing(null); proposals.reload(); if (id) select(id); }} />
-        : selected ? <Detail key={selected.id + selected.updated_at} p={selected} onChanged={proposals.reload} onEdit={() => setEditing(selected)} />
+        : selected ? <Detail key={selected.id} p={selected} onChanged={proposals.reload} onEdit={() => setEditing(selected)} />
         : <Panel title="Proposal"><Empty title="Choose or create a proposal" /></Panel>}
     </div>
   );

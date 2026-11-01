@@ -36,15 +36,17 @@ const Submit = ({ deliverableId, brandId, projectId, onDone }: { deliverableId: 
 
 const Tasks = ({ home, reload }: { home: PartnerHome; reload: () => void }) => {
   const [open, setOpen] = useState<string | null>(null);
+  const [done, setDone] = useState<string | null>(null);
   return (
     <div className="space-y-6"><PortalHeading title="Assigned tasks" />
+      {done && <p role="status" className="rounded-md border border-border bg-muted/40 p-2">{done}</p>}
       {!(home.tasks ?? []).length ? <Panel title="Tasks"><Empty title="No task assigned to you" /></Panel> : home.tasks!.map((t) => (
         <Panel key={t.id} title={t.title} description={`${t.project} · due ${fmtDay(t.due_date)}${t.expires_at ? ` · access until ${fmtDay(t.expires_at)}` : ""}`} actions={<StatusPill status={t.status} />}>
           {t.deliverables.length === 0 ? <p className="text-muted-foreground">No deliverable expected from you on this task.</p> : (
             <ul className="space-y-2">{t.deliverables.map((d) => (
               <li key={d.id}>
                 <div className="flex flex-wrap items-center justify-between gap-2"><span><span className="font-medium">{d.title}</span> <span className="text-xs text-muted-foreground">· {d.current_version} version{d.current_version === 1 ? "" : "s"}</span></span><StatusPill status={d.status} /></div>
-                {t.can_submit && d.status !== "approved" && (open === d.id ? <Submit deliverableId={d.id} brandId={t.brand_id} projectId={t.project_id} onDone={() => { setOpen(null); reload(); }} /> : <Button size="sm" variant="outline" className="mt-1" onClick={() => setOpen(d.id)}>Submit work</Button>)}
+                {t.can_submit && d.status !== "approved" && (open === d.id ? <Submit deliverableId={d.id} brandId={t.brand_id} projectId={t.project_id} onDone={() => { setOpen(null); setDone("Submitted to the team for review."); reload(); }} /> : <Button size="sm" variant="outline" className="mt-1" onClick={() => setOpen(d.id)}>Submit work</Button>)}
               </li>))}</ul>
           )}
         </Panel>

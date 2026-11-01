@@ -86,7 +86,7 @@ const Contracts = () => {
         )}
       </Panel>
       {editing ? <Editor key={editing.id ?? "new"} initial={editing} onDone={(id) => { setEditing(null); contracts.reload(); if (id) select(id); }} />
-        : selected ? <Detail key={selected.id + selected.status + selected.version} c={selected} onChanged={contracts.reload} onEdit={() => setEditing(selected)} />
+        : selected ? <Detail key={selected.id} c={selected} onChanged={contracts.reload} onEdit={() => setEditing(selected)} />
         : <Panel title="Contract"><Empty title="Choose or create a contract" /></Panel>}
     </div>
   );

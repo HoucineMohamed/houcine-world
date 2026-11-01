@@ -65,7 +65,7 @@ const Requests = () => {
               <span className="min-w-0"><span className="font-medium">{r.title}</span><span className="block text-xs text-muted-foreground">{REQUEST_CATEGORIES[r.category]} · {brandName(r.brand_id)} · {fmtWhen(r.created_at)}</span></span><StatusPill status={r.status} /></button></li>))}</ul>
         )}
       </Panel>
-      {selected ? <Detail key={selected.id + selected.status + selected.assigned_to} r={selected} onChanged={list.reload} /> : <Panel title="Request"><Empty title="Choose a request" /></Panel>}
+      {selected ? <Detail key={selected.id} r={selected} onChanged={list.reload} /> : <Panel title="Request"><Empty title="Choose a request" /></Panel>}
     </div>
   );
 };
