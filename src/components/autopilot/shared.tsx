@@ -21,6 +21,25 @@ export const TRIGGERS: Record<string, { label: string; help: string }> = {
   "project.budget_threshold": { label: "Project cost changed", help: "An expense on a project: budget use in the project's own currency." },
   "knowledge.publication_completed": { label: "Knowledge publication completed", help: "The AI now uses newly published knowledge (global)." },
   "knowledge.sync_failed": { label: "Knowledge synchronization failed", help: "A Knowledge Studio publication failed (global)." },
+  // Client OS (docs/client-os.md section 14)
+  "client.invited": { label: "Client invited", help: "A client portal invitation was created." },
+  "client.invitation_accepted": { label: "Client invitation accepted", help: "A client activated their portal access." },
+  "partner.invited": { label: "Partner invited", help: "A partner portal invitation was created." },
+  "partner.invitation_accepted": { label: "Partner invitation accepted", help: "A partner activated their portal access." },
+  "project.client_added": { label: "Client added to a project", help: "A client can now see a project." },
+  "project.client_status_changed": { label: "Client-facing status changed", help: "A project moved to a stage the client sees differently." },
+  "proposal.sent": { label: "Proposal sent", help: "A proposal version was sent to the client." },
+  "proposal.accepted": { label: "Proposal accepted", help: "The client accepted a proposal." },
+  "proposal.rejected": { label: "Proposal rejected", help: "The client rejected a proposal." },
+  "deliverable.submitted": { label: "Deliverable submitted", help: "A version was submitted to the client." },
+  "deliverable.approved": { label: "Deliverable approved", help: "The client approved a version." },
+  "deliverable.revision_requested": { label: "Revision requested", help: "The client asked for a revision." },
+  "deliverable.rejected": { label: "Deliverable rejected", help: "The client rejected a version." },
+  "client.request_created": { label: "Client request created", help: "A client opened a request about a project." },
+  "client.request_resolved": { label: "Client request resolved", help: "A client request was resolved." },
+  "contract.approved": { label: "Contract approved", help: "The client approved a contract version." },
+  "partner.assigned": { label: "Partner assigned", help: "A partner was given access to a project." },
+  "partner.access_revoked": { label: "Partner access revoked", help: "A partner's project access ended." },
 };
 
 export const ACTIONS: Record<string, { label: string; help: string; fields: ("title" | "body" | "priority" | "category" | "severity" | "due_in_days" | "include_central" | "to" | "instruction" | "assign")[] }> = {
