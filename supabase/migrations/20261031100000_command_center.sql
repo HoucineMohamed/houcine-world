@@ -7,7 +7,8 @@
 --   create / change them                                             editor or higher on the brand, or super admin
 --   delete them                                                       brand_admin on the brand, or super admin
 --   finance (invoices, payments, expenses): read and write            brand_admin on the brand, or super admin
--- Every change is written to public.audit_logs by triggers (the browser cannot write or change audit_logs).
+-- Every change is written to public.audit_logs by triggers (the browser cannot write or change audit_logs); a change
+-- made by an Autopilot automation (setting autopilot.run) is marked "automated" with no human actor.
 -- Lead stage changes are kept in the append-only public.lead_events; conversion rates are counted from it.
 --
 -- Written to run more than once (if not exists / drop ... if exists), like the other migrations.
@@ -384,6 +385,7 @@ declare
   meta jsonb;
   k text;
   actor uuid := (select id from profiles where id = auth.uid());
+  run text := nullif(current_setting('autopilot.run', true), '');
   entity text := case tg_table_name
     when 'contacts' then 'contact' when 'contact_brands' then 'contact_brand' when 'leads' then 'lead'
     when 'interactions' then 'interaction' when 'projects' then 'project' when 'project_members' then 'project_member'
@@ -395,7 +397,6 @@ begin
     select array_agg(key order by key) into changed from jsonb_each(n) e
       where key not in ('updated_at') and (o -> key) is distinct from (n -> key);
     if changed is null then return new; end if;
-    -- 'old' and 'new' must exist before jsonb_set can add keys inside them.
     meta := jsonb_build_object('changed', to_jsonb(changed), 'old', '{}'::jsonb, 'new', '{}'::jsonb);
     foreach k in array changed loop
       if k = any (cc_audit_value_keys()) then
@@ -403,7 +404,6 @@ begin
         meta := jsonb_set(meta, array['new', k], coalesce(n -> k, 'null'::jsonb), true);
       end if;
     end loop;
-    -- Name the meaningful transitions.
     if 'stage' = any (changed) then verb := 'stage_changed'; end if;
     if 'status' = any (changed) and tg_table_name in ('projects', 'tasks', 'invoices') then verb := 'status_changed'; end if;
     if tg_table_name = 'tasks' and n ->> 'status' = 'done' and o ->> 'status' <> 'done' then
@@ -415,6 +415,7 @@ begin
       if rec ? k and rec -> k <> 'null'::jsonb then meta := jsonb_set(meta, array[k], rec -> k, true); end if;
     end loop;
   end if;
+  if run is not null then meta := meta || jsonb_build_object('automated', true, 'automation_run', run); actor := null; end if;
   insert into audit_logs (actor_id, brand_id, action, entity_type, entity_id, metadata)
   values (actor, (rec ->> 'brand_id')::uuid, entity || '.' || verb, entity,
           case when rec ? 'id' and (rec ->> 'id') ~ '^[0-9a-f-]{36}$' then (rec ->> 'id')::uuid end,
