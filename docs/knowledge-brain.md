@@ -93,6 +93,15 @@ fails the build.
 constant in the same pull request. When a fact is no longer true but worth keeping, move it under a heading with
 `> [!outdated]` rather than deleting history.
 
+**Maps and charts.** `houcine-world-brain/maps/` holds internal notes drawn with Mermaid (built into Obsidian and
+GitHub, no plugin): the ecosystem, the booking journey, how the AI answers, the knowledge architecture, the publishing
+flow, the owner's open questions and the roadmap; `maps/maps.md` lists them. `maps/generated/dashboard.md` (charts of
+the notes, confidence, visitor questions answered, every link, sections waiting for the owner) and
+`maps/generated/knowledge-map.canvas` (an Obsidian Canvas board of every note by brand) are written from the notes by
+`scripts/brain/build.mjs` and by every Knowledge Studio publication (`supabase/functions/_shared/brain/dashboard.ts`);
+`--check` and `scripts/ci/brain-maps.test.mjs` fail if they are out of date. `.obsidian/graph.json` colours Obsidian's
+graph view by brand. Maps are never compiled: a diagram never goes in a public note (the AI would read its code).
+
 **Remove knowledge.** Delete the note or section, and the links to it (the build lists them).
 
 **Refresh the index.** A session runs `node --experimental-strip-types scripts/brain/build.mjs` (it prints the

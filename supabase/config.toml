@@ -60,3 +60,13 @@ verify_jwt = true
 
 [functions.meta-business-metrics]
 verify_jwt = true
+
+# The Command Center's AI management analyst: the gateway checks the sign-in token; the function reads only what the
+# signed-in user's own rights allow (row-level security), docs/command-center.md.
+[functions.command-analyst]
+verify_jwt = true
+
+# Autopilot's AI side (monitoring runs, AI jobs, the operations assistant): the gateway checks the sign-in token; the
+# function acts as the signed-in user (row-level security), docs/autopilot.md.
+[functions.autopilot]
+verify_jwt = true

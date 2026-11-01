@@ -8,7 +8,8 @@ import { BrandDot, brandLabel, Pill, timeAgo } from "./ui";
 
 // The review queue: everything that needs the owner's attention, derived by the server from the notes and the logs
 // (playground feedback, failed publications, note problems, out-of-date drafts, sections awaiting confirmation or
-// outdated, missing tags, notes not checked for six months). Opening an item leads to the note to fix; feedback items
+// outdated, missing tags, notes not checked for six months, possible duplicates, contact details no contact note
+// lists). Opening an item leads to the note to fix; feedback items
 // are closed here once handled. Nothing in this queue changes knowledge by itself.
 
 const KINDS: Record<string, { label: string; tone: "out" | "pending" | "review" | "neutral" | "archived" }> = {
@@ -23,6 +24,8 @@ const KINDS: Record<string, { label: string; tone: "out" | "pending" | "review" 
   outdated: { label: "Outdated", tone: "archived" },
   missing_metadata: { label: "Missing metadata", tone: "neutral" },
   stale: { label: "Not checked recently", tone: "neutral" },
+  possible_duplicate: { label: "Possible duplicate", tone: "review" },
+  contact_mismatch: { label: "Contact detail to check", tone: "out" },
 };
 
 const RATING_LABELS = { correct: "Correct", incomplete: "Incomplete", incorrect: "Incorrect", missing: "Missing knowledge", outdated: "Outdated" } as const;

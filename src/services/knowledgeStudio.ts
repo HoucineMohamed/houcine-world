@@ -62,6 +62,8 @@ export interface StudioState {
   };
   index: { expected: string | null; live: string | null; sync: "in_sync" | "out_of_sync" | "unknown" | "publishing"; notes: number | null; passages: number | null; bundled: string };
   agents: Record<string, AgentAccess>;
+  /** Per brand, the fixed visitor questions scored on the knowledge visitors get (search only). */
+  coverage: BrandCoverage[];
   publication: Publication | null;
   lastLive: Publication | null;
   lastChange: KnowledgeEvent | null;
@@ -156,11 +158,14 @@ export interface AssistResult {
 
 export type CoverageResult = "answered" | "awaiting" | "gap" | "not_found";
 
+/** One brand's coverage counts (supabase/functions/_shared/brain/coverage.ts, BrandScore). */
+export interface BrandCoverage { brand: string; total: number; answered: number; awaiting: number; gap: number; not_found: number; concierge: number }
+
 /** The coverage score (supabase/functions/_shared/brain/coverage.ts): search only, no AI call. */
 export interface CoverageReport {
   source: "live" | "preview";
   fingerprint: string;
-  brands: { brand: string; total: number; answered: number; awaiting: number; gap: number; not_found: number; concierge: number }[];
+  brands: BrandCoverage[];
   questions: {
     id: string;
     brand: string;

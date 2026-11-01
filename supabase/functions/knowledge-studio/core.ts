@@ -21,7 +21,9 @@ import {
 } from "../_shared/brain/compile.ts";
 import { search, type Passage } from "../_shared/brain/retrieve.ts";
 import { withIndexAccess, type AgentProfile } from "../_shared/brain/agent.ts";
+import { findConflicts } from "../_shared/brain/conflicts.ts";
 import { coverageSummary, scoreCoverage } from "../_shared/brain/coverage.ts";
+import { CANVAS_PATH, DASHBOARD_PATH, renderMaps } from "../_shared/brain/dashboard.ts";
 import { COVERAGE_QUESTIONS } from "../_shared/brain/coverage-questions.ts";
 import type { BrainIndex, Brand, Status } from "../_shared/brain/types.ts";
 import type { LlmProvider } from "../_shared/llm/provider.ts";
@@ -31,7 +33,7 @@ import { runTurn, type ConciergeEvent } from "../concierge/pipeline.ts";
 export const BRAIN_DIR = "houcine-world-brain";
 export const INDEX_PATH = "supabase/functions/_shared/brain/index.generated.ts";
 export const SNAPSHOT_PATH = "supabase/functions/knowledge-studio/snapshot.generated.ts";
-const NEW_NOTE_DIRS = ["brands", "people", "projects", "policies", "relationships", "sources", "internal", "agents"];
+const NEW_NOTE_DIRS = ["brands", "people", "projects", "policies", "relationships", "sources", "internal", "agents", "maps"];
 const WRITE_ACTIONS = new Set(["draft", "discard", "archive", "restore", "publish", "retry"]);
 export const DEPLOY_TIMEOUT_MS = 25 * 60_000;
 export const RUN_APPEAR_TIMEOUT_MS = 10 * 60_000;
@@ -418,6 +420,8 @@ export const createStudio = (deps: StudioDeps) => {
         stats: brainStats(published),
         index: { expected, live: liveFingerprint, sync, notes: published.index?.notes.length ?? null, passages: published.index?.chunks.length ?? null, bundled: deps.liveIndex.fingerprint },
         agents: published.index?.agents ?? {},
+        // What visitors get: the fixed visitor questions scored on the deployed index (search only, no AI call).
+        coverage: scoreCoverage(deps.liveIndex, COVERAGE_QUESTIONS, BRANDS).brands,
         publication: current ?? pubs[0] ?? null,
         lastLive,
         lastChange: events[0] ?? null,
@@ -583,6 +587,10 @@ export const createStudio = (deps: StudioDeps) => {
         }
         changes.push({ path: INDEX_PATH, content: renderIndexModule(compiled.index) });
         changes.push({ path: SNAPSHOT_PATH, content: renderSnapshotModule(next) });
+        // The generated maps (dashboard and canvas), exactly as scripts/brain/build.mjs writes them.
+        const maps = renderMaps(compileBrain(next, { audience: "admin" }), compiled.index, scoreCoverage(compiled.index, COVERAGE_QUESTIONS, BRANDS));
+        changes.push({ path: `${BRAIN_DIR}/${DASHBOARD_PATH}`, content: maps.dashboard });
+        changes.push({ path: `${BRAIN_DIR}/${CANVAS_PATH}`, content: maps.canvas });
         const titles = selected.map((d) => d.path).join(", ");
         const message = `Knowledge Studio: publish ${selected.length} note change(s)\n\n${titles}\n\nPublished by ${r.actor.email ?? r.actor.id} from Knowledge Studio. Index fingerprint ${compiled.index.fingerprint}.`;
         const committed = await repo.commit({ parent: loaded.commit, message, changes });
@@ -801,6 +809,16 @@ export const createStudio = (deps: StudioDeps) => {
         if (n.fields.visibility === "public" && !listField(n.fields.tags).length) items.push({ kind: "missing_metadata", title, detail: "No tags: search finds it less easily.", path: n.file });
         const updated = Date.parse(String(n.fields.updated ?? ""));
         if (Number.isFinite(updated) && today - updated > 180 * 86_400_000) items.push({ kind: "stale", title, detail: `Not checked since ${n.fields.updated}.`, path: n.file });
+      }
+      // Possible duplicates and contact details that disagree, over every active note with the drafts (admin view).
+      const admin = compileBrain(applyDrafts(files, drafts), { audience: "admin" });
+      if (admin.index) {
+        const fileOf = new Map(admin.notes.map((n) => [String(n.fields.id ?? ""), n.file]));
+        const titleOf = new Map(admin.index.notes.map((n) => [n.id, n.title]));
+        for (const f of findConflicts(admin.index)) {
+          const where = f.notes.map((id, i) => `${titleOf.get(id) ?? id} › ${f.sections[i]}`).join(" and ");
+          items.push({ kind: f.kind, title: f.kind === "possible_duplicate" ? `Possible duplicate: ${where}` : `Contact detail to check: ${where}`, detail: f.detail, path: fileOf.get(f.notes[0]!) });
+        }
       }
       const brandOf = new Map(published.notes.map((n) => [String(n.fields.id ?? ""), String(n.fields.brand ?? "")]));
       return ok({ items, feedbackSummary: feedbackSummary(await store.feedback("all", 500), brandOf) });
