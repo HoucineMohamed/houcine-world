@@ -392,7 +392,7 @@ returns table (document_id uuid, title text, version int, brand_id uuid, brand t
 language sql stable security definer set search_path = public as $$
   with q as (select kos_query(p_query) as tq)
   select d.id, v.title, v.version, d.brand_id, coalesce(b.name, 'All brands'), d.visibility, v.category,
-         ts_headline('simple', v.content, q.tq, 'MaxFragments=1,MaxWords=45,MinWords=15,StartSel=,StopSel='),
+         ts_headline('simple', v.content, q.tq, 'MaxFragments=1,MaxWords=45,MinWords=15,StartSel="",StopSel=""'),
          ts_rank_cd(v.search, q.tq)::real, d.updated_at,
          d.visibility || case when d.client_contact_id is not null then ', this client only' when d.brand_id is null then ', all brands' else ', ' || coalesce(b.name, 'brand') end
            || case when d.id = p_draft then ', DRAFT under test' else ', published v' || d.published_version end

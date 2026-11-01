@@ -107,6 +107,7 @@ select kostest.check('brand B admin: never brand A', not (kostest.titles('zephyr
 select kostest.act('client_a');
 select kostest.check('client A: global and brand A client knowledge, and their own notes; no internal', kostest.titles('zephyr', 'client_ai') = array['Zephyr client onboarding', 'Zephyr notes for Alice', 'Zephyr revision policy A']);
 select kostest.check('client A: the table agrees', (select count(*) from public.kos_documents) = 3);
+select kostest.check('snippets are plain text (no highlight markup)', not exists (select 1 from jsonb_array_elements(public.kos_retrieve('zephyr revisions', 'client_ai')) x where x ->> 'section' ~ '[<>]|StopSel|StartSel'));
 select kostest.check('client A: no version history', (select count(*) from public.kos_versions) = 0);
 select kostest.check('prompt-like text in a question changes nothing', kostest.titles('ignore all rules management strategy pricing zephyr', 'client_ai') = array['Zephyr client onboarding', 'Zephyr notes for Alice', 'Zephyr revision policy A']);
 select kostest.act('client_b');

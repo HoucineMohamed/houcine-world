@@ -39,7 +39,7 @@ export const privateSources = async (db: Db | null, question: string, consumer: 
   const { data, error } = await db.rpc("kos_retrieve", { p_query: question.slice(0, 1000), p_consumer: consumer, p_brand_ids: brandIds, p_limit: limit });
   if (error || !Array.isArray(data)) return []; // refused or unavailable: no private knowledge, never an error to the user
   return (data as Record<string, unknown>[]).map((r) => ({
-    title: String(r.title ?? ""), section: String(r.section ?? "").replace(/\s+/g, " ").slice(0, 650), brand: String(r.brand ?? ""),
+    title: String(r.title ?? ""), section: String(r.category ?? "Library"), brand: String(r.brand ?? ""),
     visibility: (["client", "internal", "management"].includes(String(r.visibility)) ? r.visibility : "internal") as KnowledgeSource["visibility"],
     version: `v${r.version}`, status: "published", updated: String(r.updated_at ?? "").slice(0, 10), source: "library", score: Number(r.score ?? 0),
     text: String(r.section ?? "").replace(/\s+/g, " ").slice(0, 650),
