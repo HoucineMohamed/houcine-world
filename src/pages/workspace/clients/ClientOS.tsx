@@ -1,6 +1,6 @@
 import React, { createContext, Suspense, useContext, useEffect, useMemo, useState } from "react";
 import { Link, Navigate, NavLink, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Gauge, Users, Handshake, FolderKanban, FileSignature, ScrollText, PackageCheck, Inbox, MessagesSquare, LineChart, Settings, Search } from "lucide-react";
+import { ArrowLeft, Gauge, Users, Handshake, FolderKanban, FileSignature, ScrollText, PackageCheck, Inbox, MessagesSquare, LineChart, Settings, Search, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/components/workspace/WorkspaceContext";
 import { fetchAllBrands } from "@/services/brands";
@@ -42,6 +42,7 @@ const SECTIONS = [
   { id: "requests", label: "Requests", icon: Inbox, Component: load("Requests") },
   { id: "communications", label: "Communications", icon: MessagesSquare, Component: load("Communications") },
   { id: "analytics", label: "Analytics", icon: LineChart, Component: load("Analytics") },
+  { id: "intelligence", label: "Intelligence", icon: Sparkles, Component: load("Intelligence") },
   { id: "settings", label: "Settings", icon: Settings, Component: load("SettingsPage") },
 ] as const;
 
