@@ -20,13 +20,13 @@ const RESULT: Record<CoverageResult, { tone: "published" | "pending" | "neutral"
 
 const ResultPill = ({ result }: { result: CoverageResult }) => <Pill tone={RESULT[result].tone} title={RESULT[result].help}>{RESULT[result].label}</Pill>;
 
-const Coverage = ({ source }: { source: "live" | "preview" }) => {
+const Coverage = ({ source, initialBrand = null }: { source: "live" | "preview"; initialBrand?: string | null }) => {
   const navigate = useNavigate();
   const { state } = useStudio();
   const [report, setReport] = useState<CoverageReport | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [brand, setBrand] = useState<string | null>(null);
+  const [brand, setBrand] = useState<string | null>(initialBrand);
 
   const load = async () => {
     setBusy(true);
@@ -82,7 +82,7 @@ const Coverage = ({ source }: { source: "live" | "preview" }) => {
               </thead>
               <tbody>
                 {report.brands.map((b) => (
-                  <tr key={b.brand} className={cn("border-t border-border", brand === b.brand && "bg-violet-500/10")}>
+                  <tr key={b.brand} className={cn("border-t border-border", brand === b.brand && "bg-accent/10")}>
                     <th scope="row" className="px-3 py-2 font-medium">
                       <button type="button" onClick={() => setBrand(brand === b.brand ? null : b.brand)} aria-pressed={brand === b.brand} className="flex items-center gap-1.5 hover:underline">
                         <BrandDot brand={b.brand} /> {brandLabel(b.brand)}
@@ -121,7 +121,7 @@ const Coverage = ({ source }: { source: "live" | "preview" }) => {
                       return (
                         <span key={e}>
                           {i > 0 && ", "}
-                          <button type="button" onClick={() => open(id)} className={cn("hover:underline", q.found.some((f) => f.startsWith(`${id}#`)) ? "text-violet-300" : "text-muted-foreground")}>{e.replace("#", " › ")}</button>
+                          <button type="button" onClick={() => open(id)} className={cn("hover:underline", q.found.some((f) => f.startsWith(`${id}#`)) ? "text-accent" : "text-muted-foreground")}>{e.replace("#", " › ")}</button>
                         </span>
                       );
                     })}

@@ -23,6 +23,14 @@ const Stat = ({ label, value, hint, to }: { label: string; value: React.ReactNod
   );
 };
 
+/** The four coverage results, in the order of the bar (coverage.ts). */
+const COVERAGE_PARTS = [
+  { key: "answered", label: "Answered", cls: "bg-emerald-400/70" },
+  { key: "awaiting", label: "Awaiting confirmation", cls: "bg-amber-400/70" },
+  { key: "gap", label: "Known gap", cls: "bg-zinc-400/50" },
+  { key: "not_found", label: "Not found", cls: "bg-rose-400/80" },
+] as const;
+
 const Overview = () => {
   const { state, publish, phase, reload } = useStudio();
   if (!state) return null;
@@ -119,6 +127,26 @@ const Overview = () => {
             <li key={label} className="flex justify-between"><span>{label}</span><span className="tabular-nums text-muted-foreground">{count}</span></li>
           ))}
           <li className="flex justify-between border-t border-border/60 pt-1.5"><span>AI index</span><span>{index.sync === "in_sync" ? <Pill tone="published">In sync</Pill> : index.sync === "out_of_sync" ? <Pill tone="out">Out of sync</Pill> : <Pill tone="neutral">{index.sync}</Pill>}</span></li>
+        </ul>
+      </Section>
+
+      <Section title="Visitor questions" className="lg:col-span-3" actions={<Link to="/workspace/knowledge/playground?view=coverage" className="text-xs text-muted-foreground hover:text-foreground hover:underline">See the questions</Link>}>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Fixed visitor questions per brand, checked with the search alone in the knowledge visitors get.
+          <span className="ml-2 inline-flex flex-wrap gap-x-3 gap-y-1 align-middle">
+            {COVERAGE_PARTS.map((p) => <span key={p.key} className="inline-flex items-center gap-1"><span className={`h-2 w-2 rounded-sm ${p.cls}`} aria-hidden="true" />{p.label}</span>)}
+          </span>
+        </p>
+        <ul className="space-y-2">
+          {state.coverage.map((c) => (
+            <li key={c.brand} className="grid grid-cols-[minmax(120px,190px)_1fr_auto] items-center gap-3 text-sm">
+              <Link to={`/workspace/knowledge/playground?view=coverage&brand=${c.brand}`} className="flex items-center gap-2 truncate hover:underline"><BrandDot brand={c.brand} /> {brandLabel(c.brand)}</Link>
+              <div className="flex h-2 overflow-hidden rounded-full bg-muted" role="img" aria-label={COVERAGE_PARTS.map((p) => `${c[p.key]} ${p.label.toLowerCase()}`).join(", ")}>
+                {COVERAGE_PARTS.map((p) => c[p.key] > 0 && <div key={p.key} className={p.cls} style={{ width: `${(100 * c[p.key]) / Math.max(1, c.total)}%` }} />)}
+              </div>
+              <span className="whitespace-nowrap text-right text-xs tabular-nums text-muted-foreground" title="Answered of all questions">{c.answered} of {c.total}{c.not_found > 0 ? <span className="text-rose-300"> · {c.not_found} not found</span> : null}</span>
+            </li>
+          ))}
         </ul>
       </Section>
 

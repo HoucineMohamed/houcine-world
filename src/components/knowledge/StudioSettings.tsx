@@ -76,7 +76,7 @@ const StudioSettings = () => {
                     <tr key={b} className="border-t border-border/60">
                       <td className="py-1.5 pr-4">{label}</td>
                       <td className="py-1.5 pr-4"><input type="checkbox" aria-label={`Full access: ${label}`} checked={brands.includes(b)} onChange={() => toggle(brands, setBrands, b)} className="h-4 w-4 accent-emerald-400" /></td>
-                      <td className="py-1.5"><input type="checkbox" aria-label={`Overview only: ${label}`} checked={referral.includes(b) && !brands.includes(b)} disabled={brands.includes(b)} onChange={() => toggle(referral, setReferral, b)} className="h-4 w-4 accent-violet-400" /></td>
+                      <td className="py-1.5"><input type="checkbox" aria-label={`Overview only: ${label}`} checked={referral.includes(b) && !brands.includes(b)} disabled={brands.includes(b)} onChange={() => toggle(referral, setReferral, b)} className="h-4 w-4 accent-primary" /></td>
                     </tr>
                   ))}
                 </tbody>

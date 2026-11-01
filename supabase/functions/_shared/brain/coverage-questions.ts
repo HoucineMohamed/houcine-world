@@ -65,8 +65,8 @@ export const COVERAGE_QUESTIONS: CoverageQuestion[] = [
   { id: "mgmt-legal", brand: "houcine-management", kind: "gap", question: "Which company operates the Houcine.world sites?", expect: [], gap: "Houcine.management is the legal entity (src/data/legal.ts); no note says so." },
 
   // ---------- Houcine.education ----------
-  { id: "edu-what", brand: "houcine-education", kind: "awaiting", question: "What is Houcine.education?", expect: ["education-overview"] },
-  { id: "edu-contact", brand: "houcine-education", kind: "answered", question: "How do I contact Houcine.education?", expect: ["education-overview"] },
-  { id: "edu-buy", brand: "houcine-education", kind: "gap", question: "Can I buy a course or a book now?", expect: [], gap: "/reads says nothing can be browsed or bought yet; the note does not. Its description awaits the owner (issue #74)." },
-  { id: "edu-launch", brand: "houcine-education", kind: "gap", question: "When will Houcine.education launch?", expect: [], gap: "/reads says no launch date is set; no note says so." },
+  { id: "edu-what", brand: "houcine-education", kind: "answered", question: "What is Houcine.education?", expect: ["education-overview#What it is"] },
+  { id: "edu-contact", brand: "houcine-education", kind: "answered", question: "How do I contact Houcine.education?", expect: ["education-overview#Contact"] },
+  { id: "edu-buy", brand: "houcine-education", kind: "answered", question: "Can I buy a course or a book now?", expect: ["education-overview#Buying and launch date"] },
+  { id: "edu-launch", brand: "houcine-education", kind: "answered", question: "When will Houcine.education launch?", expect: ["education-overview#Buying and launch date"] },
 ];

@@ -110,12 +110,12 @@ const Body = ({ section }: { section: StudioSection }) => {
           <Link to="/workspace" className="rounded p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="Back to the workspace">
             <ArrowLeft className="h-4 w-4" />
           </Link>
-          <Brain className="h-5 w-5 text-violet-300" aria-hidden="true" />
+          <Brain className="h-5 w-5 text-accent" aria-hidden="true" />
           <h1 className="font-display text-base font-semibold tracking-wide">Knowledge Studio</h1>
           <span className="hidden text-xs text-muted-foreground lg:inline">Houcine.world knowledge brain</span>
           <div className="ml-auto flex items-center gap-2">
             <SyncBadge />
-            <Button size="sm" onClick={() => setTeachOpen(true)} disabled={!state?.canPublish} title={state?.canPublish ? undefined : "Publishing is not set up yet (Settings)"} className="gap-1.5 bg-violet-500 text-white hover:bg-violet-400">
+            <Button size="sm" onClick={() => setTeachOpen(true)} disabled={!state?.canPublish} title={state?.canPublish ? undefined : "Publishing is not set up yet (Settings)"} className="gap-1.5">
               <Plus className="h-4 w-4" aria-hidden="true" /> Teach the AI
             </Button>
           </div>

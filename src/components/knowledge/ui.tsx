@@ -25,7 +25,7 @@ const PILL: Record<string, string> = {
   published: "border-emerald-500/30 text-emerald-300 bg-emerald-500/10",
   draft: "border-sky-500/30 text-sky-300 bg-sky-500/10",
   pending: "border-amber-500/30 text-amber-300 bg-amber-500/10",
-  review: "border-violet-500/30 text-violet-300 bg-violet-500/10",
+  review: "border-accent/30 text-accent bg-accent/10",
   archived: "border-zinc-500/30 text-zinc-400 bg-zinc-500/10",
   out: "border-rose-500/30 text-rose-300 bg-rose-500/10",
   neutral: "border-border text-muted-foreground bg-muted/30",
