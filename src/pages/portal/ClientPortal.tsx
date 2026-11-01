@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
-import { Home, FolderKanban, FileSignature, ScrollText, PackageCheck, CheckCircle2, Receipt, MessagesSquare, Inbox, UserRound, FileDown } from "lucide-react";
+import { Home, FolderKanban, FileSignature, ScrollText, PackageCheck, CheckCircle2, Receipt, MessagesSquare, Inbox, UserRound, FileDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { clientOsApi, contractPdf, downloadBytes, fmtMoney, proposalPdf, REQUEST_CATEGORIES, type ClientHome, type PortalProject, type PortalVersion } from "@/services/clientOs";
 import { autopilotApi, type UserNotification } from "@/services/autopilot";
@@ -9,6 +9,7 @@ import { Empty, ErrorBox, Field, inputCls, LoadingGrid, Panel, Pill } from "@/co
 import { useSession } from "@/hooks/useSession";
 import { PortalHeading, PortalShell } from "@/components/clientos/PortalShell";
 import { ConversationsView } from "@/components/clientos/Conversations";
+import { AssistantChat } from "@/components/clientos/AssistantChat";
 import { FileLink, Section, StatusPill, UploadButton, fmtDay, fmtWhen, useAction } from "@/components/clientos/shared";
 
 // The Client Portal (docs/client-os.md section 7). Everything shown comes from portal_* database functions and tables
@@ -316,9 +317,9 @@ const ClientPortal = () => {
     { to: "/portal/proposals", label: "Proposals", icon: FileSignature }, { to: "/portal/contracts", label: "Contracts", icon: ScrollText },
     { to: "/portal/deliverables", label: "Deliverables", icon: PackageCheck }, { to: "/portal/approvals", label: "Approvals", icon: CheckCircle2, badge: pending },
     { to: "/portal/invoices", label: "Invoices", icon: Receipt }, { to: "/portal/messages", label: "Messages", icon: MessagesSquare },
-    { to: "/portal/requests", label: "Requests", icon: Inbox }, { to: "/portal/profile", label: "Profile", icon: UserRound },
+    { to: "/portal/requests", label: "Requests", icon: Inbox }, { to: "/portal/assistant", label: "Assistant", icon: Sparkles }, { to: "/portal/profile", label: "Profile", icon: UserRound },
   ];
-  const known = ["", "projects", "proposals", "contracts", "deliverables", "approvals", "invoices", "messages", "requests", "profile"];
+  const known = ["", "projects", "proposals", "contracts", "deliverables", "approvals", "invoices", "messages", "requests", "assistant", "profile"];
   if (!known.includes(section)) return <Navigate to="/portal" replace />;
   const h = home.value;
   const body = home.error ? <ErrorBox message={home.error} onRetry={home.reload} />
@@ -343,6 +344,10 @@ const ClientPortal = () => {
         starters={{ brands: h.memberships.map((m) => ({ id: m.brand_id, name: m.brand })), projects: (h.projects ?? []).map((p) => ({ id: p.id, name: p.name, brand_id: p.brand_id })), contacts: (myMemberships.value ?? []).filter((m) => m.kind === "client" && m.status === "active").map((m) => ({ id: m.contact_id, name: "", brand_id: m.brand_id })), audiences: ["client"] }} /></div>
     )
     : section === "requests" ? <Requests home={h} reload={home.reload} />
+    : section === "assistant" ? (
+      <div className="space-y-6"><PortalHeading title="Assistant">Answers come from your projects and documents, read each time you ask. It never changes anything without your confirmation.</PortalHeading>
+        <AssistantChat mode="client" title="Your assistant" intro="Ask about your projects, approvals, proposals, invoices or requests." /></div>
+    )
     : <Profile home={h} />;
   return <PortalShell kind="client" nav={nav}>{body}</PortalShell>;
 };
