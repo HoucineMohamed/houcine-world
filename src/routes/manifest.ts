@@ -33,6 +33,9 @@ const APP = { title: `Workspace | ${SITE}`, description: DEFAULT_DESCRIPTION, in
 const STUDIO = { ...APP, title: `Knowledge Studio | ${SITE}` } as const;
 const COMMAND = { ...APP, title: `Command Center | ${SITE}` } as const;
 const AUTOPILOT = { ...APP, title: `Autopilot | ${SITE}` } as const;
+const CLIENT_OS = { ...APP, title: `Client OS | ${SITE}` } as const;
+const PORTAL = { ...APP, title: `Client portal | ${SITE}` } as const;
+const PARTNERS = { ...APP, title: `Partner portal | ${SITE}` } as const;
 
 export const MANIFEST = [
   // Public pages
@@ -85,6 +88,14 @@ export const MANIFEST = [
   { path: "/workspace/knowledge/settings", ...STUDIO, ownerOnly: true },
   { path: "/workspace/command", ...COMMAND, ownerOnly: true },
   { path: "/workspace/command/:section", ...COMMAND, ownerOnly: true },
+  { path: "/workspace/clients", ...CLIENT_OS, ownerOnly: false },
+  { path: "/workspace/clients/:section", ...CLIENT_OS, ownerOnly: false },
+  { path: "/portal", ...PORTAL, ownerOnly: false },
+  { path: "/portal/invite", ...PORTAL, ownerOnly: false },
+  { path: "/portal/projects/:projectId", ...PORTAL, ownerOnly: false },
+  { path: "/portal/:section", ...PORTAL, ownerOnly: false },
+  { path: "/partners", ...PARTNERS, ownerOnly: false },
+  { path: "/partners/:section", ...PARTNERS, ownerOnly: false },
   { path: "/workspace/autopilot", ...AUTOPILOT, ownerOnly: true },
   { path: "/workspace/autopilot/:section", ...AUTOPILOT, ownerOnly: true },
   { path: "/workspace/denied", ...APP, ownerOnly: false },
@@ -111,7 +122,7 @@ export type RoutePath = (typeof MANIFEST)[number]["path"];
 export const route = <P extends RoutePath>(path: P): P => path;
 
 /** Path prefixes of the app's private areas: never in the sitemap, disallowed in robots.txt, noindex. */
-export const PRIVATE_PREFIXES = ["/workspace", "/admin", "/auth"];
+export const PRIVATE_PREFIXES = ["/workspace", "/admin", "/auth", "/portal", "/partners"];
 
 /**
  * Templates whose real pages come from the content layer: each published entry is its own page, with its

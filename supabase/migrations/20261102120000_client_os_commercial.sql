@@ -750,12 +750,12 @@ begin
   return jsonb_build_object(
     'memberships', (select jsonb_agg(jsonb_build_object('id', m.id, 'brand_id', m.brand_id, 'brand', b.name, 'contact', c.name)) from portal_memberships m
                      join brands b on b.id = m.brand_id join contacts c on c.id = m.contact_id where m.id = any (ms)),
-    'collaborations', coalesce((select jsonb_agg(jsonb_build_object('project_id', p.id, 'name', p.name, 'brand', (select name from brands where id = p.brand_id),
+    'collaborations', coalesce((select jsonb_agg(jsonb_build_object('project_id', p.id, 'brand_id', p.brand_id, 'name', p.name, 'brand', (select name from brands where id = p.brand_id),
                    'scope', pp.scope, 'deadline', p.deadline, 'expires_at', pp.expires_at) order by p.name)
                  from project_participants pp join projects p on p.id = pp.project_id
                  where pp.membership_id = any (ms) and pp.status = 'active' and (pp.expires_at is null or pp.expires_at > now()) and p.deleted_at is null), '[]'::jsonb),
     'tasks', coalesce((select jsonb_agg(jsonb_build_object('id', t.id, 'title', t.title, 'status', t.status, 'priority', t.priority, 'due_date', t.due_date,
-                   'project_id', t.project_id, 'project', (select name from projects where id = t.project_id), 'can_submit', a.can_submit, 'expires_at', a.expires_at,
+                   'project_id', t.project_id, 'brand_id', t.brand_id, 'project', (select name from projects where id = t.project_id), 'can_submit', a.can_submit, 'expires_at', a.expires_at,
                    'deliverables', coalesce((select jsonb_agg(jsonb_build_object('id', d.id, 'title', d.title, 'status', d.status, 'current_version', d.current_version))
                                    from deliverables d where d.task_id = t.id and d.partner_membership_id = a.membership_id), '[]'::jsonb)) order by t.due_date nulls last)
                  from partner_task_assignments a join tasks t on t.id = a.task_id

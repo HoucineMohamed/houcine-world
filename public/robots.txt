@@ -3,29 +3,39 @@ Allow: /
 Disallow: /workspace
 Disallow: /admin
 Disallow: /auth/
+Disallow: /portal
+Disallow: /partners
 
 User-agent: Bingbot
 Allow: /
 Disallow: /workspace
 Disallow: /admin
 Disallow: /auth/
+Disallow: /portal
+Disallow: /partners
 
 User-agent: Twitterbot
 Allow: /
 Disallow: /workspace
 Disallow: /admin
 Disallow: /auth/
+Disallow: /portal
+Disallow: /partners
 
 User-agent: facebookexternalhit
 Allow: /
 Disallow: /workspace
 Disallow: /admin
 Disallow: /auth/
+Disallow: /portal
+Disallow: /partners
 
 User-agent: *
 Allow: /
 Disallow: /workspace
 Disallow: /admin
 Disallow: /auth/
+Disallow: /portal
+Disallow: /partners
 
 Sitemap: https://houcine.world/sitemap.xml

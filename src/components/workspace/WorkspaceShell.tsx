@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   LayoutDashboard, CalendarDays, Bell, BarChart3, MessageSquare,
-  Settings as SettingsIcon, LogOut, Globe, ChevronDown, KeyRound, Menu, Brain, Gauge, Radar, Workflow, Zap } from "lucide-react";
+  Settings as SettingsIcon, LogOut, Globe, ChevronDown, KeyRound, Menu, Brain, Gauge, Radar, Workflow, Zap, Contact } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -110,6 +110,11 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
       {isSuperAdmin && (
         <NavLink to="/workspace/command" className={navLinkClass} onClick={closeMenu}>
           <Radar className="w-4 h-4" aria-hidden="true" /> Global Command Center
+        </NavLink>
+      )}
+      {(isSuperAdmin || role === "brand_admin") && (
+        <NavLink to={isSuperAdmin ? "/workspace/clients" : `/workspace/clients?brand=${brandId}`} className={navLinkClass} onClick={closeMenu}>
+          <Contact className="w-4 h-4" aria-hidden="true" /> Client OS
         </NavLink>
       )}
       {isSuperAdmin && (
