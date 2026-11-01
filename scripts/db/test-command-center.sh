@@ -20,20 +20,22 @@ PSQL=(psql -h "$WORK" -p 54399 -U postgres -q -v ON_ERROR_STOP=1)
 "${PSQL[@]}" -d postgres -c "create database cctest" >/dev/null
 "${PSQL[@]}" -d cctest -f "$ROOT/scripts/db/supabase-stubs.sql" >/dev/null 2>&1
 for f in "$ROOT"/supabase/migrations/*.sql; do "${PSQL[@]}" -d cctest -f "$f" >/dev/null 2>"$WORK/err" || { echo "Migration failed: $f"; cat "$WORK/err"; exit 1; }; done
-for m in 20261031100000_command_center.sql 20261101100000_autopilot.sql; do
+for m in 20261031100000_command_center.sql 20261101100000_autopilot.sql 20261102100000_client_os_identity.sql 20261102110000_client_os_delivery.sql 20261102120000_client_os_commercial.sql; do
   "${PSQL[@]}" -d cctest -f "$ROOT/supabase/migrations/$m" >/dev/null 2>"$WORK/err" || { echo "Re-running $m failed"; cat "$WORK/err"; exit 1; }
 done
 "${PSQL[@]}" -d cctest -f "$ROOT/scripts/db/command-center.test.sql"
 "${PSQL[@]}" -d cctest -f "$ROOT/scripts/db/autopilot.test.sql"
+"${PSQL[@]}" -d cctest -f "$ROOT/scripts/db/client-os.test.sql"
 # The rollback removes only the Command Center, keeps existing data, and the migration applies again afterwards.
 before="$("${PSQL[@]}" -d cctest -tAc "select (select count(*) from public.brands) || '/' || (select count(*) from public.brand_admins) || '/' || (select count(*) from public.audit_logs)")"
+"${PSQL[@]}" -d cctest -f "$ROOT/scripts/db/client-os-rollback.sql" >/dev/null
 "${PSQL[@]}" -d cctest -f "$ROOT/scripts/db/autopilot-rollback.sql" >/dev/null
 "${PSQL[@]}" -d cctest -f "$ROOT/scripts/db/command-center-rollback.sql" >/dev/null
-left="$("${PSQL[@]}" -d cctest -tAc "select (select count(*) from pg_tables where schemaname = 'public' and tablename in ('contacts','contact_brands','leads','lead_events','interactions','projects','project_members','milestones','tasks','invoices','payments','expenses','automations','automation_runs','ops_alerts','user_notifications')) + (select count(*) from pg_proc where proname like 'ap\_%')")"
+left="$("${PSQL[@]}" -d cctest -tAc "select (select count(*) from pg_tables where schemaname = 'public' and tablename in ('contacts','contact_brands','leads','lead_events','interactions','projects','project_members','milestones','tasks','invoices','payments','expenses','automations','automation_runs','ops_alerts','user_notifications','portal_memberships','proposals','deliverables','cos_files')) + (select count(*) from pg_proc where proname like 'ap\_%' or proname like 'cos\_%' or proname like 'portal\_%')")"
 after="$("${PSQL[@]}" -d cctest -tAc "select (select count(*) from public.brands) || '/' || (select count(*) from public.brand_admins) || '/' || (select count(*) from public.audit_logs)")"
 [ "$left" = "0" ] || { echo "ROLLBACK left $left Command Center tables"; exit 1; }
 [ "$before" = "$after" ] || { echo "ROLLBACK changed existing data ($before -> $after)"; exit 1; }
-for m in 20261031100000_command_center.sql 20261101100000_autopilot.sql; do
+for m in 20261031100000_command_center.sql 20261101100000_autopilot.sql 20261102100000_client_os_identity.sql 20261102110000_client_os_delivery.sql 20261102120000_client_os_commercial.sql; do
   "${PSQL[@]}" -d cctest -f "$ROOT/supabase/migrations/$m" >/dev/null 2>"$WORK/err" || { echo "Re-applying $m after rollback failed"; cat "$WORK/err"; exit 1; }
 done
 echo "ROLLBACK AND RE-APPLY PASSED (brands/brand_admins/audit_logs kept: $after)"
