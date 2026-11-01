@@ -61,6 +61,8 @@ export interface StudioState {
     pendingSections: number; incompleteSections: number; outdatedSections: number;
   };
   index: { expected: string | null; live: string | null; sync: "in_sync" | "out_of_sync" | "unknown" | "publishing"; notes: number | null; passages: number | null; bundled: string };
+  /** The publishing token's expiry, when GitHub reports it (null in read-only mode). */
+  token: { expiresAt: string | null; daysLeft: number | null; warn: boolean } | null;
   agents: Record<string, AgentAccess>;
   /** Per brand, the fixed visitor questions scored on the knowledge visitors get (search only). */
   coverage: BrandCoverage[];

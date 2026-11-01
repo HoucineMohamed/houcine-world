@@ -70,7 +70,8 @@ To correct a fact: open the note, edit, **Save draft**, then **Publish**. **Undo
 4. **Live**: the Studio asks the live concierge which index it serves. Only when it reports the new one does the
    Studio say *Published successfully*.
 
-If the deployment fails, the previous knowledge keeps serving visitors. Your changes are safe in the repository, and
+The bar at the top names the step (on a phone: "Step 3 of 4"), how long ago the deployment started, and, if anything
+fails, what happened and what to do next. If the deployment fails, the previous knowledge keeps serving visitors. Your changes are safe in the repository, and
 **Retry synchronization** runs the deployment again. If anything fails before the commit, nothing changed and your
 drafts are kept. Only one publication runs at a time.
 
@@ -141,7 +142,9 @@ Optional secrets: `KNOWLEDGE_GITHUB_REPO` ("owner/name", default `HoucineMohamed
 the same workflow (`knowledge-studio`).
 
 When the token expires, publishing stops with "GitHub refused the Studio's token": create a new one and replace the
-secret.
+secret. When GitHub reports the token's expiry date with its answers, Overview and Settings show it and warn 14 days
+before (Settings, Publishing, "How to replace the token" lists the steps). When GitHub does not report it, the Studio
+says the date is unknown: check the date you noted.
 
 ## 9. How it is built (for sessions)
 
