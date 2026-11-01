@@ -6,8 +6,9 @@ import type { BrainIndex } from "../_shared/brain/types.ts";
 import type { LlmProvider } from "../_shared/llm/provider.ts";
 import {
   CLIENT_SCHEMA, CLIENT_SYSTEM, INTERNAL_SCHEMA, INTERNAL_SYSTEM, cents, clientFacts, flagFigures, fromCents, historyTurns, internalFacts, keepLinks,
-  knowledgeBrands, knowledgeFor, providerMessage, userTurn, validateClientActions, validateInternalActions, withRetry, type Mode,
+  knowledgeBrands, providerMessage, userTurn, validateClientActions, validateInternalActions, withRetry, type Mode,
 } from "./core.ts";
+import { citation, retrieveKnowledge } from "../_shared/knowledge/retrieve.ts";
 
 // deno-lint-ignore no-explicit-any
 type Db = any;
@@ -113,7 +114,10 @@ export const handleAsk = async (db: Db, userId: string, body: Record<string, unk
       members: (members as { user_id: string; brand_id: string; profile: { full_name: string | null; email: string | null } | null }[]).map((m) => ({ user_id: m.user_id, brand_id: m.brand_id, name: m.profile?.full_name || m.profile?.email || "Team member" })),
     });
   }
-  const knowledge = knowledgeFor(index, question, knowledgeBrands(slugs));
+  // Knowledge OS: published public notes of these brands + private documents this person may read (checked in the
+  // database with their own identity, at this moment).
+  const knowledge = await retrieveKnowledge({ index, question, publicBrands: knowledgeBrands(slugs), consumer: mode === "client" ? "client_ai" : "internal_ai", db,
+    brandIds: mode === "internal" && brandFilter ? [brandFilter] : null });
 
   // 5. The model (no tools, no SQL): facts in, JSON out; one retry for a temporary provider problem.
   const store = async (content: string, meta: Record<string, unknown>) =>
@@ -154,8 +158,8 @@ export const handleAsk = async (db: Db, userId: string, body: Record<string, unk
   if (checked.rejected) await log(db, userId, mode, "action_rejected_by_validation", conversationId, { count: checked.rejected });
   const unverified = flagFigures([answer, ...observations, ...recommendations], facts.text);
   const meta = { links, observations, recommendations, missing, proposals, unverified, rejected: checked.rejected,
-    knowledge: knowledge.map((k) => ({ title: k.title, section: k.section, brand: k.brand, status: k.status, updated: k.updated, source: k.source })) };
+    knowledge: knowledge.map(citation) };
   const saved = await store(answer, meta);
-  await log(db, userId, mode, "answer", conversationId, { model: llm.model, links: links.length, proposals: proposals.length, unverified: unverified.length, knowledge: knowledge.length });
+  await log(db, userId, mode, "answer", conversationId, { model: llm.model, links: links.length, proposals: proposals.length, unverified: unverified.length, knowledge: knowledge.length, private_knowledge: knowledge.filter((k) => k.visibility !== "public").length });
   return { status: 200, body: { conversationId, message: { id: saved.id, role: "assistant", content: answer, meta, created_at: saved.created_at } } };
 };

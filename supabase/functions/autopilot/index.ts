@@ -15,6 +15,7 @@ import { dayOf } from "../_shared/command/metrics.ts";
 import { BRAIN_INDEX } from "../_shared/brain/index.generated.ts";
 import { facts } from "../command-analyst/core.ts";
 import { ask, context, jobText, knowledgeFor, type Actionable } from "./core.ts";
+import { privateSources } from "../_shared/knowledge/retrieve.ts";
 
 const corsFor = (origin: string | null): Record<string, string> =>
   isAllowedOrigin(origin)
@@ -105,7 +106,9 @@ Deno.serve(async (req) => {
       };
       const today = dayOf(new Date().toISOString());
       const pack = facts({ dataset, brands, contacts: (contacts ?? []) as { id: string; name: string }[], today, truncated, scopeLabel: requested ? `brands ${brands.map((b) => b.name).join(", ")}` : "every brand (super admin)" });
-      const knowledge = knowledgeFor(BRAIN_INDEX, question, superAdmin);
+      // Knowledge OS: public notes plus private documents this admin may read (checked in the database, as them).
+      const privateKnowledge = (await privateSources(client as never, question, "autopilot_ai", requested, 3)).map((k) => ({ title: `${k.title} (${k.visibility}, ${k.version})`, section: k.section, status: "verified" as const, text: k.text, link: null }));
+      const knowledge = [...privateKnowledge, ...knowledgeFor(BRAIN_INDEX, question, superAdmin)].slice(0, 6);
       const ctx = context({
         facts: pack, knowledge, actionable,
         alerts: (alerts ?? []) as never,

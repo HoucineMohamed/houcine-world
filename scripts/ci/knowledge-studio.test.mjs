@@ -130,16 +130,22 @@ test("teach -> draft -> publish -> live: the AI retrieves the new knowledge only
   assert.ok(hits.some((p) => p.note.id === "lrv-international-bookings"), hits.map((p) => p.note.id).join(","));
 });
 
-test("internal and restricted notes are never compiled into the public index, even after publishing", async () => {
+test("internal and restricted notes are never committed to the public repository, nor compiled (Knowledge OS)", async () => {
   const { call, g } = setup();
+  const head = g.state.head;
   for (const [vis, id] of [["internal", "lrv-secret-internal"], ["confidential", "lrv-secret-restricted"]]) {
     const content = NEW_NOTE.replace("id: lrv-international-bookings", `id: ${id}`).replace("title: International bookings", `title: Secret ${vis}`).replace("visibility: public", `visibility: ${vis}`).replace("[[DJ Hajri Mohamed]]", "DJ").replace("[[Houcine.management]]", "management").replace("# International bookings", `# Secret ${vis}`);
     const r = await call("POST", "draft", { body: { path: `brands/la-rosa-view/${id}.md`, content, expectedVersion: null } });
     assert.equal(r.status, 200, JSON.stringify(r.body));
   }
-  assert.equal((await call("POST", "publish", { body: {} })).status, 200);
-  const index = g.tree().get(INDEX_PATH);
+  const r = await call("POST", "publish", { body: {} });
+  assert.equal(r.status, 422);
+  assert.equal(r.body.code, "private_knowledge");
+  assert.deepEqual(r.body.paths.sort(), ["brands/la-rosa-view/lrv-secret-internal.md", "brands/la-rosa-view/lrv-secret-restricted.md"]);
+  assert.equal(g.state.head, head, "nothing committed to the public repository");
+  const index = g.tree().get(INDEX_PATH) ?? "";
   assert.ok(!index.includes("lrv-secret-internal") && !index.includes("lrv-secret-restricted") && !index.includes("Secret internal"));
+  assert.ok(![...g.tree().keys()].some((path) => path.includes("lrv-secret")), "no private file in the repository");
   // The admin's search does find them (it is the admin's view).
   const found = await call("GET", "search", { query: { q: "Secret restricted" } });
   assert.ok(found.body.results.some((x) => x.id === "lrv-secret-restricted"));
