@@ -746,7 +746,9 @@ create policy "cos_file_shares_select" on public.cos_file_shares for select to a
 grant select on public.cos_file_shares to authenticated;
 
 -- Deliverables: admins write (title, description, responsible, partner); status fields only through the functions.
-create policy "deliverables_select" on public.deliverables for select to authenticated using (public.cos_can_see_deliverable(id));
+-- Policies test the row's own columns (a function reading the table again by id cannot see a row being inserted).
+create policy "deliverables_select" on public.deliverables for select to authenticated
+  using (public.cos_project_access(project_id) in ('manage', 'client', 'partner') or partner_membership_id in (select public.cos_my_memberships('partner')));
 create policy "deliverables_insert" on public.deliverables for insert to authenticated
   with check (public.ap_can_manage(brand_id) and status = 'draft' and current_version = 0 and exists (select 1 from public.projects p where p.id = project_id and p.brand_id = brand_id));
 create policy "deliverables_update" on public.deliverables for update to authenticated using (public.ap_can_manage(brand_id)) with check (public.ap_can_manage(brand_id));
@@ -765,8 +767,11 @@ create policy "deliverable_reviews_select" on public.deliverable_reviews for sel
   or (reviewer_kind = 'internal' and exists (select 1 from public.deliverables d where d.id = deliverable_id and d.partner_membership_id in (select public.cos_my_memberships('partner')))));
 grant select on public.deliverable_reviews to authenticated;
 
-create policy "client_requests_select" on public.client_requests for select to authenticated using (public.cos_can_see_request(id));
-create policy "client_requests_update" on public.client_requests for update to authenticated using (public.cos_can_see_request(id)) with check (public.cos_can_see_request(id));
+create policy "client_requests_select" on public.client_requests for select to authenticated
+  using (public.ap_can_manage(brand_id) or membership_id in (select public.cos_my_memberships('client')));
+create policy "client_requests_update" on public.client_requests for update to authenticated
+  using (public.ap_can_manage(brand_id) or membership_id in (select public.cos_my_memberships('client')))
+  with check (public.ap_can_manage(brand_id) or membership_id in (select public.cos_my_memberships('client')));
 grant select, update on public.client_requests to authenticated;
 create policy "client_request_events_select" on public.client_request_events for select to authenticated
   using (public.ap_can_manage(brand_id) or (not internal and public.cos_can_see_request(request_id)));
@@ -778,7 +783,10 @@ create policy "client_request_events_insert" on public.client_request_events for
 grant select, insert on public.client_request_events to authenticated;
 grant usage on sequence public.client_request_events_id_seq to authenticated;
 
-create policy "conversations_select" on public.cos_conversations for select to authenticated using (public.cos_conversation_access(id) is not null);
+create policy "conversations_select" on public.cos_conversations for select to authenticated using (
+  public.ap_can_manage(brand_id)
+  or (audience = 'client' and ((project_id is not null and public.cos_project_access(project_id) = 'client') or (project_id is null and public.cos_client_membership(contact_id, brand_id) is not null)))
+  or (audience = 'partner' and project_id is not null and public.cos_project_access(project_id) in ('partner', 'partner_tasks')));
 create policy "conversations_insert" on public.cos_conversations for insert to authenticated
   with check (created_by = auth.uid() and (
     public.ap_can_manage(brand_id)

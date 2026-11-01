@@ -271,7 +271,11 @@ select cotest.check('brand B admin does not see brand A lifecycles', not exists 
 
 -- ── Scenario A: proposal, acceptance, project ────────────────────────────────────────────────────────────────────────
 select cotest.act('admin_a');
-insert into public.proposals (brand_id, contact_id, reference, title, currency, valid_until) values (cotest.id('brand_a'), cotest.id('alice'), 'P-001', 'Website phase 2', 'EUR', current_date + 14);
+insert into public.proposals (brand_id, contact_id, reference, title, currency, valid_until) values (cotest.id('brand_a'), cotest.id('alice'), 'P-001', 'Website phase 2', 'EUR', current_date + 14) returning id;
+-- "insert ... returning" (what the screens do) works for every table the team creates rows in.
+insert into public.contracts (brand_id, contact_id, title, body) values (cotest.id('brand_a'), cotest.id('alice'), 'Returning check', 'x') returning id;
+insert into public.cos_conversations (brand_id, project_id, audience, subject, created_by) values (cotest.id('brand_a'), cotest.id('p_alice'), 'internal', 'Returning check', auth.uid()) returning id;
+insert into public.deliverables (project_id, brand_id, title) values (cotest.id('p_alice'), cotest.id('brand_a'), 'Returning check') returning id;
 insert into cotest.ids select 'prop', id from public.proposals where reference = 'P-001';
 insert into public.proposal_items (proposal_id, brand_id, position, description, quantity, unit_price, discount_pct, tax_pct) values
   (cotest.id('prop'), cotest.id('brand_a'), 1, 'Design', 2, 1000, 10, 20), (cotest.id('prop'), cotest.id('brand_a'), 2, 'Hosting setup', 1, 333.33, 0, 0);

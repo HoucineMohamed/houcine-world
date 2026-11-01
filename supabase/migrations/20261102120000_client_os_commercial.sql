@@ -490,7 +490,10 @@ create policy "service_catalog_all" on public.service_catalog for all to authent
 grant select, insert, update, delete on public.service_catalog to authenticated;
 
 -- The team edits proposals; a client reads a sent proposal only through its frozen version (proposal_versions).
-create policy "proposals_select" on public.proposals for select to authenticated using (public.cos_proposal_access(id) is not null);
+-- Policies test the row's own columns (a function that reads the table again by id cannot see a row being inserted,
+-- which made "insert ... returning" fail).
+create policy "proposals_select" on public.proposals for select to authenticated
+  using (public.ap_can_manage(brand_id) or (status <> 'draft' and version > 0 and public.cos_client_membership(contact_id, brand_id) is not null));
 create policy "proposals_insert" on public.proposals for insert to authenticated with check (public.ap_can_manage(brand_id));
 create policy "proposals_update" on public.proposals for update to authenticated using (public.ap_can_manage(brand_id)) with check (public.ap_can_manage(brand_id));
 grant select, insert, update on public.proposals to authenticated;
@@ -505,7 +508,7 @@ grant select on public.proposal_events to authenticated;
 
 create policy "contract_templates_all" on public.contract_templates for all to authenticated using (public.ap_can_manage(brand_id)) with check (public.ap_can_manage(brand_id));
 grant select, insert, update, delete on public.contract_templates to authenticated;
-create policy "contracts_select" on public.contracts for select to authenticated using (public.cos_contract_access(id) = 'manage');
+create policy "contracts_select" on public.contracts for select to authenticated using (public.ap_can_manage(brand_id));
 create policy "contracts_insert" on public.contracts for insert to authenticated with check (public.ap_can_manage(brand_id));
 create policy "contracts_update" on public.contracts for update to authenticated using (public.ap_can_manage(brand_id)) with check (public.ap_can_manage(brand_id));
 grant select, insert, update on public.contracts to authenticated;
