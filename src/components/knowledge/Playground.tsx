@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Send, RotateCcw, Loader2, ThumbsUp, CircleDashed, XCircle, HelpCircle, Clock, ChevronDown, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -63,7 +63,7 @@ const Inspector = ({ result }: { result: PlaygroundResult }) => {
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="tabular-nums text-muted-foreground">#{i + 1}</span>
               <BrandDot brand={p.brand} />
-              <button type="button" onClick={() => open(p.noteId)} className="font-medium text-violet-300 hover:underline">{p.title}</button>
+              <button type="button" onClick={() => open(p.noteId)} className="font-medium text-accent hover:underline">{p.title}</button>
               <span className="text-muted-foreground">› {p.section}</span>
               <span className="ml-auto flex gap-1"><Pill tone="published">{p.visibility}</Pill><Pill tone={p.status === "verified" || p.status === "policy" ? "published" : "pending"}>{STATUS_INFO[p.status]?.label}</Pill></span>
             </div>
@@ -89,7 +89,8 @@ const Inspector = ({ result }: { result: PlaygroundResult }) => {
 const Playground = () => {
   const { state } = useStudio();
   const [source, setSource] = useState<"live" | "preview">("live");
-  const [view, setView] = useState<"chat" | "coverage">("chat");
+  const [params] = useSearchParams();
+  const [view, setView] = useState<"chat" | "coverage">(params.get("view") === "coverage" ? "coverage" : "chat");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -137,7 +138,7 @@ const Playground = () => {
   };
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-4">
+    <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)] gap-4">
       <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card/30 p-3 text-sm">
         <div className="flex rounded-md border border-border p-0.5" role="tablist" aria-label="Playground view">
           {(["chat", "coverage"] as const).map((v) => (
@@ -160,7 +161,7 @@ const Playground = () => {
         {view === "chat" && <Button size="sm" variant="ghost" onClick={reset} className="gap-1.5"><RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> New conversation</Button>}
       </div>
 
-      {view === "coverage" ? <Coverage source={source} /> : (<>
+      {view === "coverage" ? <Coverage source={source} initialBrand={params.get("brand")} /> : (<>
 
       <div className="space-y-4">
         {turns.length === 0 && (
@@ -170,7 +171,7 @@ const Playground = () => {
         )}
         {turns.map((t, i) => (
           <div key={i} className="space-y-2">
-            <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-violet-500/20 px-3 py-2 text-sm">{t.question}</div>
+            <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-accent/20 px-3 py-2 text-sm">{t.question}</div>
             <div className="max-w-[90%] rounded-2xl rounded-tl-sm border border-border bg-card/40 px-3 py-2 text-sm">
               {!t.result && !t.error && <span className="flex items-center gap-2 text-muted-foreground" role="status"><Loader2 className="h-4 w-4 animate-spin" /> Interpreting, retrieving, answering…</span>}
               {t.error && <span className="text-rose-300">{t.error}</span>}
@@ -184,7 +185,7 @@ const Playground = () => {
               <div className="space-y-2 pl-1">
                 <div className="flex flex-wrap items-center gap-1.5">
                   {RATINGS.map(({ rating, label, icon: Icon }) => (
-                    <button key={rating} type="button" disabled={Boolean(t.feedback)} onClick={() => void sendFeedback(i, rating)} className={cn("flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs disabled:opacity-60", t.feedback === rating ? "border-violet-400 bg-violet-500/20" : "border-border text-muted-foreground hover:text-foreground")}>
+                    <button key={rating} type="button" disabled={Boolean(t.feedback)} onClick={() => void sendFeedback(i, rating)} className={cn("flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs disabled:opacity-60", t.feedback === rating ? "border-accent bg-accent/20" : "border-border text-muted-foreground hover:text-foreground")}>
                       <Icon className="h-3 w-3" aria-hidden="true" /> {label}
                     </button>
                   ))}

@@ -61,6 +61,14 @@ const EcosystemView = React.lazy(() => import("./pages/workspace/EcosystemView")
 const PlatformCredentials = React.lazy(() => import("./pages/workspace/PlatformCredentials"));
 const WorkspaceDenied = React.lazy(() => import("./pages/workspace/WorkspaceDenied"));
 const KnowledgeStudio = React.lazy(() => import("./pages/workspace/knowledge/KnowledgeStudio"));
+const GlobalCommandCenter = React.lazy(() => import("./pages/workspace/command/CommandCenter").then((m) => ({ default: m.GlobalCommandCenter })));
+const BrandCommandCenter = React.lazy(() => import("./pages/workspace/command/CommandCenter").then((m) => ({ default: m.BrandCommandCenter })));
+const ClientOS = React.lazy(() => import("./pages/workspace/clients/ClientOS"));
+const ClientPortal = React.lazy(() => import("./pages/portal/ClientPortal"));
+const PartnerPortal = React.lazy(() => import("./pages/portal/PartnerPortal"));
+const PortalInvite = React.lazy(() => import("./pages/portal/InvitePage"));
+const GlobalAutopilot = React.lazy(() => import("./pages/workspace/autopilot/Autopilot").then((m) => ({ default: m.GlobalAutopilot })));
+const BrandAutopilot = React.lazy(() => import("./pages/workspace/autopilot/Autopilot").then((m) => ({ default: m.BrandAutopilot })));
 const WorkspaceNotFound = React.lazy(() => import("./pages/workspace/WorkspaceNotFound"));
 
 // Wrapper component to enable page tracking
@@ -116,6 +124,14 @@ const AppRoutes = () => {
       <Route path={route("/admin/login")} element={<AdminLogin />} />
       <Route path={route("/auth/callback")} element={<AuthCallback />} />
 
+      {/* Client OS portals: their own sign-in; access comes only from accepted invitations (docs/client-os.md). */}
+      <Route path={route("/portal/invite")} element={<PortalInvite />} />
+      <Route path={route("/portal")} element={<ClientPortal />} />
+      <Route path={route("/portal/projects/:projectId")} element={<ClientPortal />} />
+      <Route path={route("/portal/:section")} element={<ClientPortal />} />
+      <Route path={route("/partners")} element={<PartnerPortal />} />
+      <Route path={route("/partners/:section")} element={<PartnerPortal />} />
+
       {/* Workspace: login is public, everything else is auth + membership guarded */}
       <Route path={route("/workspace/login")} element={<WorkspaceLogin />} />
       <Route path={route("/workspace/set-password")} element={<SetPassword />} />
@@ -133,6 +149,15 @@ const AppRoutes = () => {
         <Route path={route("/workspace/knowledge/review")} element={<KnowledgeStudio section="review" />} />
         <Route path={route("/workspace/knowledge/activity")} element={<KnowledgeStudio section="activity" />} />
         <Route path={route("/workspace/knowledge/settings")} element={<KnowledgeStudio section="settings" />} />
+        {/* Command Center: global for super admins (checked again by the database for every record). */}
+        <Route path={route("/workspace/command")} element={<GlobalCommandCenter />} />
+        <Route path={route("/workspace/command/:section")} element={<GlobalCommandCenter />} />
+        {/* Client OS (internal): super admins and brand admins; the database checks every record. */}
+        <Route path={route("/workspace/clients")} element={<ClientOS />} />
+        <Route path={route("/workspace/clients/:section")} element={<ClientOS />} />
+        {/* Autopilot: global for super admins (the database checks every record and every action again). */}
+        <Route path={route("/workspace/autopilot")} element={<GlobalAutopilot />} />
+        <Route path={route("/workspace/autopilot/:section")} element={<GlobalAutopilot />} />
         <Route path={route("/workspace/:brandId")} element={<BrandGuard />}>
           <Route path="dashboard" element={<BrandDashboard />} />
           <Route path="bookings" element={<BrandBookings />} />
@@ -140,6 +165,10 @@ const AppRoutes = () => {
           <Route path="analytics" element={<BrandAnalytics />} />
           <Route path="messages" element={<BrandMessages />} />
           <Route path="settings" element={<BrandSettings />} />
+          <Route path="command" element={<BrandCommandCenter />} />
+          <Route path="command/:section" element={<BrandCommandCenter />} />
+          <Route path="autopilot" element={<BrandAutopilot />} />
+          <Route path="autopilot/:section" element={<BrandAutopilot />} />
         </Route>
       </Route>
       <Route path={route("/workspace/*")} element={<WorkspaceNotFound />} />
