@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   LayoutDashboard, CalendarDays, Bell, BarChart3, MessageSquare,
-  Settings as SettingsIcon, LogOut, Globe, ChevronDown, KeyRound, Menu, Brain } from "lucide-react";
+  Settings as SettingsIcon, LogOut, Globe, ChevronDown, KeyRound, Menu, Brain, Gauge, Radar, Workflow, Zap, Contact } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -23,6 +23,8 @@ const NAV = [
   { to: "notifications", label: "Notifications", icon: Bell },
   { to: "analytics", label: "Analytics", icon: BarChart3 },
   { to: "messages", label: "Messages", icon: MessageSquare },
+  { to: "command", label: "Command Center", icon: Gauge },
+  { to: "autopilot", label: "Autopilot", icon: Workflow },
   { to: "settings", label: "Settings", icon: SettingsIcon },
 ];
 
@@ -49,6 +51,19 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => { loadUnread(); /* eslint-disable-next-line */ }, [brandId]);
+
+  // Autopilot notifications are personal (row-level security: the person's own). Counted on navigation, every
+  // minute, and when Autopilot marks some as read. The service is loaded on demand, outside the public bundle.
+  const [autopilotUnread, setAutopilotUnread] = useState(0);
+  useEffect(() => {
+    if (!user) return;
+    let alive = true;
+    const load = () => import("@/services/autopilot").then((m) => m.autopilotApi.unreadCount()).then((n) => { if (alive) setAutopilotUnread(n); }).catch(() => {});
+    load();
+    const timer = window.setInterval(load, 60_000);
+    window.addEventListener("autopilot:notifications", load);
+    return () => { alive = false; window.clearInterval(timer); window.removeEventListener("autopilot:notifications", load); };
+  }, [user, brandId]);
   useRealtimeTable("notifications", brandId, loadUnread);
 
   const signOut = async () => {
@@ -70,6 +85,11 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
         <NavLink key={to} to={`/workspace/${brandId}/${to}`} className={navLinkClass} onClick={closeMenu}>
           <Icon className="w-4 h-4" aria-hidden="true" />
           {label}
+          {to === "autopilot" && autopilotUnread > 0 && (
+            <span className="ml-auto text-xs bg-destructive text-destructive-foreground rounded-full px-2" aria-label={`${autopilotUnread} unread Autopilot notifications`}>
+              {autopilotUnread}
+            </span>
+          )}
           {to === "notifications" && unread > 0 && (
             <span className="ml-auto text-xs bg-destructive text-destructive-foreground rounded-full px-2">
               {unread}
@@ -85,6 +105,21 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
       {isSuperAdmin && (
         <NavLink to="/workspace/platform-credentials" className={navLinkClass} onClick={closeMenu}>
           <KeyRound className="w-4 h-4" aria-hidden="true" /> Platform Credentials
+        </NavLink>
+      )}
+      {isSuperAdmin && (
+        <NavLink to="/workspace/command" className={navLinkClass} onClick={closeMenu}>
+          <Radar className="w-4 h-4" aria-hidden="true" /> Global Command Center
+        </NavLink>
+      )}
+      {(isSuperAdmin || role === "brand_admin") && (
+        <NavLink to={isSuperAdmin ? "/workspace/clients" : `/workspace/clients?brand=${brandId}`} className={navLinkClass} onClick={closeMenu}>
+          <Contact className="w-4 h-4" aria-hidden="true" /> Client OS
+        </NavLink>
+      )}
+      {isSuperAdmin && (
+        <NavLink to="/workspace/autopilot" className={navLinkClass} onClick={closeMenu}>
+          <Zap className="w-4 h-4" aria-hidden="true" /> Global Autopilot
         </NavLink>
       )}
       {isSuperAdmin && (

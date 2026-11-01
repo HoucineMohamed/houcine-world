@@ -61,7 +61,8 @@ test("the dashboard state comes from the notes themselves, and says whether the 
   const { call, setLive } = setup();
   const r = await call("GET", "state");
   assert.equal(r.status, 200);
-  const notes = brainFiles.filter((f) => f.path.endsWith(".md") && f.path !== "README.md" && !f.path.startsWith("schemas/"));
+  const { isNotePath } = await import(join(root, "supabase/functions/_shared/brain/compile.ts"));
+  const notes = brainFiles.filter((f) => isNotePath(f.path));
   assert.equal(r.body.stats.total, notes.length);
   assert.equal(r.body.stats.public, BRAIN_INDEX.notes.length);
   assert.ok(r.body.stats.internal >= 2);
@@ -71,6 +72,11 @@ test("the dashboard state comes from the notes themselves, and says whether the 
   assert.equal(r.body.canPublish, true);
   setLive("0000000000000000");
   assert.equal((await call("GET", "state")).body.index.sync, "out_of_sync");
+  // The dashboard's visitor-question summary is the coverage of the knowledge visitors get (the deployed index).
+  const { scoreCoverage } = await import(join(root, "supabase/functions/_shared/brain/coverage.ts"));
+  const { COVERAGE_QUESTIONS } = await import(join(root, "supabase/functions/_shared/brain/coverage-questions.ts"));
+  const { BRANDS } = await import(join(root, "supabase/functions/_shared/brain/compile.ts"));
+  assert.deepEqual(r.body.coverage, scoreCoverage(BRAIN_INDEX, COVERAGE_QUESTIONS, BRANDS).brands);
 });
 
 test("teach -> draft -> publish -> live: the AI retrieves the new knowledge only once it is published and live", async () => {
@@ -102,6 +108,11 @@ test("teach -> draft -> publish -> live: the AI retrieves the new knowledge only
   const compiled = compileBrain(after);
   assert.equal(tree.get(INDEX_PATH), renderIndexModule(compiled.index));
   assert.equal(tree.get(SNAPSHOT_PATH), renderSnapshotModule(after));
+  // ...and the generated maps, exactly as the Node build writes them.
+  const { buildMaps, DASHBOARD_PATH, CANVAS_PATH } = await import("../brain/lib.mjs");
+  const maps = buildMaps(after, compiled.index);
+  assert.equal(tree.get(`${BRAIN_DIR}/${DASHBOARD_PATH}`), maps.dashboard);
+  assert.equal(tree.get(`${BRAIN_DIR}/${CANVAS_PATH}`), maps.canvas);
   assert.equal(pub.expected_fingerprint, compiled.index.fingerprint);
   assert.equal(await store.draft(path), null, "the draft is done once the notes are committed");
 
@@ -403,6 +414,18 @@ test("the Studio refuses a public note that names a page the site does not have,
   const published = await call("POST", "publish", { body: {} });
   assert.equal(published.status, 422);
   assert.equal(published.body.code, "validation_failed");
+});
+
+test("the review queue lists possible duplicates and contact details no contact note lists, with the note to open", async () => {
+  const { call } = setup();
+  const before = (await call("GET", "review")).body.items.filter((i) => i.kind === "possible_duplicate");
+  assert.ok(before.some((i) => i.path === "brands/la-rosa-view/bookings.md" && /Deposits, payment, cancellation/.test(i.title)), JSON.stringify(before));
+  const content = NEW_NOTE.replace("are discussed individually.", "are discussed individually. Write to abroad@larosaview.example.");
+  await call("POST", "draft", { body: { path: "brands/la-rosa-view/international-bookings.md", content, expectedVersion: null } });
+  const items = (await call("GET", "review")).body.items.filter((i) => i.kind === "contact_mismatch");
+  assert.equal(items.length, 1, "the draft is checked too");
+  assert.equal(items[0].path, "brands/la-rosa-view/international-bookings.md");
+  assert.match(items[0].detail, /abroad@larosaview\.example/);
 });
 
 test("the function checks a signed-in super admin on the server before doing anything", () => {
