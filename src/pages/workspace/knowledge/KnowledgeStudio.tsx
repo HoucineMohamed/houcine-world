@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Link, Navigate, NavLink } from "react-router-dom";
-import { ArrowLeft, Brain, LayoutDashboard, FileText, Network, MessagesSquare, Inbox, History, Settings, Plus, Loader2, CheckCircle2, AlertTriangle, RotateCcw, X, CircleDot } from "lucide-react";
+import { ArrowLeft, Brain, LayoutDashboard, FileText, Network, MessagesSquare, Inbox, History, Settings, Plus, Loader2, CheckCircle2, AlertTriangle, RotateCcw, X, CircleDot, Library as LibraryIcon, Lightbulb, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/components/workspace/WorkspaceContext";
@@ -19,12 +19,20 @@ const Playground = React.lazy(() => import("@/components/knowledge/Playground"))
 const Review = React.lazy(() => import("@/components/knowledge/Review"));
 const Activity = React.lazy(() => import("@/components/knowledge/Activity"));
 const StudioSettings = React.lazy(() => import("@/components/knowledge/StudioSettings"));
+// Knowledge OS (docs/knowledge-os.md): the private library, its intelligence and the access test.
+const Library = React.lazy(() => import("@/components/knowledge/os/Library"));
+const Insights = React.lazy(() => import("@/components/knowledge/os/Insights"));
+const AccessTest = React.lazy(() => import("@/components/knowledge/os/AccessTest"));
 
-export type StudioSection = "overview" | "notes" | "graph" | "playground" | "review" | "activity" | "settings";
+export type StudioSection = "overview" | "notes" | "library" | "insights" | "access" | "graph" | "playground" | "review" | "activity" | "settings";
+const OS_SECTIONS: StudioSection[] = ["library", "insights", "access"];
 
 const NAV: { section: StudioSection; to: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { section: "overview", to: "/workspace/knowledge", label: "Overview", icon: LayoutDashboard },
-  { section: "notes", to: "/workspace/knowledge/notes", label: "Notes", icon: FileText },
+  { section: "notes", to: "/workspace/knowledge/notes", label: "Public notes", icon: FileText },
+  { section: "library", to: "/workspace/knowledge/library", label: "Library", icon: LibraryIcon },
+  { section: "insights", to: "/workspace/knowledge/insights", label: "Insights", icon: Lightbulb },
+  { section: "access", to: "/workspace/knowledge/access", label: "Access test", icon: ShieldCheck },
   { section: "graph", to: "/workspace/knowledge/graph", label: "Graph", icon: Network },
   { section: "playground", to: "/workspace/knowledge/playground", label: "AI Playground", icon: MessagesSquare },
   { section: "review", to: "/workspace/knowledge/review", label: "Review", icon: Inbox },
@@ -146,6 +154,9 @@ const Body = ({ section }: { section: StudioSection }) => {
           <Suspense fallback={<div className="py-20 text-muted-foreground" role="status">Loading…</div>}>
             {section === "overview" && <Overview />}
             {section === "notes" && <Explorer />}
+            {section === "library" && <Library />}
+            {section === "insights" && <Insights />}
+            {section === "access" && <AccessTest />}
             {section === "graph" && <Graph />}
             {section === "playground" && <Playground />}
             {section === "review" && <Review />}
@@ -159,10 +170,42 @@ const Body = ({ section }: { section: StudioSection }) => {
   );
 };
 
+/** Brand admins: only the Knowledge OS sections, without the public-notes Studio (which stays super-admin only). */
+const BrandShell = ({ section }: { section: StudioSection }) => (
+  <div className="knowledge-studio flex min-h-screen flex-col bg-background text-sm text-foreground">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+      <div className="mx-auto flex max-w-[1600px] items-center gap-3 px-4 py-2.5">
+        <Link to="/workspace" className="rounded p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="Back to the workspace"><ArrowLeft className="h-4 w-4" /></Link>
+        <Brain className="h-5 w-5 text-accent" aria-hidden="true" />
+        <h1 className="font-display text-base font-semibold tracking-wide">Knowledge</h1>
+        <span className="hidden text-xs text-muted-foreground lg:inline">your brands' private knowledge</span>
+      </div>
+      <nav aria-label="Knowledge" className="mx-auto flex max-w-[1600px] gap-1 overflow-x-auto px-3 pb-1.5">
+        {NAV.filter((n) => OS_SECTIONS.includes(n.section)).map(({ to, label, icon: Icon }) => (
+          <NavLink key={to} to={to} className={({ isActive }) => cn("flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", isActive ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted/50 hover:text-foreground")}>
+            <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {label}
+          </NavLink>
+        ))}
+      </nav>
+    </header>
+    <main id="main" className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-4">
+      <Suspense fallback={<div className="py-20 text-muted-foreground" role="status">Loading…</div>}>
+        {section === "library" && <Library />}
+        {section === "insights" && <Insights />}
+        {section === "access" && <AccessTest />}
+      </Suspense>
+    </main>
+  </div>
+);
+
 const KnowledgeStudio = ({ section }: { section: StudioSection }) => {
-  const { isSuperAdmin } = useWorkspace();
-  // Interface check only; the server refuses every Knowledge Studio request from anyone else.
-  if (!isSuperAdmin) return <Navigate to="/workspace/denied" replace />;
+  const { isSuperAdmin, memberships } = useWorkspace();
+  // Interface checks only; the server and the database refuse everything else.
+  if (!isSuperAdmin) {
+    const brandAdmin = memberships.some((m) => m.role === "brand_admin");
+    if (brandAdmin && OS_SECTIONS.includes(section)) return <BrandShell section={section} />;
+    return <Navigate to={brandAdmin ? "/workspace/knowledge/library" : "/workspace/denied"} replace />;
+  }
   return (
     <StudioProvider>
       <Body section={section} />

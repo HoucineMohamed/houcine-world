@@ -122,6 +122,11 @@ const WorkspaceShell = ({ children }: { children: React.ReactNode }) => {
           <Zap className="w-4 h-4" aria-hidden="true" /> Global Autopilot
         </NavLink>
       )}
+      {!isSuperAdmin && role === "brand_admin" && (
+        <NavLink to={`/workspace/knowledge/library?brand=${brandId}`} className={navLinkClass} onClick={closeMenu}>
+          <Brain className="w-4 h-4" aria-hidden="true" /> Knowledge
+        </NavLink>
+      )}
       {isSuperAdmin && (
         <NavLink to="/workspace/knowledge" className={navLinkClass} onClick={closeMenu}>
           <Brain className="w-4 h-4" aria-hidden="true" /> Knowledge Studio

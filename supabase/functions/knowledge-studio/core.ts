@@ -241,6 +241,22 @@ export const draftBaseProblem = (draft: Draft, files: Map<string, RepoFile>): st
 const brandOf = (fields: Record<string, string | string[]>) => (typeof fields.brand === "string" ? fields.brand : "");
 
 /** Overview numbers, derived only from the notes themselves. */
+/**
+ * Knowledge OS publication guard (docs/knowledge-os.md section 14). The repository is PUBLIC, so a note may be
+ * committed only if it is public knowledge; agent access notes (which brands an AI may read) are configuration, not
+ * knowledge, and stay allowed. Client, internal and management knowledge belongs in the Knowledge Library (private,
+ * in Supabase). Returns the paths that must not be published.
+ */
+export const privateDrafts = (drafts: Pick<Draft, "path" | "operation" | "content">[]): string[] =>
+  drafts.filter((d) => d.operation === "upsert" && typeof d.content === "string").filter((d) => {
+    try {
+      const h = parseFrontmatter(d.content!.replace(/\r\n/g, "\n"), d.path);
+      return h.fields.visibility !== "public" && h.fields.type !== "agent";
+    } catch {
+      return true; // unreadable header: never published
+    }
+  }).map((d) => d.path);
+
 export const brainStats = (result: CompileResult) => {
   const active = result.notes.filter((n) => !n.archived);
   const byBrand: Record<string, number> = {};
@@ -599,6 +615,11 @@ export const createStudio = (deps: StudioDeps) => {
         if (stale.length) {
           await store.addEvent({ actor: r.actor, kind: "validation_failed", detail: { stale } });
           return fail(409, "drafts_out_of_date", "Some notes changed on the main branch since these drafts started. Open them to compare and update before publishing.", { stale });
+        }
+        const privatePaths = privateDrafts(selected);
+        if (privatePaths.length) {
+          await store.addEvent({ actor: r.actor, kind: "validation_failed", detail: { private: privatePaths } });
+          return fail(422, "private_knowledge", "Only public notes are published to the website's repository, which is public. Put client, internal or management knowledge in the Knowledge Library instead (it stays private).", { paths: privatePaths });
         }
         const next = applyDrafts(loaded.files, selected);
         const compiled = compileBrain(next);

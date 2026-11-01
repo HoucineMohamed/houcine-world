@@ -144,6 +144,9 @@ const AppRoutes = () => {
         {/* Knowledge Studio: super admins only (checked again on the server for every request). */}
         <Route path={route("/workspace/knowledge")} element={<KnowledgeStudio section="overview" />} />
         <Route path={route("/workspace/knowledge/notes")} element={<KnowledgeStudio section="notes" />} />
+        <Route path={route("/workspace/knowledge/library")} element={<KnowledgeStudio section="library" />} />
+        <Route path={route("/workspace/knowledge/insights")} element={<KnowledgeStudio section="insights" />} />
+        <Route path={route("/workspace/knowledge/access")} element={<KnowledgeStudio section="access" />} />
         <Route path={route("/workspace/knowledge/graph")} element={<KnowledgeStudio section="graph" />} />
         <Route path={route("/workspace/knowledge/playground")} element={<KnowledgeStudio section="playground" />} />
         <Route path={route("/workspace/knowledge/review")} element={<KnowledgeStudio section="review" />} />

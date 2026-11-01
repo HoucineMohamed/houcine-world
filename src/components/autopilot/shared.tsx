@@ -40,6 +40,13 @@ export const TRIGGERS: Record<string, { label: string; help: string }> = {
   "contract.approved": { label: "Contract approved", help: "The client approved a contract version." },
   "partner.assigned": { label: "Partner assigned", help: "A partner was given access to a project." },
   "partner.access_revoked": { label: "Partner access revoked", help: "A partner's project access ended." },
+  // Knowledge OS (docs/knowledge-os.md section 13)
+  "knowledge.review_requested": { label: "Knowledge review requested", help: "A library document was submitted for review." },
+  "knowledge.review_overdue": { label: "Knowledge review overdue", help: "Found by monitoring: a document's review date has passed." },
+  "knowledge.expiring": { label: "Knowledge expiring", help: "Found by monitoring: a document expires within 14 days." },
+  "knowledge.document_published": { label: "Knowledge published", help: "A library document version was published." },
+  "knowledge.document_archived": { label: "Knowledge archived", help: "A library document was archived." },
+  "knowledge.gap_detected": { label: "Knowledge gap", help: "Found by monitoring: the same question went unanswered 3 times in a week." },
 };
 
 export const ACTIONS: Record<string, { label: string; help: string; fields: ("title" | "body" | "priority" | "category" | "severity" | "due_in_days" | "include_central" | "to" | "instruction" | "assign")[] }> = {

@@ -27,6 +27,12 @@ const TEMPLATES: { name: string; description: string; definition: Definition }[]
     definition: { trigger: "proposal.accepted", match: "all", conditions: [], actions: [{ type: "notify_admins", title: "Proposal accepted: {title}", category: "finance", priority: "high" }] } },
   { name: "Client onboarding", description: "When a client joins a project: an onboarding task for the project owner.",
     definition: { trigger: "project.client_added", match: "all", conditions: [], actions: [{ type: "create_task", title: "Onboard the client on {name}", priority: "medium", due_in_days: 3, assign: "owner" }] } },
+  { name: "Knowledge review overdue", description: "When a library document's review date passes: its owner is told.",
+    definition: { trigger: "knowledge.review_overdue", match: "all", conditions: [], actions: [{ type: "notify_owner", title: "Review overdue: {title}", category: "knowledge", priority: "normal" }] } },
+  { name: "Knowledge review requested", description: "When a document is submitted for review: the brand's admins are told (super admins for global or management documents).",
+    definition: { trigger: "knowledge.review_requested", match: "all", conditions: [], actions: [{ type: "notify_admins", title: "Review requested: {title}", category: "knowledge", priority: "normal", include_central: true }] } },
+  { name: "Knowledge gap", description: "When a question repeatedly finds no source: an alert for the knowledge owners.",
+    definition: { trigger: "knowledge.gap_detected", match: "all", conditions: [], actions: [{ type: "create_alert", title: "{title}", severity: "low", category: "system" }] } },
 ];
 
 /** The visual workflow: one card per step, joined top to bottom. */

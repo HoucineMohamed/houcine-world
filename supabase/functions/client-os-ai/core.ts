@@ -9,7 +9,7 @@
 //     PROPOSAL and runs only after the person confirms (cai_confirm_action checks everything again);
 //   * numbers in the answer that are not in the facts are flagged.
 import { checkFigures } from "../command-analyst/core.ts";
-import { search } from "../_shared/brain/retrieve.ts";
+import { publicSources, type KnowledgeSource } from "../_shared/knowledge/retrieve.ts";
 import { BRANDS } from "../_shared/brain/compile.ts";
 import type { Brand, BrainIndex } from "../_shared/brain/types.ts";
 import type { LlmProvider, LlmResult } from "../_shared/llm/provider.ts";
@@ -23,14 +23,11 @@ export const knowledgeBrands = (slugs: string[]): Brand[] => {
   const mine = slugs.filter((s): s is Brand => (BRANDS as string[]).includes(s));
   return [...new Set<Brand>(["houcine-world", ...mine])];
 };
-export const knowledgeFor = (index: BrainIndex, question: string, brands: Brand[]) =>
-  search(index, [question], { brands }, { limit: 4, maxChars: 3200, linkedLimit: 0 })
-    .filter((p) => p.chunk.status !== "outdated")
-    .map((p) => ({ title: p.note.title, section: p.chunk.heading, brand: p.note.brand, status: p.chunk.status, updated: p.note.updated,
-      source: p.note.id, text: p.chunk.text.replace(/\s+/g, " ").slice(0, 650) }));
-type Knowledge = ReturnType<typeof knowledgeFor>;
+/** Kept for compatibility: public knowledge only (the shared Knowledge OS service adds private documents). */
+export const knowledgeFor = (index: BrainIndex, question: string, brands: Brand[]) => publicSources(index, question, brands, 4);
+type Knowledge = KnowledgeSource[];
 const knowledgeText = (k: Knowledge) =>
-  k.length ? k.map((x) => `  [${x.brand} · ${x.status} · updated ${x.updated}] ${x.title} > ${x.section}: ${x.text}`).join("\n") : "  none relevant";
+  k.length ? k.map((x) => `  [${x.visibility} · ${x.brand} · ${x.version}${x.visibility === "public" ? ` · ${x.status}` : ""}] ${x.title} > ${x.section}: ${x.text}`).join("\n") : "  none relevant";
 
 // ── Prompts ────────────────────────────────────────────────────────────────────────────────────────────────────────
 const COMMON = `Rules:
