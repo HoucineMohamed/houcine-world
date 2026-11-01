@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2, RefreshCw, Check, X, ExternalLink, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { studioApi, StudioError, type ReviewItem } from "@/services/knowledgeStudio";
+import { studioApi, StudioError, type FeedbackSummaryRow, type ReviewItem } from "@/services/knowledgeStudio";
 import { useStudio } from "./StudioContext";
-import { Pill, timeAgo } from "./ui";
+import { BrandDot, brandLabel, Pill, timeAgo } from "./ui";
 
 // The review queue: everything that needs the owner's attention, derived by the server from the notes and the logs
 // (playground feedback, failed publications, note problems, out-of-date drafts, sections awaiting confirmation or
@@ -28,17 +28,55 @@ const KINDS: Record<string, { label: string; tone: "out" | "pending" | "review" 
   contact_mismatch: { label: "Contact detail to check", tone: "out" },
 };
 
+const RATING_LABELS = { correct: "Correct", incomplete: "Incomplete", incorrect: "Incorrect", missing: "Missing knowledge", outdated: "Outdated" } as const;
+
+/** Playground feedback counted per brand and kind (numbers only): where the knowledge needs work. */
+const FeedbackSummary = ({ rows }: { rows: FeedbackSummaryRow[] }) => {
+  if (rows.length === 0) return null;
+  const ratings = Object.keys(RATING_LABELS) as (keyof typeof RATING_LABELS)[];
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-left text-xs">
+        <caption className="px-3 pt-2 text-left font-semibold text-muted-foreground">Playground feedback by brand (open / all)</caption>
+        <thead className="text-muted-foreground">
+          <tr>
+            <th scope="col" className="px-3 py-1.5 font-medium">Brand</th>
+            {ratings.map((r) => <th key={r} scope="col" className="px-3 py-1.5 font-medium">{RATING_LABELS[r]}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.brand} className="border-t border-border">
+              <th scope="row" className="px-3 py-1.5 font-medium">
+                <span className="flex items-center gap-1.5">{row.brand === "unknown" ? "No note used" : <><BrandDot brand={row.brand} /> {brandLabel(row.brand)}</>}</span>
+              </th>
+              {ratings.map((r) => (
+                <td key={r} className={`px-3 py-1.5 tabular-nums ${r !== "correct" && row.ratings[r].open > 0 ? "text-amber-200" : "text-muted-foreground"}`}>
+                  {row.ratings[r].total === 0 ? "—" : `${row.ratings[r].open} / ${row.ratings[r].total}`}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 const Review = () => {
   const { setTeachOpen, retrySync, publication } = useStudio();
   const navigate = useNavigate();
   const [items, setItems] = useState<ReviewItem[] | null>(null);
+  const [summary, setSummary] = useState<FeedbackSummaryRow[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
   const [resolution, setResolution] = useState<Record<string, string>>({});
 
   const load = useCallback(async () => {
     try {
-      setItems((await studioApi.review()).items);
+      const r = await studioApi.review();
+      setItems(r.items);
+      setSummary(r.feedbackSummary ?? []);
       setError(null);
     } catch (e) {
       setError(e instanceof StudioError ? e.message : "The review queue could not be loaded.");
@@ -73,6 +111,7 @@ const Review = () => {
         ))}
         <Button size="sm" variant="ghost" className="ml-auto gap-1.5" onClick={() => void load()}><RefreshCw className="h-3.5 w-3.5" aria-hidden="true" /> Refresh</Button>
       </div>
+      <FeedbackSummary rows={summary} />
       {shown.length === 0 && <p className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">Nothing needs your attention here.</p>}
       <ul className="space-y-2">
         {shown.map((item, i) => {

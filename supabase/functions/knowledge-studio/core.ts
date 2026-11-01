@@ -312,6 +312,34 @@ export const sourceIdsOf = (result: CompileResult): { id: string; label: string 
   return out;
 };
 
+// ---------- feedback, counted ----------
+
+export const FEEDBACK_RATINGS = ["correct", "incomplete", "incorrect", "missing", "outdated"] as const;
+
+/**
+ * Playground feedback counted per brand and rating (open, and in all): numbers only, never a question, answer or
+ * comment. A feedback item counts for the brand of most of the notes its answer used ("unknown" when it used none).
+ */
+export const feedbackSummary = (feedback: Feedback[], brandOf: Map<string, string>) => {
+  const rows = new Map<string, Record<string, { open: number; total: number }>>();
+  for (const fb of feedback) {
+    const votes = new Map<string, number>();
+    for (const id of Array.isArray(fb.sources) ? fb.sources : []) {
+      const b = typeof id === "string" ? brandOf.get(id) : undefined;
+      if (b) votes.set(b, (votes.get(b) ?? 0) + 1);
+    }
+    const brand = [...votes.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? "unknown";
+    const row = rows.get(brand) ?? Object.fromEntries(FEEDBACK_RATINGS.map((r) => [r, { open: 0, total: 0 }]));
+    const cell = row[fb.rating];
+    if (!cell) continue;
+    cell.total++;
+    if (fb.status === "open") cell.open++;
+    rows.set(brand, row);
+  }
+  const order = [...BRANDS, "unknown"] as string[];
+  return [...rows.entries()].sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0])).map(([brand, ratings]) => ({ brand, ratings }));
+};
+
 // ---------- the publishing token's expiry ----------
 
 /** Days left before the token expires at which the Studio starts warning. */
@@ -826,7 +854,8 @@ export const createStudio = (deps: StudioDeps) => {
           items.push({ kind: f.kind, title: f.kind === "possible_duplicate" ? `Possible duplicate: ${where}` : `Contact detail to check: ${where}`, detail: f.detail, path: fileOf.get(f.notes[0]!) });
         }
       }
-      return ok({ items });
+      const brandOf = new Map(published.notes.map((n) => [String(n.fields.id ?? ""), String(n.fields.brand ?? "")]));
+      return ok({ items, feedbackSummary: feedbackSummary(await store.feedback("all", 500), brandOf) });
     },
 
     "POST resolve": async (r) => {

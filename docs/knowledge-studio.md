@@ -93,7 +93,9 @@ version"). Nothing is overwritten silently.
 
 In the Playground, mark an answer Correct, Incomplete, Incorrect, Missing knowledge or Outdated (with an optional
 note). It becomes an item in **Review**. Feedback never changes knowledge and never trains the model: it tells you
-what to add or correct. Close the item once handled.
+what to add or correct. At the top of Review, a table counts the feedback per brand and kind (open / all; numbers
+only, no text), so you can see which brand's knowledge needs the most work; an item counts for the brand of most of
+the notes its answer used. Close the item once handled.
 
 ## 7b. Coverage
 

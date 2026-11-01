@@ -185,6 +185,12 @@ export interface CoverageReport {
   trend: { at: string; by: string | null; fingerprint: string | null; coverage: Record<string, [number, number, number, number]> }[];
 }
 
+/** Playground feedback counted per brand and rating: numbers only (knowledge-studio core.ts, feedbackSummary). */
+export interface FeedbackSummaryRow {
+  brand: string;
+  ratings: Record<"correct" | "incomplete" | "incorrect" | "missing" | "outdated", { open: number; total: number }>;
+}
+
 export interface ReviewItem {
   kind: string;
   title: string;
@@ -258,7 +264,7 @@ export const studioApi = {
   assist: (text: string, brand: string | null) => call<AssistResult>("POST", "assist", { body: { text, brand } }),
   search: (q: string) => call<{ results: { path: string; id: string; title: string; brand: string; visibility: string; snippet: string; matchedIn: string }[] }>("GET", "search", { query: { q } }),
   feedback: (body: { rating: string; question: string; answer: string; comment: string; sources: string[] }) => call<{ feedback: Feedback }>("POST", "feedback", { body }),
-  review: () => call<{ items: ReviewItem[] }>("GET", "review"),
+  review: () => call<{ items: ReviewItem[]; feedbackSummary: FeedbackSummaryRow[] }>("GET", "review"),
   resolve: (id: string, status: "resolved" | "dismissed", resolution: string) => call<{ feedback: Feedback }>("POST", "resolve", { body: { id, status, resolution } }),
   activity: (before?: number) => call<{ events: KnowledgeEvent[]; publications: Publication[] }>("GET", "activity", { query: before ? { before: String(before) } : {} }),
 };
