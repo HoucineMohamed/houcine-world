@@ -41,6 +41,12 @@ analytics, the owner-only Houcine.Trades entries, dependencies, build and hostin
 house-rules block (code only, offline, `GRAPHIFY_BACKEND=none`; never `graphify install` or any hook, never `add`/`clone`/`watch`;
 `graphify-out/` is git-ignored). It is not part of the site or any build.
 
+## Reverse engineering (REA)
+
+`.claude/skills/reverse-engineer-anything/` (`docs/rea.md`) is REA for Claude sessions only: the upstream skill pinned at `rea-agents@6.8.0`
+with a house-rules block (only targets the owner owns or is authorized to examine, such as this site's own build; command line from the
+scratchpad; never `rea setup`, an MCP registration, the plugin or any hook; output never committed). It is not part of the site or any build.
+
 ## Commands (for sessions)
 
 - `npm run build`, `npx tsc -p tsconfig.app.json --noEmit` (CI runs both).

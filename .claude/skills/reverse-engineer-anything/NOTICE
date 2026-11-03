@@ -1,0 +1,6 @@
+This folder holds the "reverse-engineer-anything" skill of REA (Reverse Engineer Anything),
+https://github.com/morluto/rea, release 6.8.0 (commit 9ebbe67e05af08b567e215340da993c08dae378f),
+Copyright (c) 2026 morluto, MIT License (see LICENSE).
+
+Changes made here: a house-rules block after the front matter, and `rea-agents@latest`
+pinned to `rea-agents@6.8.0`. Everything else is the upstream text as released.
