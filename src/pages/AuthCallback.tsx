@@ -26,7 +26,10 @@ const AuthCallback = () => {
       const hash = new URLSearchParams(url.hash.replace(/^#/, ""));
       const q = url.searchParams;
 
-      const requestedNext = q.get("next") || hash.get("next") || "/workspace";
+      const isRecovery = (q.get("type") || hash.get("type")) === "recovery";
+      const requestedNext = isRecovery
+        ? "/workspace/set-password"
+        : q.get("next") || hash.get("next") || "/workspace";
       // The old admin panel is no longer the authenticated destination. Keep all
       // admin magic-link entry points inside the membership-aware workspace.
       const next = requestedNext === "/admin" || requestedNext === "/admin/login"

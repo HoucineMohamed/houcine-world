@@ -61,7 +61,8 @@ test("the dashboard state comes from the notes themselves, and says whether the 
   const { call, setLive } = setup();
   const r = await call("GET", "state");
   assert.equal(r.status, 200);
-  const notes = brainFiles.filter((f) => f.path.endsWith(".md") && f.path !== "README.md" && !f.path.startsWith("schemas/"));
+  const { isNotePath } = await import(join(root, "supabase/functions/_shared/brain/compile.ts"));
+  const notes = brainFiles.filter((f) => isNotePath(f.path));
   assert.equal(r.body.stats.total, notes.length);
   assert.equal(r.body.stats.public, BRAIN_INDEX.notes.length);
   assert.ok(r.body.stats.internal >= 2);
@@ -71,6 +72,11 @@ test("the dashboard state comes from the notes themselves, and says whether the 
   assert.equal(r.body.canPublish, true);
   setLive("0000000000000000");
   assert.equal((await call("GET", "state")).body.index.sync, "out_of_sync");
+  // The dashboard's visitor-question summary is the coverage of the knowledge visitors get (the deployed index).
+  const { scoreCoverage } = await import(join(root, "supabase/functions/_shared/brain/coverage.ts"));
+  const { COVERAGE_QUESTIONS } = await import(join(root, "supabase/functions/_shared/brain/coverage-questions.ts"));
+  const { BRANDS } = await import(join(root, "supabase/functions/_shared/brain/compile.ts"));
+  assert.deepEqual(r.body.coverage, scoreCoverage(BRAIN_INDEX, COVERAGE_QUESTIONS, BRANDS).brands);
 });
 
 test("teach -> draft -> publish -> live: the AI retrieves the new knowledge only once it is published and live", async () => {
@@ -102,6 +108,11 @@ test("teach -> draft -> publish -> live: the AI retrieves the new knowledge only
   const compiled = compileBrain(after);
   assert.equal(tree.get(INDEX_PATH), renderIndexModule(compiled.index));
   assert.equal(tree.get(SNAPSHOT_PATH), renderSnapshotModule(after));
+  // ...and the generated maps, exactly as the Node build writes them.
+  const { buildMaps, DASHBOARD_PATH, CANVAS_PATH } = await import("../brain/lib.mjs");
+  const maps = buildMaps(after, compiled.index);
+  assert.equal(tree.get(`${BRAIN_DIR}/${DASHBOARD_PATH}`), maps.dashboard);
+  assert.equal(tree.get(`${BRAIN_DIR}/${CANVAS_PATH}`), maps.canvas);
   assert.equal(pub.expected_fingerprint, compiled.index.fingerprint);
   assert.equal(await store.draft(path), null, "the draft is done once the notes are committed");
 
@@ -119,16 +130,22 @@ test("teach -> draft -> publish -> live: the AI retrieves the new knowledge only
   assert.ok(hits.some((p) => p.note.id === "lrv-international-bookings"), hits.map((p) => p.note.id).join(","));
 });
 
-test("internal and restricted notes are never compiled into the public index, even after publishing", async () => {
+test("internal and restricted notes are never committed to the public repository, nor compiled (Knowledge OS)", async () => {
   const { call, g } = setup();
+  const head = g.state.head;
   for (const [vis, id] of [["internal", "lrv-secret-internal"], ["confidential", "lrv-secret-restricted"]]) {
     const content = NEW_NOTE.replace("id: lrv-international-bookings", `id: ${id}`).replace("title: International bookings", `title: Secret ${vis}`).replace("visibility: public", `visibility: ${vis}`).replace("[[DJ Hajri Mohamed]]", "DJ").replace("[[Houcine.management]]", "management").replace("# International bookings", `# Secret ${vis}`);
     const r = await call("POST", "draft", { body: { path: `brands/la-rosa-view/${id}.md`, content, expectedVersion: null } });
     assert.equal(r.status, 200, JSON.stringify(r.body));
   }
-  assert.equal((await call("POST", "publish", { body: {} })).status, 200);
-  const index = g.tree().get(INDEX_PATH);
+  const r = await call("POST", "publish", { body: {} });
+  assert.equal(r.status, 422);
+  assert.equal(r.body.code, "private_knowledge");
+  assert.deepEqual(r.body.paths.sort(), ["brands/la-rosa-view/lrv-secret-internal.md", "brands/la-rosa-view/lrv-secret-restricted.md"]);
+  assert.equal(g.state.head, head, "nothing committed to the public repository");
+  const index = g.tree().get(INDEX_PATH) ?? "";
   assert.ok(!index.includes("lrv-secret-internal") && !index.includes("lrv-secret-restricted") && !index.includes("Secret internal"));
+  assert.ok(![...g.tree().keys()].some((path) => path.includes("lrv-secret")), "no private file in the repository");
   // The admin's search does find them (it is the admin's view).
   const found = await call("GET", "search", { query: { q: "Secret restricted" } });
   assert.ok(found.body.results.some((x) => x.id === "lrv-secret-restricted"));
@@ -357,6 +374,113 @@ test("without a GitHub token the Studio is read-only, and says why", async () =>
   const write = await call("POST", "draft", { body: { path: "brands/la-rosa-view/x.md", content: NEW_NOTE, expectedVersion: null } });
   assert.equal(write.status, 503);
   assert.equal(write.body.code, "repo_not_configured");
+});
+
+test("coverage: search only, works read-only, previews drafts, and each publication keeps its score", async () => {
+  const { COVERAGE_QUESTIONS } = await import(join(root, "supabase/functions/_shared/brain/coverage-questions.ts"));
+  const { createSnapshotRepo } = await import(join(root, "supabase/functions/knowledge-studio/github.ts"));
+  // Read-only (no GitHub token) and no model: the published knowledge is still scored.
+  const ro = setup({ repo: createSnapshotRepo(brainFiles) });
+  const live = await ro.call("GET", "coverage", { query: { source: "live" } });
+  assert.equal(live.status, 200);
+  assert.equal(live.body.source, "live");
+  assert.equal(live.body.fingerprint, BRAIN_INDEX.fingerprint);
+  assert.equal(live.body.questions.length, COVERAGE_QUESTIONS.length);
+  assert.deepEqual(live.body.trend, []);
+  assert.equal(ro.store.eventLog.length, 0, "scoring writes nothing");
+
+  // With a draft, the preview is scored on the drafts; the live score is unchanged.
+  const { call, store, setLive } = setup();
+  await call("POST", "draft", { body: { path: "brands/la-rosa-view/international-bookings.md", content: NEW_NOTE, expectedVersion: null } });
+  const preview = await call("GET", "coverage", { query: { source: "preview" } });
+  assert.equal(preview.status, 200);
+  assert.notEqual(preview.body.fingerprint, BRAIN_INDEX.fingerprint);
+  assert.equal((await call("GET", "coverage")).body.fingerprint, BRAIN_INDEX.fingerprint);
+
+  // Publishing keeps the score of the new index with the commit, shown as the trend.
+  const published = await call("POST", "publish", { body: {} });
+  assert.equal(published.status, 200, JSON.stringify(published.body));
+  const commitEvent = store.eventLog.find((e) => e.kind === "published_commit");
+  const { BRANDS } = await import(join(root, "supabase/functions/_shared/brain/compile.ts"));
+  assert.deepEqual(Object.keys(commitEvent.detail.coverage), [...BRANDS]);
+  for (const counts of Object.values(commitEvent.detail.coverage)) assert.equal(counts.length, 4);
+  setLive(published.body.expectedFingerprint);
+  const after = await call("GET", "coverage");
+  assert.equal(after.body.trend.length, 1);
+  assert.equal(after.body.trend[0].fingerprint, published.body.expectedFingerprint);
+  assert.deepEqual(after.body.trend[0].coverage, commitEvent.detail.coverage);
+});
+
+test("feedback is counted per brand and rating, numbers only, never its text", async () => {
+  const { call } = setup();
+  const send = (rating, sources) => call("POST", "feedback", { body: { rating, question: `secret question ${rating}`, answer: "secret answer", comment: "secret comment", sources } });
+  await send("incorrect", ["lrv-bookings", "lrv-faq", "hw-contact"]);
+  await send("missing", ["tech-services"]);
+  const correct = await send("correct", ["lrv-faq"]);
+  await send("outdated", []);
+  await call("POST", "resolve", { body: { id: correct.body.feedback.id, status: "resolved", resolution: "" } });
+  const r = await call("GET", "review");
+  assert.equal(r.status, 200);
+  const rows = Object.fromEntries(r.body.feedbackSummary.map((x) => [x.brand, x.ratings]));
+  assert.deepEqual(Object.keys(rows), ["la-rosa-view", "houcine-tech", "unknown"], "brands in the usual order, 'unknown' last");
+  assert.deepEqual(rows["la-rosa-view"].incorrect, { open: 1, total: 1 });
+  assert.deepEqual(rows["la-rosa-view"].correct, { open: 0, total: 1 });
+  assert.deepEqual(rows["houcine-tech"].missing, { open: 1, total: 1 });
+  assert.deepEqual(rows.unknown.outdated, { open: 1, total: 1 });
+  assert.ok(!JSON.stringify(r.body.feedbackSummary).includes("secret"), "the summary holds no text");
+});
+
+test("the publishing token's expiry: read from GitHub's header when it is there, never guessed", async () => {
+  const { parseTokenExpiry, tokenStatus, TOKEN_WARNING_DAYS } = studioCore;
+  assert.equal(parseTokenExpiry("2026-12-31 23:59:59 UTC"), "2026-12-31T23:59:59.000Z");
+  assert.equal(parseTokenExpiry("2026-12-31 23:59:59 +0100"), "2026-12-31T22:59:59.000Z");
+  for (const bad of [null, "", "soon", "2026-13-45 99:99:99 UTC", "31/12/2026"]) assert.equal(parseTokenExpiry(bad), null, String(bad));
+  const now = Date.parse("2026-10-30T10:00:00Z");
+  assert.deepEqual(tokenStatus(null, now), { expiresAt: null, daysLeft: null, warn: false });
+  assert.equal(tokenStatus("2027-01-30 10:00:00 UTC", now).warn, false);
+  assert.deepEqual(tokenStatus("2026-11-13 10:00:00 UTC", now), { expiresAt: "2026-11-13T10:00:00.000Z", daysLeft: TOKEN_WARNING_DAYS, warn: true });
+  assert.equal(tokenStatus("2026-10-29 10:00:00 UTC", now).daysLeft, -1, "an expired token is said");
+
+  // The dashboard says it in GitHub mode only; read-only mode has no token to speak of.
+  const g = fakeRepo();
+  const { call } = setup({ repo: { ...g.repo, tokenExpiry: () => "2026-11-05 00:00:00 UTC" } });
+  const state = (await call("GET", "state")).body;
+  assert.equal(state.token.expiresAt, "2026-11-05T00:00:00.000Z");
+  assert.equal(state.token.warn, true);
+  const { createSnapshotRepo } = await import(join(root, "supabase/functions/knowledge-studio/github.ts"));
+  assert.equal((await setup({ repo: createSnapshotRepo(brainFiles) }).call("GET", "state")).body.token, null);
+
+  // The adapter keeps the header's date (only the date, never the token) from GitHub's answers.
+  const token = ["fake", "token", Date.now()].join("-");
+  const fetch = async () => new Response(JSON.stringify({ object: { sha: "a".repeat(40) } }), { status: 200, headers: { "github-authentication-token-expiration": "2026-12-01 08:00:00 UTC" } });
+  const repo = createGithubRepo({ token, owner: "o", repo: "r", branch: "main", workflow: "supabase-deploy.yml", brainDir: "houcine-world-brain", fetch });
+  assert.equal(repo.tokenExpiry(), null, "unknown before any answer");
+  await repo.head();
+  assert.equal(repo.tokenExpiry(), "2026-12-01 08:00:00 UTC");
+  assert.ok(!repo.tokenExpiry().includes(token));
+});
+
+test("the Studio refuses a public note that names a page the site does not have, as the Node build does", async () => {
+  const { call } = setup();
+  const bad = NEW_NOTE.replace("are discussed individually.", "are discussed individually. Details on `/international`.");
+  const saved = await call("POST", "draft", { body: { path: "brands/la-rosa-view/international-bookings.md", content: bad, expectedVersion: null } });
+  assert.equal(saved.status, 200);
+  assert.ok(saved.body.errors.some((e) => e.includes('"/international" is not a public page of the site')), JSON.stringify(saved.body.errors));
+  const published = await call("POST", "publish", { body: {} });
+  assert.equal(published.status, 422);
+  assert.equal(published.body.code, "validation_failed");
+});
+
+test("the review queue lists possible duplicates and contact details no contact note lists, with the note to open", async () => {
+  const { call } = setup();
+  const before = (await call("GET", "review")).body.items.filter((i) => i.kind === "possible_duplicate");
+  assert.ok(before.some((i) => i.path === "brands/la-rosa-view/bookings.md" && /Deposits, payment, cancellation/.test(i.title)), JSON.stringify(before));
+  const content = NEW_NOTE.replace("are discussed individually.", "are discussed individually. Write to abroad@larosaview.example.");
+  await call("POST", "draft", { body: { path: "brands/la-rosa-view/international-bookings.md", content, expectedVersion: null } });
+  const items = (await call("GET", "review")).body.items.filter((i) => i.kind === "contact_mismatch");
+  assert.equal(items.length, 1, "the draft is checked too");
+  assert.equal(items[0].path, "brands/la-rosa-view/international-bookings.md");
+  assert.match(items[0].detail, /abroad@larosaview\.example/);
 });
 
 test("the function checks a signed-in super admin on the server before doing anything", () => {

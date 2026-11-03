@@ -22,8 +22,8 @@ export const TYPE_LABELS: Record<string, string> = {
 
 export const VISIBILITY_INFO: Record<string, { label: string; help: string }> = {
   public: { label: "Public", help: "Approved for the public AI's answers (once published)." },
-  internal: { label: "Internal", help: "Administrators only. Never sent to the public AI." },
-  confidential: { label: "Restricted", help: "Confidential. Never sent to any AI; stays in the repository." },
+  internal: { label: "Internal", help: "Not publishable here: the website's repository is public. Write internal knowledge in the Knowledge Library (private)." },
+  confidential: { label: "Restricted", help: "Not publishable here: the website's repository is public. Use the Knowledge Library (management level) instead." },
 };
 
 export const STATUS_INFO: Record<string, { label: string; help: string }> = {

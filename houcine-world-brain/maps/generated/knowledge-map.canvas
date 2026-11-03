@@ -1,0 +1,551 @@
+{
+	"nodes": [
+		{
+			"id": "group-houcine-world",
+			"type": "group",
+			"x": 0,
+			"y": 0,
+			"width": 340,
+			"height": 476,
+			"label": "Houcine.world (shared)",
+			"color": "0"
+		},
+		{
+			"id": "note-hw-contact",
+			"type": "file",
+			"file": "brands/houcine-world/contact.md",
+			"x": 30,
+			"y": 50,
+			"width": 280,
+			"height": 60
+		},
+		{
+			"id": "note-hw-overview",
+			"type": "file",
+			"file": "brands/houcine-world/overview.md",
+			"x": 30,
+			"y": 134,
+			"width": 280,
+			"height": 60
+		},
+		{
+			"id": "note-person-houcine-mohamed",
+			"type": "file",
+			"file": "people/houcine-mohamed.md",
+			"x": 30,
+			"y": 218,
+			"width": 280,
+			"height": 60
+		},
+		{
+			"id": "note-policy-booking-requests",
+			"type": "file",
+			"file": "policies/booking-requests.md",
+			"x": 30,
+			"y": 302,
+			"width": 280,
+			"height": 60
+		},
+		{
+			"id": "note-rel-ecosystem",
+			"type": "file",
+			"file": "relationships/ecosystem-map.md",
+			"x": 30,
+			"y": 386,
+			"width": 280,
+			"height": 60
+		},
+		{
+			"id": "group-la-rosa-view",
+			"type": "group",
+			"x": 400,
+			"y": 0,
+			"width": 340,
+			"height": 980,
+			"label": "La Rosa View",
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-bookings",
+			"type": "file",
+			"file": "brands/la-rosa-view/bookings.md",
+			"x": 430,
+			"y": 50,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-contact",
+			"type": "file",
+			"file": "brands/la-rosa-view/contact.md",
+			"x": 430,
+			"y": 134,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-dj-hajri",
+			"type": "file",
+			"file": "brands/la-rosa-view/dj-profile.md",
+			"x": 430,
+			"y": 218,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-events-releases",
+			"type": "file",
+			"file": "brands/la-rosa-view/events.md",
+			"x": 430,
+			"y": 302,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-faq",
+			"type": "file",
+			"file": "brands/la-rosa-view/frequently-asked-questions.md",
+			"x": 430,
+			"y": 386,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-identity",
+			"type": "file",
+			"file": "brands/la-rosa-view/identity-and-brand.md",
+			"x": 430,
+			"y": 470,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-overview",
+			"type": "file",
+			"file": "brands/la-rosa-view/overview.md",
+			"x": 430,
+			"y": 554,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-partnerships",
+			"type": "file",
+			"file": "brands/la-rosa-view/partnerships.md",
+			"x": 430,
+			"y": 638,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-policies",
+			"type": "file",
+			"file": "brands/la-rosa-view/policies.md",
+			"x": 430,
+			"y": 722,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-lrv-services",
+			"type": "file",
+			"file": "brands/la-rosa-view/services.md",
+			"x": 430,
+			"y": 806,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "note-internal-open-questions",
+			"type": "file",
+			"file": "internal/open-questions.md",
+			"x": 430,
+			"y": 890,
+			"width": 280,
+			"height": 60,
+			"color": "1"
+		},
+		{
+			"id": "group-houcine-tech",
+			"type": "group",
+			"x": 800,
+			"y": 0,
+			"width": 340,
+			"height": 308,
+			"label": "Houcine.tech",
+			"color": "5"
+		},
+		{
+			"id": "note-tech-overview",
+			"type": "file",
+			"file": "brands/houcine-tech/overview.md",
+			"x": 830,
+			"y": 50,
+			"width": 280,
+			"height": 60,
+			"color": "5"
+		},
+		{
+			"id": "note-tech-payment",
+			"type": "file",
+			"file": "brands/houcine-tech/policies.md",
+			"x": 830,
+			"y": 134,
+			"width": 280,
+			"height": 60,
+			"color": "5"
+		},
+		{
+			"id": "note-tech-services",
+			"type": "file",
+			"file": "brands/houcine-tech/services.md",
+			"x": 830,
+			"y": 218,
+			"width": 280,
+			"height": 60,
+			"color": "5"
+		},
+		{
+			"id": "group-houcine-studio",
+			"type": "group",
+			"x": 1200,
+			"y": 0,
+			"width": 340,
+			"height": 224,
+			"label": "Houcine.studio",
+			"color": "6"
+		},
+		{
+			"id": "note-studio-overview",
+			"type": "file",
+			"file": "brands/houcine-studio/overview.md",
+			"x": 1230,
+			"y": 50,
+			"width": 280,
+			"height": 60,
+			"color": "6"
+		},
+		{
+			"id": "note-studio-services",
+			"type": "file",
+			"file": "brands/houcine-studio/services.md",
+			"x": 1230,
+			"y": 134,
+			"width": 280,
+			"height": 60,
+			"color": "6"
+		},
+		{
+			"id": "group-houcine-management",
+			"type": "group",
+			"x": 1600,
+			"y": 0,
+			"width": 340,
+			"height": 140,
+			"label": "Houcine.management",
+			"color": "3"
+		},
+		{
+			"id": "note-management-overview",
+			"type": "file",
+			"file": "brands/houcine-management/overview.md",
+			"x": 1630,
+			"y": 50,
+			"width": 280,
+			"height": 60,
+			"color": "3"
+		},
+		{
+			"id": "group-houcine-education",
+			"type": "group",
+			"x": 2000,
+			"y": 0,
+			"width": 340,
+			"height": 140,
+			"label": "Houcine.education",
+			"color": "4"
+		},
+		{
+			"id": "note-education-overview",
+			"type": "file",
+			"file": "brands/houcine-education/overview.md",
+			"x": 2030,
+			"y": 50,
+			"width": 280,
+			"height": 60,
+			"color": "4"
+		}
+	],
+	"edges": [
+		{
+			"id": "link-management-overview-lrv-overview",
+			"fromNode": "note-management-overview",
+			"toNode": "note-lrv-overview"
+		},
+		{
+			"id": "link-studio-overview-studio-services",
+			"fromNode": "note-studio-overview",
+			"toNode": "note-studio-services"
+		},
+		{
+			"id": "link-studio-services-tech-payment",
+			"fromNode": "note-studio-services",
+			"toNode": "note-tech-payment"
+		},
+		{
+			"id": "link-tech-overview-tech-payment",
+			"fromNode": "note-tech-overview",
+			"toNode": "note-tech-payment"
+		},
+		{
+			"id": "link-tech-overview-tech-services",
+			"fromNode": "note-tech-overview",
+			"toNode": "note-tech-services"
+		},
+		{
+			"id": "link-tech-payment-studio-services",
+			"fromNode": "note-tech-payment",
+			"toNode": "note-studio-services"
+		},
+		{
+			"id": "link-hw-contact-lrv-contact",
+			"fromNode": "note-hw-contact",
+			"toNode": "note-lrv-contact"
+		},
+		{
+			"id": "link-hw-overview-education-overview",
+			"fromNode": "note-hw-overview",
+			"toNode": "note-education-overview"
+		},
+		{
+			"id": "link-hw-overview-lrv-overview",
+			"fromNode": "note-hw-overview",
+			"toNode": "note-lrv-overview"
+		},
+		{
+			"id": "link-hw-overview-management-overview",
+			"fromNode": "note-hw-overview",
+			"toNode": "note-management-overview"
+		},
+		{
+			"id": "link-hw-overview-studio-overview",
+			"fromNode": "note-hw-overview",
+			"toNode": "note-studio-overview"
+		},
+		{
+			"id": "link-hw-overview-tech-overview",
+			"fromNode": "note-hw-overview",
+			"toNode": "note-tech-overview"
+		},
+		{
+			"id": "link-lrv-bookings-lrv-contact",
+			"fromNode": "note-lrv-bookings",
+			"toNode": "note-lrv-contact"
+		},
+		{
+			"id": "link-lrv-bookings-policy-booking-requests",
+			"fromNode": "note-lrv-bookings",
+			"toNode": "note-policy-booking-requests"
+		},
+		{
+			"id": "link-lrv-contact-hw-contact",
+			"fromNode": "note-lrv-contact",
+			"toNode": "note-hw-contact"
+		},
+		{
+			"id": "link-lrv-contact-lrv-bookings",
+			"fromNode": "note-lrv-contact",
+			"toNode": "note-lrv-bookings"
+		},
+		{
+			"id": "link-lrv-dj-hajri-lrv-bookings",
+			"fromNode": "note-lrv-dj-hajri",
+			"toNode": "note-lrv-bookings"
+		},
+		{
+			"id": "link-lrv-dj-hajri-lrv-events-releases",
+			"fromNode": "note-lrv-dj-hajri",
+			"toNode": "note-lrv-events-releases"
+		},
+		{
+			"id": "link-lrv-dj-hajri-lrv-overview",
+			"fromNode": "note-lrv-dj-hajri",
+			"toNode": "note-lrv-overview"
+		},
+		{
+			"id": "link-lrv-events-releases-lrv-contact",
+			"fromNode": "note-lrv-events-releases",
+			"toNode": "note-lrv-contact"
+		},
+		{
+			"id": "link-lrv-faq-lrv-bookings",
+			"fromNode": "note-lrv-faq",
+			"toNode": "note-lrv-bookings"
+		},
+		{
+			"id": "link-lrv-faq-lrv-dj-hajri",
+			"fromNode": "note-lrv-faq",
+			"toNode": "note-lrv-dj-hajri"
+		},
+		{
+			"id": "link-lrv-faq-lrv-events-releases",
+			"fromNode": "note-lrv-faq",
+			"toNode": "note-lrv-events-releases"
+		},
+		{
+			"id": "link-lrv-faq-policy-booking-requests",
+			"fromNode": "note-lrv-faq",
+			"toNode": "note-policy-booking-requests"
+		},
+		{
+			"id": "link-lrv-overview-hw-overview",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-hw-overview"
+		},
+		{
+			"id": "link-lrv-overview-lrv-bookings",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-lrv-bookings"
+		},
+		{
+			"id": "link-lrv-overview-lrv-contact",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-lrv-contact"
+		},
+		{
+			"id": "link-lrv-overview-lrv-dj-hajri",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-lrv-dj-hajri"
+		},
+		{
+			"id": "link-lrv-overview-lrv-events-releases",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-lrv-events-releases"
+		},
+		{
+			"id": "link-lrv-overview-lrv-identity",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-lrv-identity"
+		},
+		{
+			"id": "link-lrv-overview-lrv-services",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-lrv-services"
+		},
+		{
+			"id": "link-lrv-overview-management-overview",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-management-overview"
+		},
+		{
+			"id": "link-lrv-overview-person-houcine-mohamed",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-person-houcine-mohamed"
+		},
+		{
+			"id": "link-lrv-overview-rel-ecosystem",
+			"fromNode": "note-lrv-overview",
+			"toNode": "note-rel-ecosystem"
+		},
+		{
+			"id": "link-lrv-partnerships-lrv-contact",
+			"fromNode": "note-lrv-partnerships",
+			"toNode": "note-lrv-contact"
+		},
+		{
+			"id": "link-lrv-policies-policy-booking-requests",
+			"fromNode": "note-lrv-policies",
+			"toNode": "note-policy-booking-requests"
+		},
+		{
+			"id": "link-lrv-policies-studio-overview",
+			"fromNode": "note-lrv-policies",
+			"toNode": "note-studio-overview"
+		},
+		{
+			"id": "link-lrv-policies-tech-overview",
+			"fromNode": "note-lrv-policies",
+			"toNode": "note-tech-overview"
+		},
+		{
+			"id": "link-lrv-services-lrv-bookings",
+			"fromNode": "note-lrv-services",
+			"toNode": "note-lrv-bookings"
+		},
+		{
+			"id": "link-lrv-services-lrv-partnerships",
+			"fromNode": "note-lrv-services",
+			"toNode": "note-lrv-partnerships"
+		},
+		{
+			"id": "link-person-houcine-mohamed-hw-overview",
+			"fromNode": "note-person-houcine-mohamed",
+			"toNode": "note-hw-overview"
+		},
+		{
+			"id": "link-person-houcine-mohamed-lrv-overview",
+			"fromNode": "note-person-houcine-mohamed",
+			"toNode": "note-lrv-overview"
+		},
+		{
+			"id": "link-rel-ecosystem-education-overview",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-education-overview"
+		},
+		{
+			"id": "link-rel-ecosystem-hw-contact",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-hw-contact"
+		},
+		{
+			"id": "link-rel-ecosystem-hw-overview",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-hw-overview"
+		},
+		{
+			"id": "link-rel-ecosystem-lrv-contact",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-lrv-contact"
+		},
+		{
+			"id": "link-rel-ecosystem-lrv-dj-hajri",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-lrv-dj-hajri"
+		},
+		{
+			"id": "link-rel-ecosystem-lrv-overview",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-lrv-overview"
+		},
+		{
+			"id": "link-rel-ecosystem-management-overview",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-management-overview"
+		},
+		{
+			"id": "link-rel-ecosystem-person-houcine-mohamed",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-person-houcine-mohamed"
+		},
+		{
+			"id": "link-rel-ecosystem-studio-overview",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-studio-overview"
+		},
+		{
+			"id": "link-rel-ecosystem-tech-overview",
+			"fromNode": "note-rel-ecosystem",
+			"toNode": "note-tech-overview"
+		}
+	]
+}

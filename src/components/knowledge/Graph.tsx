@@ -6,6 +6,27 @@ import { Button } from "@/components/ui/button";
 import { BRAND_LABELS, TYPE_LABELS } from "@/lib/knowledge/note";
 import { useStudio } from "./StudioContext";
 import { BRAND_COLORS, BrandDot, noteStatus, Pill } from "./ui";
+import { knowledgeOsApi } from "@/services/knowledgeOs";
+import { fetchAllBrands } from "@/services/brands";
+import type { NoteSummary } from "@/services/knowledgeStudio";
+
+// Knowledge OS: private documents the viewer may read join the graph (from the database, under their own access). A
+// relation is returned only when BOTH ends are readable, so a restricted document never appears through a link.
+const usePrivateNodes = () => {
+  const [nodes, setNodes] = useState<NoteSummary[]>([]);
+  useEffect(() => {
+    Promise.all([knowledgeOsApi.titles(), knowledgeOsApi.links(), fetchAllBrands().catch(() => [])]).then(([docs, links, brands]) => {
+      const slug = new Map((brands as unknown as { id: string; slug: string }[]).map((b) => [b.id, b.slug]));
+      setNodes(docs.map((d) => ({
+        path: `kos:${d.id}`, sha: null, id: `kos:${d.id}`, title: d.title, brand: d.brand_id ? slug.get(d.brand_id) ?? "houcine-world" : "houcine-world", type: "private",
+        visibility: d.visibility as NoteSummary["visibility"], status: null, updated: null, tags: [], aliases: [], sources: [],
+        links: links.filter((l) => l.from_document === d.id).map((l) => (l.to_document ? `kos:${l.to_document}` : l.to_note!)),
+        archived: false, isNew: false, sections: [], draft: null,
+      })));
+    }).catch(() => setNodes([]));
+  }, []);
+  return nodes;
+};
 
 // The knowledge graph, in the spirit of Obsidian's graph view: one node per note, one line per real [[link]] between
 // notes (nothing invented), coloured by brand, people drawn as squares. Zoom with the wheel or the buttons, drag the
@@ -32,16 +53,31 @@ const Graph = () => {
   const navigate = useNavigate();
   const [brand, setBrand] = useState("");
   const [type, setType] = useState("");
+  const [layer, setLayer] = useState("");
+  const privateNodes = usePrivateNodes();
+  const allNotes = useMemo(() => [...(state?.notes ?? []), ...privateNodes], [state?.notes, privateNodes]);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
   const [view, setView] = useState({ x: 0, y: 0, k: 1 });
   const [, setTick] = useState(0);
   const drag = useRef<{ x: number; y: number; vx: number; vy: number } | null>(null);
   const svg = useRef<SVGSVGElement>(null);
+  // Screen pixels per graph unit (the drawing is scaled to fit its box), so touch targets can be sized in pixels.
+  const [pxPerUnit, setPxPerUnit] = useState(1);
+  useEffect(() => {
+    const el = svg.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const measure = () => setPxPerUnit(Math.min(el.clientWidth / W, el.clientHeight / H) || 1);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const notes = useMemo(
-    () => (state?.notes ?? []).filter((n) => !n.archived && n.id && n.type !== "index" && n.type !== "source").filter((n) => !brand || n.brand === brand).filter((n) => !type || n.type === type),
-    [state?.notes, brand, type],
+    () => allNotes.filter((n) => !n.archived && n.id && n.type !== "index" && n.type !== "source").filter((n) => !brand || n.brand === brand).filter((n) => !type || n.type === type)
+      .filter((n) => !layer || (layer === "private" ? n.path.startsWith("kos:") : !n.path.startsWith("kos:"))),
+    [allNotes, brand, type, layer],
   );
   const ids = useMemo(() => new Set(notes.map((n) => n.id!)), [notes]);
   const edges = useMemo(() => notes.flatMap((n) => n.links.filter((l) => ids.has(l)).map((l) => [n.id!, l] as const)), [notes, ids]);
@@ -140,8 +176,8 @@ const Graph = () => {
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
-  const open = (path: string) => navigate(`/workspace/knowledge/notes?path=${encodeURIComponent(path)}`);
-  const selectedNote = selected ? (state?.notes ?? []).find((n) => n.id === selected) : null;
+  const open = (path: string) => navigate(path.startsWith("kos:") ? `/workspace/knowledge/library?id=${path.slice(4)}` : `/workspace/knowledge/notes?path=${encodeURIComponent(path)}`);
+  const selectedNote = selected ? allNotes.find((n) => n.id === selected) : null;
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
@@ -158,6 +194,10 @@ const Graph = () => {
           <select value={type} onChange={(e) => setType(e.target.value)} aria-label="Filter by category" className="h-8 rounded-md border border-input bg-background/80 px-2 text-xs">
             <option value="">All categories</option>
             {Object.entries(TYPE_LABELS).filter(([v]) => !["index", "source"].includes(v)).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+            <option value="private">Private documents</option>
+          </select>
+          <select value={layer} onChange={(e) => setLayer(e.target.value)} aria-label="Filter by knowledge layer" className="h-8 rounded-md border border-input bg-background/80 px-2 text-xs">
+            <option value="">Public notes and private documents</option><option value="public">Public notes only</option><option value="private">Private documents only</option>
           </select>
         </div>
         <div className="absolute right-3 top-3 z-10 flex gap-1">
@@ -191,7 +231,7 @@ const Graph = () => {
               const t = byId.get(b);
               if (!s || !t) return null;
               const lit = neighbours ? neighbours.has(a) && neighbours.has(b) && (a === selected || b === selected) : false;
-              return <line key={`${a}>${b}`} x1={s.x} y1={s.y} x2={t.x} y2={t.y} stroke={lit ? "#c4b5fd" : "rgba(255,255,255,0.12)"} strokeWidth={lit ? 1.6 : 0.8} />;
+              return <line key={`${a}>${b}`} x1={s.x} y1={s.y} x2={t.x} y2={t.y} className={lit ? "stroke-accent" : undefined} stroke={lit ? undefined : "rgba(255,255,255,0.12)"} strokeWidth={lit ? 1.6 : 0.8} />;
             })}
             {nodes.map((n) => {
               const dim = (neighbours && !neighbours.has(n.id)) || (matches && !matches.has(n.id));
@@ -218,6 +258,8 @@ const Graph = () => {
                   ) : (
                     <circle r={r} fill={colour} stroke={n.id === selected ? "#fff" : "rgba(0,0,0,0.6)"} strokeWidth={n.id === selected ? 2 : 1} />
                   )}
+                  {/* A larger, invisible target: at least 24 px across on screen (the dots are a few pixels wide on a phone). */}
+                  <circle r={Math.max(r, Math.min(40, 12 / (pxPerUnit * view.k)))} fill="transparent" />
                   {showLabel && <text x={r + 4} y={4} fontSize={11 / Math.max(1, view.k * 0.8)} fill="rgba(255,255,255,0.85)" className="pointer-events-none">{n.title}</text>}
                 </g>
               );
@@ -232,17 +274,17 @@ const Graph = () => {
 
       <aside className="space-y-3 text-sm">
         <div className="rounded-lg border border-border bg-card/30 p-3">
-          <p className="text-xs text-muted-foreground">{nodes.length} notes · {edges.length} links (real [[links]] only)</p>
+          <p className="text-xs text-muted-foreground">{nodes.length} notes and documents · {edges.length} links (real [[links]] and library relations you may see)</p>
         </div>
         {selectedNote ? (
           <div className="space-y-2 rounded-lg border border-border bg-card/30 p-3">
             <p className="flex items-center gap-2 font-semibold"><BrandDot brand={selectedNote.brand} /> {selectedNote.title}</p>
-            <div className="flex flex-wrap gap-1.5"><Pill tone={noteStatus(selectedNote).tone}>{noteStatus(selectedNote).label}</Pill><Pill tone="neutral">{TYPE_LABELS[selectedNote.type ?? ""] ?? selectedNote.type}</Pill></div>
+            <div className="flex flex-wrap gap-1.5">{selectedNote.path.startsWith("kos:") ? <Pill tone="neutral">Private · {selectedNote.visibility}</Pill> : <><Pill tone={noteStatus(selectedNote).tone}>{noteStatus(selectedNote).label}</Pill><Pill tone="neutral">{TYPE_LABELS[selectedNote.type ?? ""] ?? selectedNote.type}</Pill></>}</div>
             <p className="text-xs text-muted-foreground">{neighbours ? neighbours.size - 1 : 0} connected note(s)</p>
             <ul className="space-y-0.5">
               {[...(neighbours ?? [])].filter((id) => id !== selected).map((id) => {
                 const n = byId.get(id);
-                return n ? <li key={id}><button type="button" onClick={() => setSelected(id)} className="text-xs text-violet-300 hover:underline">{n.title}</button></li> : null;
+                return n ? <li key={id}><button type="button" onClick={() => setSelected(id)} className="min-h-6 text-left text-xs text-accent hover:underline">{n.title}</button></li> : null;
               })}
             </ul>
             <Button size="sm" className="w-full gap-1.5" onClick={() => open(selectedNote.path)}><ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /> Open the note</Button>

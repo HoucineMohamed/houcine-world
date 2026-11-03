@@ -17,7 +17,7 @@ const STATUS_STYLE: Record<string, string> = {
   verified: "border-emerald-500/40 bg-emerald-500/5",
   policy: "border-sky-500/40 bg-sky-500/5",
   incomplete: "border-amber-500/50 bg-amber-500/5",
-  pending: "border-violet-500/50 bg-violet-500/5",
+  pending: "border-accent/50 bg-accent/5",
   outdated: "border-zinc-500/50 bg-zinc-500/10",
 };
 
@@ -38,7 +38,7 @@ const inline = (text: string, links: WikiLinkResolver | null, key = "i"): React.
       const hit = links?.resolve(target) ?? null;
       out.push(
         hit ? (
-          <button key={k} type="button" onClick={() => links!.open(hit.path)} className="text-violet-300 underline decoration-violet-400/50 underline-offset-2 hover:text-violet-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
+          <button key={k} type="button" onClick={() => links!.open(hit.path)} className="text-accent underline decoration-accent/50 underline-offset-2 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
             {shown}
           </button>
         ) : (

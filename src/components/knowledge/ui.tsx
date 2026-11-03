@@ -25,7 +25,7 @@ const PILL: Record<string, string> = {
   published: "border-emerald-500/30 text-emerald-300 bg-emerald-500/10",
   draft: "border-sky-500/30 text-sky-300 bg-sky-500/10",
   pending: "border-amber-500/30 text-amber-300 bg-amber-500/10",
-  review: "border-violet-500/30 text-violet-300 bg-violet-500/10",
+  review: "border-accent/30 text-accent bg-accent/10",
   archived: "border-zinc-500/30 text-zinc-400 bg-zinc-500/10",
   out: "border-rose-500/30 text-rose-300 bg-rose-500/10",
   neutral: "border-border text-muted-foreground bg-muted/30",
@@ -80,4 +80,16 @@ export const timeAgo = (iso: string | null | undefined): string => {
   if (s < 3600) return `${Math.round(s / 60)} min ago`;
   if (s < 86400) return `${Math.round(s / 3600)} h ago`;
   return new Date(t).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+};
+
+/** The publishing token is about to expire (or has): what happens and what to do. Shown only when GitHub gave a date. */
+export const TokenWarning = ({ token }: { token: { expiresAt: string | null; daysLeft: number | null; warn: boolean } | null }) => {
+  if (!token?.warn || !token.expiresAt || token.daysLeft === null) return null;
+  const date = new Date(token.expiresAt).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+  const when = token.daysLeft < 0 ? `expired on ${date}` : token.daysLeft === 0 ? `expires today (${date})` : `expires on ${date}, in ${token.daysLeft} day${token.daysLeft === 1 ? "" : "s"}`;
+  return (
+    <p role="alert" className={cn("rounded-md border p-2 text-xs", token.daysLeft < 0 ? "border-rose-500/30 bg-rose-500/10 text-rose-200" : "border-amber-500/30 bg-amber-500/10 text-amber-200")}>
+      The publishing token {when}. {token.daysLeft < 0 ? "Publishing stops until it is replaced." : "When it expires, publishing stops."} Create a new token on GitHub and replace the KNOWLEDGE_GITHUB_TOKEN secret in Supabase (steps in Settings).
+    </p>
+  );
 };

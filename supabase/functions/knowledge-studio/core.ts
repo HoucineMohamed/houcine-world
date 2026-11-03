@@ -16,20 +16,29 @@
 // The caller is already authenticated as a super admin (index.ts); this module never sees a token.
 
 import {
-  ARCHIVE_DIR, BRANDS, compileBrain, isArchivedPath, isNotePath, parseFrontmatter, renderIndexModule, renderSnapshotModule,
+  ARCHIVE_DIR, BRANDS, compileBrain as compileNotes, isArchivedPath, isNotePath, parseFrontmatter, renderIndexModule, renderSnapshotModule,
   sections, type CompileResult, type SourceFile,
 } from "../_shared/brain/compile.ts";
 import { search, type Passage } from "../_shared/brain/retrieve.ts";
+import { SITE_PATHS } from "../_shared/brain/site-paths.generated.ts";
 import { withIndexAccess, type AgentProfile } from "../_shared/brain/agent.ts";
+import { findConflicts } from "../_shared/brain/conflicts.ts";
+import { coverageSummary, scoreCoverage } from "../_shared/brain/coverage.ts";
+import { CANVAS_PATH, DASHBOARD_PATH, renderMaps } from "../_shared/brain/dashboard.ts";
+import { COVERAGE_QUESTIONS } from "../_shared/brain/coverage-questions.ts";
 import type { BrainIndex, Brand, Status } from "../_shared/brain/types.ts";
 import type { LlmProvider } from "../_shared/llm/provider.ts";
 import { checkChatRequest } from "../concierge/core.ts";
 import { runTurn, type ConciergeEvent } from "../concierge/pipeline.ts";
 
+/** The one compiler, always with the check that the pages a public note names exist (as in the Node build). */
+const compileBrain = (files: SourceFile[], options: { audience?: "public" | "admin" } = {}): CompileResult =>
+  compileNotes(files, { ...options, sitePaths: SITE_PATHS });
+
 export const BRAIN_DIR = "houcine-world-brain";
 export const INDEX_PATH = "supabase/functions/_shared/brain/index.generated.ts";
 export const SNAPSHOT_PATH = "supabase/functions/knowledge-studio/snapshot.generated.ts";
-const NEW_NOTE_DIRS = ["brands", "people", "projects", "policies", "relationships", "sources", "internal", "agents"];
+const NEW_NOTE_DIRS = ["brands", "people", "projects", "policies", "relationships", "sources", "internal", "agents", "maps"];
 const WRITE_ACTIONS = new Set(["draft", "discard", "archive", "restore", "publish", "retry"]);
 export const DEPLOY_TIMEOUT_MS = 25 * 60_000;
 export const RUN_APPEAR_TIMEOUT_MS = 10 * 60_000;
@@ -62,6 +71,8 @@ export interface Repo {
   /** The deploy workflow's run for a commit (the newest run started at or after `since`, ISO time). */
   deployRun(commit: string, since: string): Promise<"none" | "queued" | "in_progress" | "success" | "failure" | "unknown">;
   dispatchDeploy(): Promise<boolean>;
+  /** When the token expires, as GitHub last reported it (a response header), or null if it never said. */
+  tokenExpiry?(): string | null;
 }
 
 export interface Draft {
@@ -230,6 +241,22 @@ export const draftBaseProblem = (draft: Draft, files: Map<string, RepoFile>): st
 const brandOf = (fields: Record<string, string | string[]>) => (typeof fields.brand === "string" ? fields.brand : "");
 
 /** Overview numbers, derived only from the notes themselves. */
+/**
+ * Knowledge OS publication guard (docs/knowledge-os.md section 14). The repository is PUBLIC, so a note may be
+ * committed only if it is public knowledge; agent access notes (which brands an AI may read) are configuration, not
+ * knowledge, and stay allowed. Client, internal and management knowledge belongs in the Knowledge Library (private,
+ * in Supabase). Returns the paths that must not be published.
+ */
+export const privateDrafts = (drafts: Pick<Draft, "path" | "operation" | "content">[]): string[] =>
+  drafts.filter((d) => d.operation === "upsert" && typeof d.content === "string").filter((d) => {
+    try {
+      const h = parseFrontmatter(d.content!.replace(/\r\n/g, "\n"), d.path);
+      return h.fields.visibility !== "public" && h.fields.type !== "agent";
+    } catch {
+      return true; // unreadable header: never published
+    }
+  }).map((d) => d.path);
+
 export const brainStats = (result: CompileResult) => {
   const active = result.notes.filter((n) => !n.archived);
   const byBrand: Record<string, number> = {};
@@ -299,6 +326,60 @@ export const sourceIdsOf = (result: CompileResult): { id: string; label: string 
     for (const m of n.body.matchAll(/^- `([a-z0-9-]+)`:\s*(.*)$/gm)) out.push({ id: m[1]!, label: m[2]!.slice(0, 160) });
   }
   return out;
+};
+
+// ---------- feedback, counted ----------
+
+export const FEEDBACK_RATINGS = ["correct", "incomplete", "incorrect", "missing", "outdated"] as const;
+
+/**
+ * Playground feedback counted per brand and rating (open, and in all): numbers only, never a question, answer or
+ * comment. A feedback item counts for the brand of most of the notes its answer used ("unknown" when it used none).
+ */
+export const feedbackSummary = (feedback: Feedback[], brandOf: Map<string, string>) => {
+  const rows = new Map<string, Record<string, { open: number; total: number }>>();
+  for (const fb of feedback) {
+    const votes = new Map<string, number>();
+    for (const id of Array.isArray(fb.sources) ? fb.sources : []) {
+      const b = typeof id === "string" ? brandOf.get(id) : undefined;
+      if (b) votes.set(b, (votes.get(b) ?? 0) + 1);
+    }
+    const brand = [...votes.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? "unknown";
+    const row = rows.get(brand) ?? Object.fromEntries(FEEDBACK_RATINGS.map((r) => [r, { open: 0, total: 0 }]));
+    const cell = row[fb.rating];
+    if (!cell) continue;
+    cell.total++;
+    if (fb.status === "open") cell.open++;
+    rows.set(brand, row);
+  }
+  const order = [...BRANDS, "unknown"] as string[];
+  return [...rows.entries()].sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0])).map(([brand, ratings]) => ({ brand, ratings }));
+};
+
+// ---------- the publishing token's expiry ----------
+
+/** Days left before the token expires at which the Studio starts warning. */
+export const TOKEN_WARNING_DAYS = 14;
+
+/**
+ * GitHub's "github-authentication-token-expiration" value ("2026-12-31 23:59:59 UTC", or with a "+0000"-style
+ * offset) as an ISO time, or null when it is missing or unreadable: an unknown expiry is said, never guessed.
+ */
+export const parseTokenExpiry = (raw: string | null): string | null => {
+  if (!raw) return null;
+  const m = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})\s*(UTC|Z|[+-]\d{2}:?\d{2})$/.exec(raw.trim());
+  if (!m) return null;
+  const zone = m[3] === "UTC" || m[3] === "Z" ? "Z" : m[3]!.replace(/^([+-]\d{2})(\d{2})$/, "$1:$2");
+  const t = Date.parse(`${m[1]}T${m[2]}${zone}`);
+  return Number.isFinite(t) ? new Date(t).toISOString() : null;
+};
+
+/** What the Studio shows about the token: its expiry (or null if unknown), whole days left, and whether to warn. */
+export const tokenStatus = (raw: string | null, now: number): { expiresAt: string | null; daysLeft: number | null; warn: boolean } => {
+  const expiresAt = parseTokenExpiry(raw);
+  if (!expiresAt) return { expiresAt: null, daysLeft: null, warn: false };
+  const daysLeft = Math.floor((Date.parse(expiresAt) - now) / 86_400_000);
+  return { expiresAt, daysLeft, warn: daysLeft <= TOKEN_WARNING_DAYS };
 };
 
 // ---------- the handler ----------
@@ -387,7 +468,10 @@ export const createStudio = (deps: StudioDeps) => {
         validation: { published: published.errors, working: working.errors },
         stats: brainStats(published),
         index: { expected, live: liveFingerprint, sync, notes: published.index?.notes.length ?? null, passages: published.index?.chunks.length ?? null, bundled: deps.liveIndex.fingerprint },
+        token: repo.mode === "github" ? tokenStatus(repo.tokenExpiry?.() ?? null, deps.now()) : null,
         agents: published.index?.agents ?? {},
+        // What visitors get: the fixed visitor questions scored on the deployed index (search only, no AI call).
+        coverage: scoreCoverage(deps.liveIndex, COVERAGE_QUESTIONS, BRANDS).brands,
         publication: current ?? pubs[0] ?? null,
         lastLive,
         lastChange: events[0] ?? null,
@@ -532,6 +616,11 @@ export const createStudio = (deps: StudioDeps) => {
           await store.addEvent({ actor: r.actor, kind: "validation_failed", detail: { stale } });
           return fail(409, "drafts_out_of_date", "Some notes changed on the main branch since these drafts started. Open them to compare and update before publishing.", { stale });
         }
+        const privatePaths = privateDrafts(selected);
+        if (privatePaths.length) {
+          await store.addEvent({ actor: r.actor, kind: "validation_failed", detail: { private: privatePaths } });
+          return fail(422, "private_knowledge", "Only public notes are published to the website's repository, which is public. Put client, internal or management knowledge in the Knowledge Library instead (it stays private).", { paths: privatePaths });
+        }
         const next = applyDrafts(loaded.files, selected);
         const compiled = compileBrain(next);
         if (!compiled.index) {
@@ -553,6 +642,10 @@ export const createStudio = (deps: StudioDeps) => {
         }
         changes.push({ path: INDEX_PATH, content: renderIndexModule(compiled.index) });
         changes.push({ path: SNAPSHOT_PATH, content: renderSnapshotModule(next) });
+        // The generated maps (dashboard and canvas), exactly as scripts/brain/build.mjs writes them.
+        const maps = renderMaps(compileBrain(next, { audience: "admin" }), compiled.index, scoreCoverage(compiled.index, COVERAGE_QUESTIONS, BRANDS));
+        changes.push({ path: `${BRAIN_DIR}/${DASHBOARD_PATH}`, content: maps.dashboard });
+        changes.push({ path: `${BRAIN_DIR}/${CANVAS_PATH}`, content: maps.canvas });
         const titles = selected.map((d) => d.path).join(", ");
         const message = `Knowledge Studio: publish ${selected.length} note change(s)\n\n${titles}\n\nPublished by ${r.actor.email ?? r.actor.id} from Knowledge Studio. Index fingerprint ${compiled.index.fingerprint}.`;
         const committed = await repo.commit({ parent: loaded.commit, message, changes });
@@ -575,7 +668,10 @@ export const createStudio = (deps: StudioDeps) => {
         });
         await store.addEvent({
           actor: r.actor, kind: "published_commit", publication_id: publication.id,
-          detail: { commit: committed.commit, fingerprint: compiled.index.fingerprint, paths: publication.paths, operations: selected.map((d) => ({ path: d.path, op: d.operation, to: d.target_path })) },
+          detail: {
+            commit: committed.commit, fingerprint: compiled.index.fingerprint, paths: publication.paths, operations: selected.map((d) => ({ path: d.path, op: d.operation, to: d.target_path })),
+            coverage: coverageSummary(scoreCoverage(compiled.index, COVERAGE_QUESTIONS, BRANDS)),
+          },
         });
         return ok({ publication: deploying ?? publication, expectedFingerprint: compiled.index.fingerprint });
       }
@@ -647,6 +743,28 @@ export const createStudio = (deps: StudioDeps) => {
           score: Math.round(p.score * 100) / 100, via: p.via, why: p.why ?? null,
         })),
       });
+    },
+
+    /**
+     * Coverage: the fixed visitor questions per brand (coverage-questions.ts), searched without any AI call against
+     * the published index (what visitors get) or the drafts (a preview), plus the score kept with each publication.
+     */
+    "GET coverage": async (r) => {
+      const source = r.query.source === "preview" ? "preview" : "live";
+      let index = deps.liveIndex;
+      if (source === "preview") {
+        const loaded = await loadRepo();
+        const files = loaded.ok ? loaded.files : deps.snapshot.map((f) => ({ ...f, sha: "" }));
+        const compiled = compileBrain(applyDrafts(files, await store.drafts()));
+        if (!compiled.index) return fail(422, "validation_failed", "The drafts do not validate, so a preview index cannot be built.", { errors: compiled.errors });
+        index = compiled.index;
+      }
+      const report = scoreCoverage(index, COVERAGE_QUESTIONS, BRANDS);
+      const trend = (await store.events({ limit: 200 }))
+        .filter((e) => e.kind === "published_commit" && isRecord(e.detail.coverage))
+        .slice(0, 10)
+        .map((e) => ({ at: e.at, by: e.actor_email, fingerprint: typeof e.detail.fingerprint === "string" ? e.detail.fingerprint : null, coverage: e.detail.coverage }));
+      return ok({ source, ...report, trend });
     },
 
     /** Formatting help for "Teach the AI": suggestions only, shown next to the owner's own words. */
@@ -747,7 +865,18 @@ export const createStudio = (deps: StudioDeps) => {
         const updated = Date.parse(String(n.fields.updated ?? ""));
         if (Number.isFinite(updated) && today - updated > 180 * 86_400_000) items.push({ kind: "stale", title, detail: `Not checked since ${n.fields.updated}.`, path: n.file });
       }
-      return ok({ items });
+      // Possible duplicates and contact details that disagree, over every active note with the drafts (admin view).
+      const admin = compileBrain(applyDrafts(files, drafts), { audience: "admin" });
+      if (admin.index) {
+        const fileOf = new Map(admin.notes.map((n) => [String(n.fields.id ?? ""), n.file]));
+        const titleOf = new Map(admin.index.notes.map((n) => [n.id, n.title]));
+        for (const f of findConflicts(admin.index)) {
+          const where = f.notes.map((id, i) => `${titleOf.get(id) ?? id} › ${f.sections[i]}`).join(" and ");
+          items.push({ kind: f.kind, title: f.kind === "possible_duplicate" ? `Possible duplicate: ${where}` : `Contact detail to check: ${where}`, detail: f.detail, path: fileOf.get(f.notes[0]!) });
+        }
+      }
+      const brandOf = new Map(published.notes.map((n) => [String(n.fields.id ?? ""), String(n.fields.brand ?? "")]));
+      return ok({ items, feedbackSummary: feedbackSummary(await store.feedback("all", 500), brandOf) });
     },
 
     "POST resolve": async (r) => {

@@ -17,6 +17,9 @@ The full guide is `docs/knowledge-brain.md`. In short:
   a `> [!pending]` or `> [!incomplete]` marker, or in `internal/open-questions.md`, never as a fact.
 - **Public or not.** Only notes with `visibility: public` ever reach an AI agent. `internal` and `confidential`
   notes stay in this repository and are never compiled into the agents' index.
+- **Diagrams.** Write a Mermaid block (```` ```mermaid ````) in an internal note under `maps/`; Obsidian and GitHub
+  draw it without any plugin. Keep `[[links]]` outside the diagram. Never put a diagram in a public note: the AI would
+  read its code.
 - **After an edit** made outside Knowledge Studio, a session runs
   `node --experimental-strip-types scripts/brain/build.mjs`, which checks every note and rewrites the agents' index
   (`supabase/functions/_shared/brain/index.generated.ts`) and the Studio's snapshot. CI fails if they are out of date
@@ -36,3 +39,4 @@ Folders:
 | `internal/` | Notes for the owner and the maintainers only (never sent to an AI agent) |
 | `agents/` | Which brands each AI agent may read (AI access) |
 | `archive/` | Archived notes: kept, never used by an AI |
+| `maps/` | Diagrams and charts for the owner (internal, never used by an AI): start with `maps/maps.md`. `maps/generated/` holds the dashboard of charts and the Canvas board, rewritten from the notes at every build and publication |

@@ -570,21 +570,25 @@ All colors MUST be HSL.
 /* ========================================
    KNOWLEDGE STUDIO (docs/knowledge-studio.md)
    A dense working tool: the marketing pages' global type scale, section padding and button padding above are
-   reset inside .knowledge-studio only, so its own (Tailwind) sizes apply. No other page changes.
+   reset inside .knowledge-studio and the Command Center (.command-center, docs/command-center.md) only, so their
+   own (Tailwind) sizes apply. No other page changes.
    ======================================== */
 @layer base {
   /* :where() keeps these at the specificity of one class, so the Studio's own Tailwind classes still win. */
-  .knowledge-studio :where(h1, h2, h3, h4, p, span, li) {
+  .knowledge-studio :where(h1, h2, h3, h4, p, span, li),
+  .command-center :where(h1, h2, h3, h4, p, span, li) {
     font-size: inherit;
     line-height: inherit;
   }
 }
 @layer components {
-  .knowledge-studio :where(section) {
+  .knowledge-studio :where(section),
+  .command-center :where(section) {
     padding-top: 0;
     padding-bottom: 0;
   }
-  .knowledge-studio :where(button, [role="button"]) {
+  .knowledge-studio :where(button, [role="button"]),
+  .command-center :where(button, [role="button"]) {
     font-size: inherit;
     padding: 0;
   }

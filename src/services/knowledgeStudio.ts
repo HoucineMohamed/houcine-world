@@ -61,7 +61,11 @@ export interface StudioState {
     pendingSections: number; incompleteSections: number; outdatedSections: number;
   };
   index: { expected: string | null; live: string | null; sync: "in_sync" | "out_of_sync" | "unknown" | "publishing"; notes: number | null; passages: number | null; bundled: string };
+  /** The publishing token's expiry, when GitHub reports it (null in read-only mode). */
+  token: { expiresAt: string | null; daysLeft: number | null; warn: boolean } | null;
   agents: Record<string, AgentAccess>;
+  /** Per brand, the fixed visitor questions scored on the knowledge visitors get (search only). */
+  coverage: BrandCoverage[];
   publication: Publication | null;
   lastLive: Publication | null;
   lastChange: KnowledgeEvent | null;
@@ -154,6 +158,39 @@ export interface AssistResult {
   } | null;
 }
 
+export type CoverageResult = "answered" | "awaiting" | "gap" | "not_found";
+
+/** One brand's coverage counts (supabase/functions/_shared/brain/coverage.ts, BrandScore). */
+export interface BrandCoverage { brand: string; total: number; answered: number; awaiting: number; gap: number; not_found: number; concierge: number }
+
+/** The coverage score (supabase/functions/_shared/brain/coverage.ts): search only, no AI call. */
+export interface CoverageReport {
+  source: "live" | "preview";
+  fingerprint: string;
+  brands: BrandCoverage[];
+  questions: {
+    id: string;
+    brand: string;
+    question: string;
+    kind: "answered" | "awaiting" | "gap";
+    expect: string[];
+    gap: string | null;
+    brand_view: CoverageResult;
+    concierge_view: CoverageResult;
+    found: string[];
+    top: { note: string; section: string; via: string }[];
+    unknown: string[];
+  }[];
+  /** The score kept with each publication, newest first: per brand [answered, awaiting, gap, not found]. */
+  trend: { at: string; by: string | null; fingerprint: string | null; coverage: Record<string, [number, number, number, number]> }[];
+}
+
+/** Playground feedback counted per brand and rating: numbers only (knowledge-studio core.ts, feedbackSummary). */
+export interface FeedbackSummaryRow {
+  brand: string;
+  ratings: Record<"correct" | "incomplete" | "incorrect" | "missing" | "outdated", { open: number; total: number }>;
+}
+
 export interface ReviewItem {
   kind: string;
   title: string;
@@ -223,10 +260,11 @@ export const studioApi = {
   retry: (id: string) => call<{ publication: Publication }>("POST", "retry", { body: { id } }),
   playground: (body: { message: string; history: { role: "user" | "assistant"; content: string }[]; memory?: unknown; source: "live" | "preview" }) =>
     call<PlaygroundResult>("POST", "playground", { body }),
+  coverage: (source: "live" | "preview") => call<CoverageReport>("GET", "coverage", { query: { source } }),
   assist: (text: string, brand: string | null) => call<AssistResult>("POST", "assist", { body: { text, brand } }),
   search: (q: string) => call<{ results: { path: string; id: string; title: string; brand: string; visibility: string; snippet: string; matchedIn: string }[] }>("GET", "search", { query: { q } }),
   feedback: (body: { rating: string; question: string; answer: string; comment: string; sources: string[] }) => call<{ feedback: Feedback }>("POST", "feedback", { body }),
-  review: () => call<{ items: ReviewItem[] }>("GET", "review"),
+  review: () => call<{ items: ReviewItem[]; feedbackSummary: FeedbackSummaryRow[] }>("GET", "review"),
   resolve: (id: string, status: "resolved" | "dismissed", resolution: string) => call<{ feedback: Feedback }>("POST", "resolve", { body: { id, status, resolution } }),
   activity: (before?: number) => call<{ events: KnowledgeEvent[]; publications: Publication[] }>("GET", "activity", { query: before ? { before: String(before) } : {} }),
 };

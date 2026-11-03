@@ -27,6 +27,9 @@ const API = "https://api.github.com";
 export const createGithubRepo = (o: GithubOptions): Repo => {
   const base = `${API}/repos/${encodeURIComponent(o.owner)}/${encodeURIComponent(o.repo)}`;
   const blobCache = new Map<string, string>(); // a blob sha always names the same bytes
+  // When GitHub says when the token expires (a response header on API answers), the latest value seen. A date only:
+  // never the token.
+  let tokenExpiry: string | null = null;
 
   const call = async (path: string, init: { method?: string; body?: unknown; accept?: string } = {}) => {
     const controller = new AbortController();
@@ -44,6 +47,8 @@ export const createGithubRepo = (o: GithubOptions): Repo => {
         body: init.body !== undefined ? JSON.stringify(init.body) : undefined,
         signal: controller.signal,
       });
+      const expiry = res.headers?.get?.("github-authentication-token-expiration");
+      if (expiry) tokenExpiry = expiry.slice(0, 64);
       return res;
     } catch {
       return null;
@@ -82,6 +87,8 @@ export const createGithubRepo = (o: GithubOptions): Repo => {
 
   return {
     mode: "github",
+
+    tokenExpiry: () => tokenExpiry,
 
     async head() {
       const r = await json(`/git/ref/heads/${encodeURIComponent(o.branch)}`);

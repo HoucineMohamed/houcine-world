@@ -148,3 +148,33 @@ test("the build refuses broken notes: unknown link, missing source, public note 
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("a public note may only send visitors to a real public page of the site (route manifest)", async () => {
+  const { sitePaths, renderSitePathsModule } = await import("../brain/lib.mjs");
+  const { isSitePath } = await import(join(root, "supabase/functions/_shared/brain/compile.ts"));
+  const { MANIFEST } = await import(join(root, "src/routes/manifest.ts"));
+  // The Studio's copy of the list is current, and holds no owner-only or sign-in page.
+  const committed = readFileSync(join(root, "supabase/functions/_shared/brain/site-paths.generated.ts"), "utf8");
+  assert.equal(committed, renderSitePathsModule(sitePaths()), "rebuild with scripts/brain/build.mjs");
+  for (const r of MANIFEST.filter((x) => x.ownerOnly || !x.indexable)) assert.ok(!sitePaths().includes(r.path), r.path);
+  assert.ok(isSitePath("/booking", sitePaths()) && isSitePath("/booking#form", sitePaths()) && isSitePath("/work/some-case", ["/work/:slug"]));
+  assert.ok(!isSitePath("/workspace/knowledge", sitePaths()) && !isSitePath("/admin", sitePaths()) && !isSitePath("/bookings", sitePaths()));
+
+  const dir = mkdtempSync(join(tmpdir(), "brain-"));
+  try {
+    cpSync(brainDir, dir, { recursive: true });
+    const pub = join(dir, "brands/la-rosa-view/overview.md");
+    writeFileSync(pub, readFileSync(pub, "utf8") + "\n## Elsewhere\nSee `/no-such-page` and `/workspace/knowledge`.\n");
+    // An internal note may name owner-only pages: it never reaches visitors.
+    const internal = join(dir, "internal/open-questions.md");
+    writeFileSync(internal, readFileSync(internal, "utf8") + "\nEdited in `/workspace/knowledge`.\n");
+    const { index, errors } = buildBrain(dir);
+    assert.equal(index, null);
+    assert.deepEqual(errors, [
+      'brands/la-rosa-view/overview.md: "/no-such-page" is not a public page of the site (src/routes/manifest.ts)',
+      'brands/la-rosa-view/overview.md: "/workspace/knowledge" is not a public page of the site (src/routes/manifest.ts)',
+    ]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

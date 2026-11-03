@@ -27,4 +27,5 @@ When one of these pages changes, the notes that cite it must be checked again.
 - `site-designs`: the Houcine.studio page, `/designs`, and its packages (`src/data/servicePackages.ts`)
 - `site-reads`: the Houcine.education page, `/reads`
 - `site-manages`: the Houcine.management page, `/manages`
+- `owner-confirmation-2026-10-30`: the owner, in the Knowledge Studio epic (GitHub issue #74): Houcine.education is both a curated digital bookstore and an educational service in development, not yet open
 - `previous-concierge`: the facts the concierge used before the brain (`supabase/functions/concierge/knowledgeBase.ts`, retired 29 October 2026), all of them taken from the pages above

@@ -16,12 +16,12 @@ public site never see any of it.
 
 | Section | What it is for |
 | --- | --- |
-| **Overview** | Whether the AI uses the published knowledge (in sync / out of sync / publishing), the number of notes (public, internal, restricted, archived), notes by brand, links between notes, sections awaiting confirmation, unpublished changes with a Publish button, problems found in the notes. Every number is counted from the notes themselves. |
+| **Overview** | Whether the AI uses the published knowledge (in sync / out of sync / publishing), the number of notes (public, internal, restricted, archived), notes by brand, links between notes, sections awaiting confirmation, unpublished changes with a Publish button, problems found in the notes, and how many visitor questions each brand answers (section 7b; click a brand to see its questions). Every number is counted from the notes themselves. |
 | **Notes** | The explorer. Left: search (Enter searches all text and related words), folders, filters (brand, category, visibility, status, tag, archived), unpublished changes, New note. Middle: the note, with Edit, Side by side, Preview, Markdown (the whole file), Compare (with the published version) and History (published versions: view, compare, restore). Right: its properties (title, brand, category, visibility, confidence, tags, other names, sources, last checked), whether the AI can use it, its links and the notes linking to it. |
 | **+ Teach the AI** | Write information in ordinary words, optionally "Help me organize it", then save it as a draft note (section 4). |
 | **Graph** | The notes as a network: one dot per note, one line per real `[[link]]`, coloured by brand; people are squares. Zoom, drag, search, filter, click to see connections, double-click to open. |
-| **AI Playground** | A private chat with the concierge: with the published knowledge (what visitors get) or with your drafts (a preview). Each answer has a retrieval inspector (what was understood, which passages were read and why, their brand, visibility, status and sources) and feedback buttons. |
-| **Review** | What needs your attention: playground feedback, failed publications, note problems, drafts out of date, sections awaiting confirmation or outdated, notes without tags, notes not checked for six months. |
+| **AI Playground** | A private chat with the concierge: with the published knowledge (what visitors get) or with your drafts (a preview). Each answer has a retrieval inspector (what was understood, which passages were read and why, their brand, visibility, status and sources) and feedback buttons. Its **Coverage** tab scores a fixed list of visitor questions per brand (section 7b). |
+| **Review** | What needs your attention: playground feedback, failed publications, note problems, drafts out of date, sections awaiting confirmation or outdated, notes without tags, notes not checked for six months, possible duplicates (two sections of different notes that use mostly the same words: keep the fact in one note and link to it) and contact details to check (an email or phone number no contact note lists). The Studio only points; you decide which text is right. |
 | **Activity** | Every operation with who and when: drafts, publications, AI index updates, failures, feedback, access changes. |
 | **Settings** | AI access (which brands the concierge may read) and the publishing setup. |
 
@@ -41,7 +41,11 @@ confirmation**, **Outdated**; a section can differ from its note by starting wit
 
 ## 4. Teaching the AI something new
 
-1. Click **+ Teach the AI**. Write the information in your own words.
+1. Click **+ Teach the AI**. Write the information in your own words, or choose **Answer questions (guided)**: the
+   Studio asks the questions a note of the chosen category answers (a service: what it is, who it is for, what is
+   included, prices and quotes, how to ask). A question you leave empty is saved as "not confirmed yet" with the
+   question, so the AI says the detail is not published instead of guessing. The questions are in
+   `src/lib/knowledge/templates.ts`.
 2. Optional: **Help me organize it**. The AI suggests a title, sections, tags and related notes, lists details that
    seem to be missing (they are marked "not confirmed yet", never invented) and possible conflicts with existing
    notes (with links). These are suggestions only. If a suggested section adds a number, address or price you did not
@@ -57,7 +61,8 @@ To correct a fact: open the note, edit, **Save draft**, then **Publish**. **Undo
 ## 5. What "Publish" does (and why "Published successfully" takes a few minutes)
 
 1. **Validating**: the whole brain is checked with your drafts applied: headers, links, sources, ids, that no public
-   note links to an internal one. If anything fails, nothing is published and the problems are listed.
+   note links to an internal one, and that every site page a public note names (written like `/booking`) is a real
+   public page. If anything fails, nothing is published and the problems are listed.
 2. **Saving to the repository**: one commit on the main branch with the changed notes, the rebuilt AI index and the
    Studio's snapshot, all together (or nothing). The Markdown notes in the repository stay the source of truth.
 3. **Updating the AI's index**: that commit starts the **Deploy Supabase** workflow, which redeploys the concierge
@@ -65,7 +70,8 @@ To correct a fact: open the note, edit, **Save draft**, then **Publish**. **Undo
 4. **Live**: the Studio asks the live concierge which index it serves. Only when it reports the new one does the
    Studio say *Published successfully*.
 
-If the deployment fails, the previous knowledge keeps serving visitors. Your changes are safe in the repository, and
+The bar at the top names the step (on a phone: "Step 3 of 4"), how long ago the deployment started, and, if anything
+fails, what happened and what to do next. If the deployment fails, the previous knowledge keeps serving visitors. Your changes are safe in the repository, and
 **Retry synchronization** runs the deployment again. If anything fails before the commit, nothing changed and your
 drafts are kept. Only one publication runs at a time.
 
@@ -87,7 +93,31 @@ version"). Nothing is overwritten silently.
 
 In the Playground, mark an answer Correct, Incomplete, Incorrect, Missing knowledge or Outdated (with an optional
 note). It becomes an item in **Review**. Feedback never changes knowledge and never trains the model: it tells you
-what to add or correct. Close the item once handled.
+what to add or correct. At the top of Review, a table counts the feedback per brand and kind (open / all; numbers
+only, no text), so you can see which brand's knowledge needs the most work; an item counts for the brand of most of
+the notes its answer used. Close the item once handled.
+
+## 7b. Coverage
+
+**AI Playground, Coverage** shows, for each brand, how many real visitor questions the knowledge answers. The questions
+are fixed (`supabase/functions/_shared/brain/coverage-questions.ts`, written from the site's own pages) and each names
+the note section that should answer it. The Studio runs only the search, with the visitor's words, exactly as the
+concierge's search does: **no AI call, no cost**, so it works before the Anthropic key or the GitHub token exist, and
+with the published knowledge or a preview with your drafts.
+
+| Result | Meaning |
+| --- | --- |
+| **Answered** | The search finds the passage that states the answer. |
+| **Awaiting confirmation** | The search finds the passage that says this is not published yet; that is the honest answer until you confirm the fact. |
+| **Known gap** | No note answers it yet; the line says where the fact would come from (the site, or you). |
+| **Not found** | A note should answer it, but the search does not find it from the visitor's words: improve the note (tags, other names, a clearer heading). |
+
+The same counts, for the published knowledge, are on **Overview** under "Visitor questions". "Concierge reaches" counts the questions the public La Rosa View Concierge can reach with its own access: other brands
+are overview only, so most of their questions are not reached on purpose. The real concierge also rewrites a question
+before searching, so it usually finds a little more than this score. Each publication from the Studio keeps the
+score of the new knowledge in Activity, shown under the table as a trend. A session adds or changes questions (a
+pull request the owner confirms); the test `scripts/ci/coverage.test.mjs` checks them against the notes and fails if
+a question the notes answer stops being found.
 
 ## 8. Setup (once, by you, in the browser)
 
@@ -114,7 +144,9 @@ Optional secrets: `KNOWLEDGE_GITHUB_REPO` ("owner/name", default `HoucineMohamed
 the same workflow (`knowledge-studio`).
 
 When the token expires, publishing stops with "GitHub refused the Studio's token": create a new one and replace the
-secret.
+secret. When GitHub reports the token's expiry date with its answers, Overview and Settings show it and warn 14 days
+before (Settings, Publishing, "How to replace the token" lists the steps). When GitHub does not report it, the Studio
+says the date is unknown: check the date you noted.
 
 ## 9. How it is built (for sessions)
 
@@ -131,8 +163,18 @@ secret.
 - Frontend: `src/pages/workspace/knowledge/KnowledgeStudio.tsx`, `src/components/knowledge/*`,
   `src/services/knowledgeStudio.ts`, `src/lib/knowledge/*` (a safe Markdown preview that builds React elements, never
   HTML; a line diff; the note header form using the compiler's own reader and writer).
+- Coverage: `supabase/functions/_shared/brain/coverage.ts` (the pure scorer) and `coverage-questions.ts` (the
+  questions); the read-only action `GET coverage`; `src/components/knowledge/Coverage.tsx`; test
+  `scripts/ci/coverage.test.mjs`.
+- Duplicates and contact details: `supabase/functions/_shared/brain/conflicts.ts` (pure), listed by `GET review`; test
+  `scripts/ci/conflicts.test.mjs`.
 - Tests: `scripts/ci/knowledge-studio.test.mjs` (the full workflow with an in-memory git repository and database,
   `scripts/brain/studio-fakes.mjs`), plus the brain, concierge and pipeline tests.
+
+- Look: the site's design tokens (`src/design/tokens.json`, `docs/ecosystem-design-tokens.md`): black, white and greys,
+  the one light-grey accent for links, selections and focus, the primary button for "Teach the AI". Two colour sets
+  are kept on purpose and always come with words: the status colours (green published or live, amber awaiting
+  confirmation, red failed or problem, blue in progress) and one dot colour per brand, for recognition.
 
 **Known limitations.**
 - The playground's "published knowledge" mode uses the index deployed with the Studio function. It is deployed by the

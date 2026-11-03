@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Send, RotateCcw, Loader2, ThumbsUp, CircleDashed, XCircle, HelpCircle, Clock, ChevronDown, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,7 @@ import { studioApi, StudioError, type PlaygroundResult } from "@/services/knowle
 import { STATUS_INFO } from "@/lib/knowledge/note";
 import { useStudio } from "./StudioContext";
 import { BrandDot, brandLabel, Pill } from "./ui";
+import Coverage from "./Coverage";
 
 // AI Training Playground: talk privately to the La Rosa View Concierge -- the same pipeline as the public chat
 // (interpret -> retrieve -> answer), with the "live" knowledge (what visitors get) or a "preview" built with your
@@ -62,7 +63,7 @@ const Inspector = ({ result }: { result: PlaygroundResult }) => {
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="tabular-nums text-muted-foreground">#{i + 1}</span>
               <BrandDot brand={p.brand} />
-              <button type="button" onClick={() => open(p.noteId)} className="font-medium text-violet-300 hover:underline">{p.title}</button>
+              <button type="button" onClick={() => open(p.noteId)} className="font-medium text-accent hover:underline">{p.title}</button>
               <span className="text-muted-foreground">› {p.section}</span>
               <span className="ml-auto flex gap-1"><Pill tone="published">{p.visibility}</Pill><Pill tone={p.status === "verified" || p.status === "policy" ? "published" : "pending"}>{STATUS_INFO[p.status]?.label}</Pill></span>
             </div>
@@ -88,6 +89,8 @@ const Inspector = ({ result }: { result: PlaygroundResult }) => {
 const Playground = () => {
   const { state } = useStudio();
   const [source, setSource] = useState<"live" | "preview">("live");
+  const [params] = useSearchParams();
+  const [view, setView] = useState<"chat" | "coverage">(params.get("view") === "coverage" ? "coverage" : "chat");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -135,9 +138,15 @@ const Playground = () => {
   };
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-4">
+    <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)] gap-4">
       <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card/30 p-3 text-sm">
-        <span className="font-medium">La Rosa View Concierge</span>
+        <div className="flex rounded-md border border-border p-0.5" role="tablist" aria-label="Playground view">
+          {(["chat", "coverage"] as const).map((v) => (
+            <button key={v} type="button" role="tab" aria-selected={view === v} onClick={() => setView(v)} className={cn("rounded px-2.5 py-1 text-xs", view === v ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}>
+              {v === "chat" ? "Chat with the concierge" : "Coverage"}
+            </button>
+          ))}
+        </div>
         <div className="flex rounded-md border border-border p-0.5" role="radiogroup" aria-label="Which knowledge">
           {(["live", "preview"] as const).map((s) => (
             <button key={s} type="button" role="radio" aria-checked={source === s} onClick={() => setSource(s)} className={cn("rounded px-2.5 py-1 text-xs", source === s ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}>
@@ -149,8 +158,10 @@ const Playground = () => {
           <Info className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" />
           {source === "live" ? "Exactly what visitors get: published notes only." : "A private preview: your drafts are included, nothing is published."}
         </p>
-        <Button size="sm" variant="ghost" onClick={reset} className="gap-1.5"><RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> New conversation</Button>
+        {view === "chat" && <Button size="sm" variant="ghost" onClick={reset} className="gap-1.5"><RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> New conversation</Button>}
       </div>
+
+      {view === "coverage" ? <Coverage source={source} initialBrand={params.get("brand")} /> : (<>
 
       <div className="space-y-4">
         {turns.length === 0 && (
@@ -160,7 +171,7 @@ const Playground = () => {
         )}
         {turns.map((t, i) => (
           <div key={i} className="space-y-2">
-            <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-violet-500/20 px-3 py-2 text-sm">{t.question}</div>
+            <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-accent/20 px-3 py-2 text-sm">{t.question}</div>
             <div className="max-w-[90%] rounded-2xl rounded-tl-sm border border-border bg-card/40 px-3 py-2 text-sm">
               {!t.result && !t.error && <span className="flex items-center gap-2 text-muted-foreground" role="status"><Loader2 className="h-4 w-4 animate-spin" /> Interpreting, retrieving, answering…</span>}
               {t.error && <span className="text-rose-300">{t.error}</span>}
@@ -174,7 +185,7 @@ const Playground = () => {
               <div className="space-y-2 pl-1">
                 <div className="flex flex-wrap items-center gap-1.5">
                   {RATINGS.map(({ rating, label, icon: Icon }) => (
-                    <button key={rating} type="button" disabled={Boolean(t.feedback)} onClick={() => void sendFeedback(i, rating)} className={cn("flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs disabled:opacity-60", t.feedback === rating ? "border-violet-400 bg-violet-500/20" : "border-border text-muted-foreground hover:text-foreground")}>
+                    <button key={rating} type="button" disabled={Boolean(t.feedback)} onClick={() => void sendFeedback(i, rating)} className={cn("flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs disabled:opacity-60", t.feedback === rating ? "border-accent bg-accent/20" : "border-border text-muted-foreground hover:text-foreground")}>
                       <Icon className="h-3 w-3" aria-hidden="true" /> {label}
                     </button>
                   ))}
@@ -196,6 +207,7 @@ const Playground = () => {
         <Textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void ask(); } }} rows={1} maxLength={2000} placeholder="Ask the concierge…" aria-label="Question for the concierge" className="min-h-[44px] resize-none" />
         <Button onClick={() => void ask()} disabled={busy || !input.trim()} size="icon" className="h-11 w-11 shrink-0" aria-label="Send">{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}</Button>
       </div>
+      </>)}
     </div>
   );
 };

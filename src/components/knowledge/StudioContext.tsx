@@ -35,12 +35,12 @@ const PHASE_OF: Record<Publication["status"], PublishPhase> = { committing: "com
 
 const failureText = (code: string | null): string => {
   switch (code) {
-    case "deploy_failed": return "The notes are saved in the repository, but the deployment that updates the AI failed. The AI still uses the previous knowledge.";
-    case "deploy_timeout": return "The deployment took too long. The notes are saved; the AI still uses the previous knowledge.";
-    case "deploy_not_started": return "The deployment did not start. The notes are saved; the AI still uses the previous knowledge.";
+    case "deploy_failed": return "The notes are saved in the repository, but the deployment that updates the AI failed. The AI still uses the previous knowledge. Click Retry synchronization; if it fails again, open the repository's Actions tab, Deploy Supabase, to see why.";
+    case "deploy_timeout": return "The deployment took more than 25 minutes. The notes are saved; the AI still uses the previous knowledge. Click Retry synchronization.";
+    case "deploy_not_started": return "The deployment did not start within 10 minutes. The notes are saved; the AI still uses the previous knowledge. GitHub Actions may be out of minutes or switched off: check the repository's Actions tab, then click Retry synchronization.";
     case "index_mismatch": return "The deployment finished but the AI serves a different index (perhaps a newer change). Check Activity, then retry.";
-    case "branch_protected": return "GitHub refused the commit (protected branch). Nothing changed; your drafts are kept.";
-    case "repo_auth": return "GitHub refused the Studio's token. Nothing changed; your drafts are kept.";
+    case "branch_protected": return "GitHub refused the commit (protected branch). Nothing changed; your drafts are kept. Settings explains how to allow the Studio.";
+    case "repo_auth": return "GitHub refused the Studio's token (expired or revoked?). Nothing changed; your drafts are kept. Replace the token: Settings, Publishing.";
     default: return "Publication failed. Your drafts are kept.";
   }
 };
