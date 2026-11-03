@@ -35,6 +35,12 @@ analytics, the owner-only Houcine.Trades entries, dependencies, build and hostin
 - Colours, fonts and spacing come from the design tokens (`src/design/tokens.json`,
   `docs/ecosystem-design-tokens.md`).
 
+## Code map (graphify)
+
+`.claude/skills/graphify/` (`docs/graphify.md`) is a code map for Claude sessions only: the upstream graphify skill pinned at 0.9.101 with a
+house-rules block (code only, offline, `GRAPHIFY_BACKEND=none`; never `graphify install` or any hook, never `add`/`clone`/`watch`;
+`graphify-out/` is git-ignored). It is not part of the site or any build.
+
 ## Commands (for sessions)
 
 - `npm run build`, `npx tsc -p tsconfig.app.json --noEmit` (CI runs both).
